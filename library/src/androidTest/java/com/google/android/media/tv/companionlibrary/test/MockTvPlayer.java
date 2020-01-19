@@ -19,11 +19,15 @@ import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.media.PlaybackParams;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.view.Surface;
+
 import com.google.android.media.tv.companionlibrary.TvPlayer;
-import java.io.IOException;
+
 import junit.framework.Assert;
+
+import java.io.IOException;
+
+import androidx.annotation.RequiresApi;
 
 /**
  * The MockTvPlayer is an implementation of TvPlayer which plays media with Android's MediaPlayer.

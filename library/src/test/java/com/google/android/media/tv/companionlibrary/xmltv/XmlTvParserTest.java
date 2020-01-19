@@ -18,18 +18,23 @@ package com.google.android.media.tv.companionlibrary.xmltv;
 
 import android.media.tv.TvContract;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
+
 import com.google.android.media.tv.companionlibrary.BuildConfig;
 import com.google.android.media.tv.companionlibrary.model.InternalProviderData;
 import com.google.android.media.tv.companionlibrary.utils.TvContractUtils;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+
 import junit.framework.TestCase;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
+import androidx.annotation.RequiresApi;
 
 /** Tests for {@link XmlTvParser}. */
 @RunWith(RobolectricTestRunner.class)

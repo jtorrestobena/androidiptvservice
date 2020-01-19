@@ -15,18 +15,16 @@
  */
 package com.google.android.media.tv.companionlibrary.setup;
 
-import static com.google.android.media.tv.companionlibrary.sync.EpgSyncJobService.ERROR_NO_CHANNELS;
-
 import android.app.Activity;
 import android.net.Uri;
-import android.support.v17.leanback.widget.GuidedAction;
 import android.util.Pair;
 import android.widget.ProgressBar;
+
 import com.google.android.media.tv.companionlibrary.BuildConfig;
 import com.google.android.media.tv.companionlibrary.model.Channel;
 import com.google.android.media.tv.companionlibrary.model.Program;
 import com.google.android.media.tv.companionlibrary.sync.EpgSyncJobService;
-import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,6 +35,12 @@ import org.robolectric.android.controller.FragmentController;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLooper;
 import org.robolectric.shadows.ShadowToast;
+
+import java.util.List;
+
+import androidx.leanback.widget.GuidedAction;
+
+import static com.google.android.media.tv.companionlibrary.sync.EpgSyncJobService.ERROR_NO_CHANNELS;
 
 /**
  * Tests for {@link ChannelSetupStepFragment}

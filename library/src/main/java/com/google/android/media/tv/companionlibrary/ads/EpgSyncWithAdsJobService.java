@@ -17,14 +17,17 @@
 package com.google.android.media.tv.companionlibrary.ads;
 
 import android.net.Uri;
-import android.support.annotation.VisibleForTesting;
+
 import com.google.android.media.tv.companionlibrary.model.Advertisement;
 import com.google.android.media.tv.companionlibrary.model.Channel;
 import com.google.android.media.tv.companionlibrary.model.InternalProviderData;
 import com.google.android.media.tv.companionlibrary.model.Program;
 import com.google.android.media.tv.companionlibrary.sync.EpgSyncJobService;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.VisibleForTesting;
 
 /** EpgSyncJobService that inserts ads and repeats programs */
 public abstract class EpgSyncWithAdsJobService extends EpgSyncJobService {

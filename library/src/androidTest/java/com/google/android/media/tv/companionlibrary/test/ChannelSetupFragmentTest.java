@@ -22,18 +22,22 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.tv.TvContract;
 import android.os.Bundle;
-import android.support.test.InstrumentationRegistry;
-import android.support.v4.content.LocalBroadcastManager;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.google.android.media.tv.companionlibrary.setup.ChannelSetupFragment;
 import com.google.android.media.tv.companionlibrary.sync.EpgSyncJobService;
+
+import junit.framework.Assert;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import junit.framework.Assert;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 public class ChannelSetupFragmentTest extends ActivityInstrumentationTestCase2<TestActivity> {
     private static final String TAG = ChannelSetupFragmentTest.class.getSimpleName();

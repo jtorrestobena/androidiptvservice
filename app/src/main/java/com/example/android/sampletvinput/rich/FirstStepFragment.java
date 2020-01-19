@@ -18,12 +18,15 @@ package com.example.android.sampletvinput.rich;
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v17.leanback.app.GuidedStepFragment;
-import android.support.v17.leanback.widget.GuidanceStylist.Guidance;
-import android.support.v17.leanback.widget.GuidedAction;
+
 import com.example.android.sampletvinput.R;
+
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.leanback.app.GuidedStepFragment;
+import androidx.leanback.widget.GuidanceStylist.Guidance;
+import androidx.leanback.widget.GuidedAction;
 
 /** Introduction step in the input setup flow. */
 public class FirstStepFragment extends GuidedStepFragment {

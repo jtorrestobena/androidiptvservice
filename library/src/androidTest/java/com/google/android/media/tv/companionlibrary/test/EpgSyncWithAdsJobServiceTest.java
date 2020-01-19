@@ -22,24 +22,29 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.tv.TvContract;
 import android.net.Uri;
-import android.support.annotation.UiThread;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
-import android.support.v4.content.LocalBroadcastManager;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import android.util.LongSparseArray;
+
 import com.google.android.media.tv.companionlibrary.model.Channel;
 import com.google.android.media.tv.companionlibrary.model.ModelUtils;
 import com.google.android.media.tv.companionlibrary.model.Program;
 import com.google.android.media.tv.companionlibrary.sync.EpgSyncJobService;
 import com.google.android.media.tv.companionlibrary.sync.EpgSyncJobService.EpgSyncException;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
+
 import junit.framework.Assert;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+
+import androidx.annotation.UiThread;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 /**
  * Tests the synchronization of the EpgSyncTask with the EPG, making sure repeated programs are

@@ -1,13 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion "27.0.3"
+    compileSdkVersion 28
 
     defaultConfig {
         applicationId "com.example.android.sampletvinput"
         minSdkVersion 21
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 3
         versionName "1.2"
     }
@@ -21,13 +20,13 @@ android {
 }
 
 ext {
-    appCompatVersion = '27.1.1'
+    appCompatVersion = '1.0.2'
 }
 
 dependencies {
     implementation project(':library')
-    implementation "com.android.support:recyclerview-v7:$appCompatVersion"
-    implementation "com.android.support:leanback-v17:$appCompatVersion"
-    implementation "com.android.support:appcompat-v7:$appCompatVersion"
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.leanback:leanback:1.0.0'
+    implementation "androidx.appcompat:appcompat:$appCompatVersion"
     implementation 'com.google.android.exoplayer:exoplayer:r1.5.14'
 }

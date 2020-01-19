@@ -20,9 +20,11 @@ import android.media.PlaybackParams;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.RequiresApi;
 import android.util.Log;
+
 import com.google.android.media.tv.companionlibrary.TvPlayer;
+
+import androidx.annotation.RequiresApi;
 
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class FakeTrickplayRunnable implements Runnable {

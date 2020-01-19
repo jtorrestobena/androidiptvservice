@@ -40,7 +40,7 @@
         android:textSize="@dimen/side_panel_header_text_size" />
 
     <!-- List of contents. -->
-    <android.support.v17.leanback.widget.VerticalGridView
+    <androidx.leanback.widget.VerticalGridView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

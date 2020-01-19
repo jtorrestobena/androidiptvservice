@@ -15,21 +15,24 @@
  */
 package com.google.android.media.tv.companionlibrary.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.MatrixCursor;
 import android.media.tv.TvContract;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
+
 import com.google.android.media.tv.companionlibrary.BuildConfig;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
+
+import androidx.annotation.RequiresApi;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * Tests that channels can be created using the Builder pattern and correctly obtain

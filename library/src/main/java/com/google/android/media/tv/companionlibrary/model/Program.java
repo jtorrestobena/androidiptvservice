@@ -21,12 +21,15 @@ import android.database.Cursor;
 import android.media.tv.TvContentRating;
 import android.media.tv.TvContract;
 import android.os.Build;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
+
 import com.google.android.media.tv.companionlibrary.utils.CollectionUtils;
 import com.google.android.media.tv.companionlibrary.utils.TvContractUtils;
+
 import java.util.Arrays;
 import java.util.Objects;
+
+import androidx.annotation.NonNull;
 
 /** A convenience class to create and insert program information into the database. */
 public final class Program implements Comparable<Program> {

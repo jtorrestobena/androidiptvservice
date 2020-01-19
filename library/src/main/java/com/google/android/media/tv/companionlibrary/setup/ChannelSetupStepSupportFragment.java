@@ -22,22 +22,25 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.tv.TvInputInfo;
 import android.os.Bundle;
-import android.support.v17.leanback.app.GuidedStepSupportFragment;
-import android.support.v17.leanback.widget.GuidanceStylist.Guidance;
-import android.support.v17.leanback.widget.GuidedAction;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.util.Pair;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.google.android.media.tv.companionlibrary.R;
 import com.google.android.media.tv.companionlibrary.sync.EpgSyncJobService;
 import com.google.android.media.tv.companionlibrary.sync.SyncStatusBroadcastReceiver;
 import com.google.android.media.tv.companionlibrary.sync.SyncStatusBroadcastReceiver.SyncListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.leanback.app.GuidedStepSupportFragment;
+import androidx.leanback.widget.GuidanceStylist.Guidance;
+import androidx.leanback.widget.GuidedAction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 // Gradle puts all resources in the base package, so companionlibrary.R must be imported.
-import com.google.android.media.tv.companionlibrary.R;
 
 /**
  * A guided step for scanning TV Input Service channels using a {@link EpgSyncJobService}.
