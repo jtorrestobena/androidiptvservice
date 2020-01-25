@@ -57,7 +57,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".rich.SearchActivity">
+        <activity android:name="com.bytecoders.androidtv.iptvservice.rich.SearchActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
@@ -65,7 +65,7 @@
 
         <!-- Launched by the TV app before it uses RichTvInputService. This registers channels and
         sets up SampleJobService to provide program information in the background. -->
-        <activity android:name=".rich.RichTvInputSetupActivity"
+        <activity android:name="com.bytecoders.androidtv.iptvservice.rich.RichTvInputSetupActivity"
             android:theme="@style/TifSetup">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -75,7 +75,7 @@
         <!-- A full-screen activity which will be launched by the TV app when a user clicks
         the app-link connected to this activity. -->
         <activity
-            android:name=".rich.RichAppLinkDetailsActivity"
+            android:name="com.bytecoders.androidtv.iptvservice.rich.RichAppLinkDetailsActivity"
             android:theme="@style/Theme.Transparent">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -85,7 +85,7 @@
         <!-- A side-panel activity which will be launched by the TV app when a user clicks
         the app-link connected to this activity. -->
         <activity
-            android:name=".rich.RichAppLinkSidePanelActivity"
+            android:name="com.bytecoders.androidtv.iptvservice.rich.RichAppLinkSidePanelActivity"
             android:theme="@style/Theme.Panel">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -98,7 +98,7 @@
         multi-audio, parental controls, and overlay view.
         -->
         <service
-            android:name=".rich.RichTvInputService"
+            android:name="com.bytecoders.androidtv.iptvservice.rich.RichTvInputService"
             android:label="@string/rich_input_label"
             android:permission="android.permission.BIND_TV_INPUT">
             <!-- Required filter used by the system to launch our account service. -->
@@ -114,12 +114,12 @@
 
         <!-- This service is for using JobScheduler to sync EPG data. -->
         <service
-            android:name=".SampleJobService"
+            android:name="com.bytecoders.androidtv.iptvservice.SampleJobService"
             android:permission="android.permission.BIND_JOB_SERVICE"
             android:exported="true" />
 
         <!-- This receiver is for sync job schedule well after reboot. -->
-        <receiver android:name=".rich.RichBootReceiver">
+        <receiver android:name="com.bytecoders.androidtv.iptvservice.rich.RichBootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
