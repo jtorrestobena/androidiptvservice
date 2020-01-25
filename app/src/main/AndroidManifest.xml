@@ -56,6 +56,12 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".rich.SearchActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+
         <!-- Launched by the TV app before it uses RichTvInputService. This registers channels and
         sets up SampleJobService to provide program information in the background. -->
         <activity android:name=".rich.RichTvInputSetupActivity"
