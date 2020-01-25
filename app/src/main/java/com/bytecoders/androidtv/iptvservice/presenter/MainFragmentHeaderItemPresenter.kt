@@ -8,13 +8,9 @@ import com.bytecoders.androidtv.iptvservice.R
 import kotlinx.android.synthetic.main.main_sectionitem_header.view.*
 
 class MainFragmentHeaderItemPresenter: Presenter() {
-    override fun onCreateViewHolder(parent: ViewGroup?): ViewHolder {
-        val view = LayoutInflater.from(parent!!.context).run {
-            inflate(R.layout.main_sectionitem_header, null)
-        }
-
-        return ViewHolder(view)
-    }
+    override fun onCreateViewHolder(parent: ViewGroup?): ViewHolder =
+        ViewHolder(LayoutInflater.from(parent!!.context)
+            .inflate(R.layout.main_sectionitem_header, parent, false))
 
     override fun onBindViewHolder(viewHolder: ViewHolder?, item: Any?) {
         val headerItem = (item as ListRow).headerItem

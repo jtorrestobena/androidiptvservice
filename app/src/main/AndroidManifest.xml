@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 
-<manifest
+<manifest xmlns:tools="http://schemas.android.com/tools"
     package="com.bytecoders.androidtv.iptvservice"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -48,7 +48,8 @@
         android:allowBackup="false"
         android:icon="@drawable/android_48dp"
         android:label="@string/app_name"
-        android:theme="@style/Theme.Leanback">
+        android:theme="@style/Theme.Leanback"
+        tools:ignore="GoogleAppIndexingWarning,MissingTvBanner">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

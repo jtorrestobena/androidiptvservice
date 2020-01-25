@@ -17,3 +17,11 @@ allprojects {
         google()
     }
 }
+
+ext {
+    appCompatVersion = '1.1.0'
+    leanbackVersion = '1.0.0'
+    exoPlayerVersion = 'r1.5.14'
+    playServicesVersion = '18.3.0'
+    supportTestVersion = '1.0.1'
+}

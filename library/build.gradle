@@ -26,33 +26,31 @@ android {
         exclude 'third_party/java_src/error_prone/project/annotations/Google_internal.gwt.xml'
         exclude 'jsr305_annotations/Jsr305_annotations.gwt.xml'
     }
+
+    lintOptions {
+        // For now ignore errors, let's see if will maintain separate library here
+        abortOnError false
+    }
 }
 
 configurations {
     doclava
 }
 
-ext {
-    leanback_version = "1.0.0"
-    appCompatVersion = '1.0.2'
-    playServicesVersion = '18.3.0'
-    supportTestVersion = '1.0.1'
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "androidx.appcompat:appcompat:$appCompatVersion"
-    implementation "androidx.leanback:leanback:$leanback_version"
+    implementation "androidx.appcompat:appcompat:$rootProject.ext.appCompatVersion"
+    implementation "androidx.leanback:leanback:$rootProject.ext.leanbackVersion"
     // leanback-preference is an add-on that provides a settings UI for TV apps.
-    implementation "androidx.leanback:leanback-preference:$leanback_version"
+    implementation "androidx.leanback:leanback-preference:$leanbackVersion"
     implementation 'com.google.ads.interactivemedia.v3:interactivemedia:3.2.1'
-    implementation "com.google.android.gms:play-services-ads:$playServicesVersion"
+    implementation "com.google.android.gms:play-services-ads:$rootProject.ext.playServicesVersion"
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.8.9'
     testImplementation "org.robolectric:robolectric:4.2.1"
 
-    androidTestImplementation 'androidx.annotation:annotation:1.0.0'
+    androidTestImplementation "androidx.annotation:annotation:$rootProject.ext.appCompatVersion"
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test:rules:1.1.1'
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
