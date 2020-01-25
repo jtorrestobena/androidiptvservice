@@ -13,15 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.android.sampletvinput.player;
+package com.bytecoders.androidtv.iptvservice.player;
 
 import android.annotation.TargetApi;
 import android.text.TextUtils;
+
 import com.google.android.exoplayer.drm.ExoMediaDrm.KeyRequest;
 import com.google.android.exoplayer.drm.ExoMediaDrm.ProvisionRequest;
 import com.google.android.exoplayer.drm.MediaDrmCallback;
 import com.google.android.exoplayer.drm.StreamingDrmSessionManager;
 import com.google.android.exoplayer.util.Util;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;

@@ -6,7 +6,7 @@ android {
     compileSdkVersion 28
 
     defaultConfig {
-        applicationId "com.example.android.sampletvinput"
+        applicationId "com.bytecoders.iptvservice"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 3
@@ -22,16 +22,18 @@ android {
 }
 
 ext {
-    appCompatVersion = '1.0.2'
+    appCompatVersion = '1.1.0'
+    leanbackVersion = '1.0.0'
+    exoPlayerVersion = 'r1.5.14'
 }
 
 dependencies {
     implementation project(':library')
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
-    implementation 'androidx.leanback:leanback:1.0.0'
+    implementation "androidx.recyclerview:recyclerview:$appCompatVersion"
+    implementation "androidx.leanback:leanback:$leanbackVersion"
     implementation "androidx.appcompat:appcompat:$appCompatVersion"
-    implementation 'com.google.android.exoplayer:exoplayer:r1.5.14'
-    compile "androidx.core:core-ktx:+"
+    implementation "com.google.android.exoplayer:exoplayer:$exoPlayerVersion"
+    implementation "androidx.core:core-ktx:$appCompatVersion"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 repositories {

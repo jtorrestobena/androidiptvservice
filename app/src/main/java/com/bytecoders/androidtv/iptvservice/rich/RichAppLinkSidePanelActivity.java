@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.sampletvinput.rich;
+package com.bytecoders.androidtv.iptvservice.rich;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -24,7 +24,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.example.android.sampletvinput.R;
+import com.bytecoders.androidtv.iptvservice.R;
 import com.google.android.media.tv.companionlibrary.model.Channel;
 import com.google.android.media.tv.companionlibrary.model.ModelUtils;
 

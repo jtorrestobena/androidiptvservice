@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.android.sampletvinput.rich
+package com.bytecoders.androidtv.iptvservice.rich
 
 import android.app.Activity
 import android.os.Bundle
 import androidx.leanback.app.GuidedStepSupportFragment
 import androidx.leanback.widget.GuidanceStylist.Guidance
 import androidx.leanback.widget.GuidedAction
-import com.example.android.sampletvinput.R
+import com.bytecoders.androidtv.iptvservice.R
 
 /** Introduction step in the input setup flow.  */
 class FirstStepFragment : GuidedStepSupportFragment() {

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.example.android.sampletvinput.rich;
+package com.bytecoders.androidtv.iptvservice.rich;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
-import com.example.android.sampletvinput.R;
+import com.bytecoders.androidtv.iptvservice.R;
 
 import androidx.core.content.ContextCompat;
 import androidx.leanback.app.DetailsFragment;

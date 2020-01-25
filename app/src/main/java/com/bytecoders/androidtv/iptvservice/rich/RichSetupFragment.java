@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.android.sampletvinput.rich;
+package com.bytecoders.androidtv.iptvservice.rich;
 
 import android.graphics.drawable.Drawable;
 import android.media.tv.TvInputInfo;
 import android.os.Bundle;
 
-import com.example.android.sampletvinput.R;
-import com.example.android.sampletvinput.SampleJobService;
+import com.bytecoders.androidtv.iptvservice.R;
+import com.bytecoders.androidtv.iptvservice.SampleJobService;
 import com.google.android.media.tv.companionlibrary.setup.ChannelSetupStepFragment;
 
 import androidx.annotation.NonNull;

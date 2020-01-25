@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.sampletvinput.rich;
+package com.bytecoders.androidtv.iptvservice.rich;
 
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
@@ -23,8 +23,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import com.example.android.sampletvinput.SampleJobService;
+
+import com.bytecoders.androidtv.iptvservice.SampleJobService;
 import com.google.android.media.tv.companionlibrary.sync.EpgSyncJobService;
+
 import java.util.List;
 
 /**

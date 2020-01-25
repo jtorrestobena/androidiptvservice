@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package com.example.android.sampletvinput.rich;
+package com.bytecoders.androidtv.iptvservice.rich
 
-import android.app.Activity;
-import android.os.Bundle;
-import com.example.android.sampletvinput.R;
+import android.os.Bundle
+import androidx.fragment.app.FragmentActivity
+import androidx.leanback.app.GuidedStepSupportFragment
 
-public class RichAppLinkDetailsActivity extends Activity {
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.rich_app_link_details_fragment);
+/** The setup activity for demonstrating [RichTvInputService].  */
+class RichTvInputSetupActivity : FragmentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        savedInstanceState ?: run {
+            GuidedStepSupportFragment.addAsRoot(this, FirstStepFragment(), android.R.id.content)
+        }
     }
 }

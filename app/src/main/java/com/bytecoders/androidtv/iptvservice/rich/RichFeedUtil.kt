@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.example.android.sampletvinput.rich
+package com.bytecoders.androidtv.iptvservice.rich
 
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import com.example.android.sampletvinput.R
+import com.bytecoders.androidtv.iptvservice.R
 import com.google.android.media.tv.companionlibrary.xmltv.XmlTvParser
 import java.io.BufferedInputStream
 import java.io.IOException

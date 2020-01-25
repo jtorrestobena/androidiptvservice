@@ -5,12 +5,12 @@ xmltv.dtd are extended to be align with Android TV Input Framework and contain s
 contents. For details, please see the documentation of XmlTvParser class.
 -->
 <tv>
-    <channel id="com.example.android.sampletvinput.2-1" repeat-programs="true">
+    <channel id="com.bytecoders.androidtv.iptvservice.2-1" repeat-programs="true">
         <display-name>XML Test Channel</display-name>
         <display-number>2</display-number>
     </channel>
     <programme
-        channel="com.example.android.sampletvinput.2-1"
+        channel="com.bytecoders.androidtv.iptvservice.2-1"
         start="20150817000000 +0000"
         stop="20150817000147 +0000"
         video-src="https://commondatastorage.googleapis.com/android-tv/Sample%20videos/April%20Fool's%202013/Introducing%20Gmail%20Blue.mp4"
@@ -25,7 +25,7 @@ contents. For details, please see the documentation of XmlTvParser class.
         </rating>
     </programme>
     <programme
-        channel="com.example.android.sampletvinput.2-1"
+        channel="com.bytecoders.androidtv.iptvservice.2-1"
         start="20150817000147 +0000"
         stop="20150817004502 +0000"
         video-src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/GoogleIO-2014-CastingToTheFuture.mp4"
@@ -41,7 +41,7 @@ contents. For details, please see the documentation of XmlTvParser class.
         </rating>
     </programme>
     <programme
-        channel="com.example.android.sampletvinput.2-1"
+        channel="com.bytecoders.androidtv.iptvservice.2-1"
         start="20150817004502 +0000"
         stop="20150817005902 +0000"
         video-src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/GoogleIO-2014-MakingGoogleCastReadyAppsDiscoverable.mp4"
@@ -57,7 +57,7 @@ contents. For details, please see the documentation of XmlTvParser class.
         </rating>
     </programme>
     <programme
-        channel="com.example.android.sampletvinput.2-1"
+        channel="com.bytecoders.androidtv.iptvservice.2-1"
         start="20150817005902 +0000"
         stop="20150817010113 +0000"
         video-src="https://commondatastorage.googleapis.com/android-tv/Sample%20videos/April%20Fool's%202013/Introducing%20Google%20Fiber%20to%20the%20Pole.mp4"
@@ -72,7 +72,7 @@ contents. For details, please see the documentation of XmlTvParser class.
         </rating>
     </programme>
     <programme
-        channel="com.example.android.sampletvinput.2-1"
+        channel="com.bytecoders.androidtv.iptvservice.2-1"
         start="20150817010113 +0000"
         stop="20150817010315 +0000"
         video-src="https://commondatastorage.googleapis.com/android-tv/Sample%20videos/April%20Fool's%202013/Introducing%20Google%20Fiber%20to%20the%20Pole.mp4"

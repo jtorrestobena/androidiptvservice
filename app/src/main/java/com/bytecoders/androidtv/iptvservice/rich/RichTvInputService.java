@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.sampletvinput.rich;
+package com.bytecoders.androidtv.iptvservice.rich;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -34,10 +34,10 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.accessibility.CaptioningManager;
 
-import com.example.android.sampletvinput.R;
-import com.example.android.sampletvinput.SampleJobService;
-import com.example.android.sampletvinput.player.DemoPlayer;
-import com.example.android.sampletvinput.player.RendererBuilderFactory;
+import com.bytecoders.androidtv.iptvservice.R;
+import com.bytecoders.androidtv.iptvservice.SampleJobService;
+import com.bytecoders.androidtv.iptvservice.player.DemoPlayer;
+import com.bytecoders.androidtv.iptvservice.player.RendererBuilderFactory;
 import com.google.android.exoplayer.ExoPlayer;
 import com.google.android.exoplayer.MediaFormat;
 import com.google.android.exoplayer.text.CaptionStyleCompat;

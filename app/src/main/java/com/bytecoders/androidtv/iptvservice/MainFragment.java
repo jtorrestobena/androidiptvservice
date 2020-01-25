@@ -12,7 +12,7 @@
  * the License.
  */
 
-package com.example.android.sampletvinput;
+package com.bytecoders.androidtv.iptvservice;
 
 import android.app.Fragment;
 import android.os.Bundle;
