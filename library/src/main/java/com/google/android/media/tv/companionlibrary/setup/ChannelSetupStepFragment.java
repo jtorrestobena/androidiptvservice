@@ -35,7 +35,7 @@ import com.google.android.media.tv.companionlibrary.sync.SyncStatusBroadcastRece
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.leanback.app.GuidedStepFragment;
+import androidx.leanback.app.GuidedStepSupportFragment;
 import androidx.leanback.widget.GuidanceStylist.Guidance;
 import androidx.leanback.widget.GuidedAction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -48,7 +48,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
  * <p>The EpgSyncJobService is started during onStart().
  */
 public abstract class ChannelSetupStepFragment<J extends EpgSyncJobService>
-        extends GuidedStepFragment implements SyncListener {
+        extends GuidedStepSupportFragment implements SyncListener {
     private static final String TAG = "ChannelSetupStep";
 
     private static final long FULL_SYNC_FREQUENCY_MILLIS = 1000 * 60 * 60 * 24; // 24 hour
@@ -131,7 +131,7 @@ public abstract class ChannelSetupStepFragment<J extends EpgSyncJobService>
     public void onGuidedActionClicked(GuidedAction action) {
         if (action.getId() == GuidedAction.ACTION_ID_FINISH) {
             getActivity().setResult(Activity.RESULT_OK);
-            finishGuidedStepFragments();
+            finishGuidedStepSupportFragments();
         } else if (action.getId() == GuidedAction.ACTION_ID_CANCEL) {
             getActivity().setResult(Activity.RESULT_CANCELED);
             getActivity().finishAfterTransition();

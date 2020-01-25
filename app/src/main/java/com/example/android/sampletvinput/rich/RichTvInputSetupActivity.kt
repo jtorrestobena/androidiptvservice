@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package com.example.android.sampletvinput.rich;
+package com.example.android.sampletvinput.rich
 
-import android.app.Activity;
-import android.os.Bundle;
+import android.os.Bundle
+import androidx.fragment.app.FragmentActivity
+import androidx.leanback.app.GuidedStepSupportFragment
 
-import androidx.leanback.app.GuidedStepFragment;
-
-/** The setup activity for demonstrating {@link RichTvInputService}. */
-public class RichTvInputSetupActivity extends Activity {
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (null == savedInstanceState) {
-            GuidedStepFragment.addAsRoot(this, new FirstStepFragment(), android.R.id.content);
+/** The setup activity for demonstrating [RichTvInputService].  */
+class RichTvInputSetupActivity : FragmentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        savedInstanceState ?: run {
+            GuidedStepSupportFragment.addAsRoot(this, FirstStepFragment(), android.R.id.content)
         }
     }
 }
