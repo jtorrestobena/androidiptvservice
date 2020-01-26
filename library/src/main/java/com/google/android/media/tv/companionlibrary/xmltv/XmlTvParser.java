@@ -172,7 +172,7 @@ public class XmlTvParser {
      * @param parser The XmlPullParser the developer selects to parse this data
      * @return A TvListing containing your channels and programs
      */
-    private static TvListing parse(@NonNull InputStream inputStream, @NonNull XmlPullParser parser)
+    public static TvListing parse(@NonNull InputStream inputStream, @NonNull XmlPullParser parser)
             throws XmlTvParseException {
         try {
             parser.setInput(inputStream, null);
@@ -342,21 +342,20 @@ public class XmlTvParser {
         internalProviderData.setVideoType(videoType);
         internalProviderData.setVideoUrl(videoSrc);
         internalProviderData.setAds(ads);
-        return new Program.Builder()
-                .setChannelId(channelId.hashCode())
-                .setTitle(title)
-                .setDescription(description)
-                .setPosterArtUri(icon.src)
-                .setCanonicalGenres(category.toArray(new String[category.size()]))
-                .setStartTimeUtcMillis(startTimeUtcMillis)
-                .setEndTimeUtcMillis(endTimeUtcMillis)
-                .setContentRatings(rating.toArray(new TvContentRating[rating.size()]))
-                // NOTE: {@code COLUMN_INTERNAL_PROVIDER_DATA} is a private field
-                // where TvInputService can store anything it wants. Here, we store
-                // video type and video URL so that TvInputService can play the
-                // video later with this field.
-                .setInternalProviderData(internalProviderData)
-                .build();
+        try {
+            return new Program.Builder()
+                    .setChannelId(channelId.hashCode())
+                    .setTitle(title)
+                    .setDescription(description)
+                    .setPosterArtUri(icon.src)
+                    .setCanonicalGenres(category.toArray(new String[category.size()]))
+                    .setStartTimeUtcMillis(startTimeUtcMillis)
+                    .setEndTimeUtcMillis(endTimeUtcMillis)
+                    .setContentRatings(rating.toArray(new TvContentRating[rating.size()]))
+                    .build();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private static XmlTvIcon parseIcon(XmlPullParser parser)
@@ -503,10 +502,12 @@ public class XmlTvParser {
                 Iterator<Program> programIterator = programs.iterator();
                 while (programIterator.hasNext()) {
                     Program program = programIterator.next();
-                    if (program.getChannelId() == channel.getOriginalNetworkId()) {
-                        programsForChannel.add(
-                                new Program.Builder(program).setChannelId(channel.getId()).build());
-                        programIterator.remove();
+                    if (program != null) {
+                        if (program.getChannelId() == channel.getOriginalNetworkId()) {
+                            programsForChannel.add(
+                                    new Program.Builder(program).setChannelId(channel.getId()).build());
+                            programIterator.remove();
+                        }
                     }
                 }
                 mProgramMap.put(channel.getOriginalNetworkId(), programsForChannel);
@@ -531,6 +532,10 @@ public class XmlTvParser {
          */
         public List<Program> getPrograms(Channel channel) {
             return mProgramMap.get(channel.getOriginalNetworkId());
+        }
+
+        public List<Program> getProgramsForEpg(String epgID) {
+            return mProgramMap.get(Long.valueOf(epgID.hashCode()));
         }
     }
 
