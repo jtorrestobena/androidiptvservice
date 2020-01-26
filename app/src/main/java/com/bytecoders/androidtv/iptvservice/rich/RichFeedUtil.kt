@@ -20,11 +20,14 @@ import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import com.bytecoders.androidtv.iptvservice.R
+import com.bytecoders.androidtv.iptvservice.m3u8parser.data.Playlist
+import com.bytecoders.androidtv.iptvservice.m3u8parser.parser.M3U8Parser
+import com.bytecoders.androidtv.iptvservice.m3u8parser.scanner.M3U8ItemScanner
 import com.google.android.media.tv.companionlibrary.xmltv.XmlTvParser
 import java.io.BufferedInputStream
 import java.io.IOException
 import java.io.InputStream
+import java.net.HttpURLConnection
 import java.net.URL
 
 /**
@@ -43,9 +46,7 @@ object RichFeedUtil {
     private val URLCONNECTION_READ_TIMEOUT_MS = 10000  // 10 sec
 
     @JvmStatic
-    fun getRichTvListings(context: Context): XmlTvParser.TvListing? {
-        val catalogUri = Uri.parse(context.resources.getString(R.string.rich_input_feed_url))
-                .normalizeScheme()
+    fun getRichTvListings(context: Context, catalogUri: Uri): XmlTvParser.TvListing? {
         if (sSampleTvListing != null) {
             return sSampleTvListing
         }
@@ -68,6 +69,16 @@ object RichFeedUtil {
             }
         }
         return sSampleTvListing
+    }
+
+    fun getM3UList(url: URL): Playlist {
+        val urlConnection: HttpURLConnection = url.openConnection() as HttpURLConnection
+        try {
+            return M3U8Parser(BufferedInputStream(urlConnection.inputStream),
+                    M3U8ItemScanner.Encoding.UTF_8).parse()
+        } finally {
+            urlConnection.disconnect()
+        }
     }
 
     @Throws(IOException::class)

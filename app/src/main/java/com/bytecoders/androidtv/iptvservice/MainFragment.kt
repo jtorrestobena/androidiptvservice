@@ -10,6 +10,8 @@ import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.*
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
+import com.bytecoders.androidtv.iptvservice.data.Section
+import com.bytecoders.androidtv.iptvservice.data.SectionItem
 import com.bytecoders.androidtv.iptvservice.presenter.MainFragmentHeaderItemPresenter
 import com.bytecoders.androidtv.iptvservice.rich.SearchActivity
 

@@ -21,16 +21,13 @@ import android.util.LongSparseArray
 import androidx.core.util.set
 import com.bytecoders.androidtv.iptvservice.data.EPGURLMapping
 import com.bytecoders.androidtv.iptvservice.m3u8parser.data.Playlist
-import com.bytecoders.androidtv.iptvservice.m3u8parser.parser.M3U8Parser
-import com.bytecoders.androidtv.iptvservice.m3u8parser.scanner.M3U8ItemScanner
+import com.bytecoders.androidtv.iptvservice.rich.RichFeedUtil.getM3UList
 import com.bytecoders.androidtv.iptvservice.rich.RichFeedUtil.getRichTvListings
 import com.google.android.exoplayer.util.Util
 import com.google.android.media.tv.companionlibrary.ads.EpgSyncWithAdsJobService
 import com.google.android.media.tv.companionlibrary.model.Channel
 import com.google.android.media.tv.companionlibrary.model.InternalProviderData
 import com.google.android.media.tv.companionlibrary.model.Program
-import java.io.BufferedInputStream
-import java.net.HttpURLConnection
 import java.net.URL
 
 
@@ -42,16 +39,13 @@ private const val TAG = "SampleJobService"
 
 class SampleJobService : EpgSyncWithAdsJobService() {
     private val programMapping = LongSparseArray<EPGURLMapping>()
-    private val listings by lazy { getRichTvListings(applicationContext) }
+    private val listings by lazy { getRichTvListings(applicationContext,
+            Uri.parse(application.resources.getString(R.string.rich_input_feed_url))
+            .normalizeScheme())
+    }
 
     private val m3uPlayList: Playlist by lazy {
-        val url = URL("http://91.121.64.179/tdt_project/output/channels.m3u8")
-        val urlConnection: HttpURLConnection = url.openConnection() as HttpURLConnection
-        try {
-            M3U8Parser(BufferedInputStream(urlConnection.inputStream), M3U8ItemScanner.Encoding.UTF_8).parse()
-        } finally {
-            urlConnection.disconnect()
-        }
+        getM3UList(URL("http://91.121.64.179/tdt_project/output/channels.m3u8"))
     }
 
     private fun getM3UChannelList(): List<Channel> {
@@ -68,7 +62,7 @@ class SampleJobService : EpgSyncWithAdsJobService() {
                 })
                 trackData.extInfo?.let {  extInfo ->
                     extInfo.title?.let(this::setDisplayName)
-                    //extInfo.tvgLogoUrl?.let(this::setChannelLogo)
+                    extInfo.tvgLogoUrl?.let(this::setChannelLogo)
                 }
             }.build()
             channelList.add(newChannel)
