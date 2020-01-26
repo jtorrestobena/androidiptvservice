@@ -15,112 +15,89 @@
  */
 package com.bytecoders.androidtv.iptvservice
 
-import android.media.tv.TvContract
 import android.net.Uri
+import android.util.LongSparseArray
+import androidx.core.util.set
+import com.bytecoders.androidtv.iptvservice.m3u8parser.data.Playlist
+import com.bytecoders.androidtv.iptvservice.m3u8parser.parser.M3U8Parser
+import com.bytecoders.androidtv.iptvservice.m3u8parser.scanner.M3U8ItemScanner
 import com.bytecoders.androidtv.iptvservice.rich.RichFeedUtil.getRichTvListings
 import com.google.android.exoplayer.util.Util
 import com.google.android.media.tv.companionlibrary.ads.EpgSyncWithAdsJobService
-import com.google.android.media.tv.companionlibrary.model.Advertisement
 import com.google.android.media.tv.companionlibrary.model.Channel
 import com.google.android.media.tv.companionlibrary.model.InternalProviderData
 import com.google.android.media.tv.companionlibrary.model.Program
-import java.util.*
+import java.io.BufferedInputStream
+import java.net.HttpURLConnection
+import java.net.URL
+
 
 /**
  * EpgSyncJobService that periodically runs to update channels and programs.
  */
 class SampleJobService : EpgSyncWithAdsJobService() {
-    private val MPEG_DASH_CHANNEL_NAME = "MPEG_DASH"
-    private val MPEG_DASH_CHANNEL_NUMBER = "3"
     private val MPEG_DASH_CHANNEL_LOGO = "https://storage.googleapis.com/android-tv/images/mpeg_dash.png"
     private val MPEG_DASH_ORIGINAL_NETWORK_ID = 101
-    private val TEARS_OF_STEEL_TITLE = "TV3 dinamic"
-    private val TEARS_OF_STEEL_DESCRIPTION = "Canals de tv3 dinamic"
-    private val TEARS_OF_STEEL_ART = "https://storage.googleapis.com/gtv-videos-bucket/sample/images/tears.jpg"
-    private val TEARS_OF_STEEL_SOURCE = "https://livestartover-i.akamaized.net/antena3/master.m3u8"
-    override fun getChannels(): List<Channel> { // Add channels through an XMLTV file
-        val listings = getRichTvListings(this)
-        val channelList: MutableList<Channel> = ArrayList(listings!!.channels)
-        // Build advertisement list for the channel.
-        val channelAd = Advertisement.Builder()
-                .setType(Advertisement.TYPE_VAST)
-                .setRequestUrl(TEST_AD_REQUEST_URL)
-                .build()
-        val channelAdList: MutableList<Advertisement> = ArrayList()
-        channelAdList.add(channelAd)
-        // Add a channel programmatically
-        val internalProviderData = InternalProviderData().apply {
-            isRepeatable = true
-            ads = channelAdList
+
+    val programMapping = LongSparseArray<InternalProviderData>()
+
+    private val m3uPlayList: Playlist by lazy {
+        val url = URL("http://91.121.64.179/tdt_project/output/channels.m3u8")
+        val urlConnection: HttpURLConnection = url.openConnection() as HttpURLConnection
+        try {
+            M3U8Parser(BufferedInputStream(urlConnection.inputStream), M3U8ItemScanner.Encoding.UTF_8).parse()
+        } finally {
+            urlConnection.disconnect()
         }
-        val channelTears = Channel.Builder()
-                .setDisplayName(MPEG_DASH_CHANNEL_NAME)
-                .setDisplayNumber(MPEG_DASH_CHANNEL_NUMBER)
-                .setChannelLogo(MPEG_DASH_CHANNEL_LOGO)
-                .setOriginalNetworkId(MPEG_DASH_ORIGINAL_NETWORK_ID.toLong())
-                .setInternalProviderData(internalProviderData)
-                .build()
-        channelList.add(channelTears)
+    }
+
+    private fun getM3UChannelList(): List<Channel> {
+        val channelList = ArrayList<Channel>()
+        m3uPlayList.playListEntries.forEachIndexed{ index, trackData ->
+            val newChannel = Channel.Builder().apply {
+                (index + 1).toString().let {
+                    setDisplayNumber(it)
+                    setDisplayName(it)
+                    setOriginalNetworkId(it.toLong())
+                }
+                setInternalProviderData(InternalProviderData().apply {
+                    isRepeatable = true
+                })
+                trackData.extInfo?.let {  extInfo ->
+                    extInfo.title?.let(this::setDisplayName)
+                    //extInfo.tvgLogoUrl?.let(this::setChannelLogo)
+                }
+            }.build()
+            channelList.add(newChannel)
+            programMapping[newChannel.originalNetworkId] = InternalProviderData().apply {
+                videoType = Util.TYPE_HLS
+                videoUrl = trackData.url
+            }
+        }
         return channelList
+    }
+
+    override fun getChannels(): List<Channel> { // Add channels through an m3u file
+        //val listings = getRichTvListings(applicationContext)
+        //val listings = getM3UChannelList()
+        //return listings?.channels ?: emptyList()
+        return getM3UChannelList()
     }
 
     override fun getOriginalProgramsForChannel(channelUri: Uri, channel: Channel,
                                                startMs: Long, endMs: Long): List<Program> {
-        return if (channel.displayName != MPEG_DASH_CHANNEL_NAME) { // Is an XMLTV Channel
-            val listings = getRichTvListings(applicationContext)
-            listings!!.getPrograms(channel)
-        } else { // Build Advertisement list for the program.
-            val programAd1 = Advertisement.Builder()
-                    .setStartTimeUtcMillis(TEST_AD_1_START_TIME_MS)
-                    .setStopTimeUtcMillis(TEST_AD_1_START_TIME_MS + TEST_AD_DURATION_MS)
-                    .setType(Advertisement.TYPE_VAST)
-                    .setRequestUrl(TEST_AD_REQUEST_URL)
-                    .build()
-            val programAd2 = Advertisement.Builder(programAd1)
-                    .setStartTimeUtcMillis(TEST_AD_2_START_TIME_MS)
-                    .setStopTimeUtcMillis(TEST_AD_2_START_TIME_MS + TEST_AD_DURATION_MS)
-                    .build()
-            val programAdList: MutableList<Advertisement> = mutableListOf(programAd1, programAd2)
-            // Programatically add channel
-            val programsTears: MutableList<Program> = ArrayList()
-            val internalProviderData = InternalProviderData().apply {
-                videoType = Util.TYPE_DASH
-                videoUrl = TEARS_OF_STEEL_SOURCE
-                ads = programAdList
-            }
-            programsTears.add(Program.Builder()
-                    .setTitle(TEARS_OF_STEEL_TITLE)
-                    .setStartTimeUtcMillis(TEARS_OF_STEEL_START_TIME_MS)
-                    .setEndTimeUtcMillis(TEARS_OF_STEEL_START_TIME_MS + TEARS_OF_STEEL_DURATION_MS)
-                    .setDescription(TEARS_OF_STEEL_DESCRIPTION)
-                    .setCanonicalGenres(arrayOf(TvContract.Programs.Genres.TECH_SCIENCE,
-                            TvContract.Programs.Genres.MOVIES))
-                    .setPosterArtUri(TEARS_OF_STEEL_ART)
-                    .setThumbnailUri(TEARS_OF_STEEL_ART)
-                    .setInternalProviderData(internalProviderData)
+        val listings = getRichTvListings(applicationContext);
+        //val programsForChannel = listings?.getPrograms(channel) ?: emptyList()
+        val programsForChannel = ArrayList<Program>().apply {
+            add(Program.Builder()
+                    .setTitle("program title")
+                    .setDescription("program description")
+                    .setStartTimeUtcMillis(0)
+                    .setEndTimeUtcMillis(600000)
+                    .setInternalProviderData(programMapping[channel.originalNetworkId])
                     .build())
-            programsTears
         }
-    }
 
-    companion object {
-        private const val TEARS_OF_STEEL_START_TIME_MS: Long = 0
-        private const val TEARS_OF_STEEL_DURATION_MS = 734 * 1000.toLong()
-        private const val TEST_AD_1_START_TIME_MS = 15 * 1000.toLong()
-        private const val TEST_AD_2_START_TIME_MS = 40 * 1000.toLong()
-        private const val TEST_AD_DURATION_MS = 10 * 1000.toLong()
-        /**
-         * Test [
- * VAST](http://www.iab.com/guidelines/digital-video-ad-serving-template-vast-3-0/) URL from [DoubleClick for Publishers (DFP)](https://www.google.com/dfp).
-         * More sample VAST tags can be found on
-         * [DFP
- * website](https://developers.google.com/interactive-media-ads/docs/sdks/android/tags). You should replace it with the vast tag that you applied from your
-         * advertisement provider. To verify whether your video ad response is VAST compliant, try[
- * Google Ads Mobile Video Suite Inspector](https://developers.google.com/interactive-media-ads/docs/sdks/android/vastinspector)
-         */
-        private const val TEST_AD_REQUEST_URL = "https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/" +
-                "single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast" +
-                "&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct" +
-                "%3Dlinear&correlator="
+        return programsForChannel
     }
 }

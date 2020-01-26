@@ -25,7 +25,7 @@ import com.bytecoders.androidtv.iptvservice.R
 /** Introduction step in the input setup flow.  */
 class FirstStepFragment : GuidedStepSupportFragment() {
 
-    override fun onCreateGuidance(savedInstanceState: Bundle): Guidance {
+    override fun onCreateGuidance(savedInstanceState: Bundle?): Guidance {
         val title = getString(R.string.rich_input_label)
 
         val description = getString(R.string.rich_setup_first_step_description)

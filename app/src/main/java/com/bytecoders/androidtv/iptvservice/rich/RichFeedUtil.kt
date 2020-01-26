@@ -86,4 +86,9 @@ object RichFeedUtil {
 
         return if (inputStream == null) null else BufferedInputStream(inputStream)
     }
+
+    @JvmStatic
+    fun getEPGListings() {
+
+    }
 }
