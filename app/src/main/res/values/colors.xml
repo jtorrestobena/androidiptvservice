@@ -14,8 +14,10 @@
      limitations under the License.
 -->
 <resources>
-    <color name="background_gradient_start">#000000</color>
+    <color name="background_gradient_start">@color/black</color>
     <color name="background_gradient_end">#DDDDDD</color>
+    <color name="black">#000000</color>
+    <color name="dark_grey">#383a3d</color>
     <color name="detail_background">#0096a6</color>
 
     <!-- App link side panel -->

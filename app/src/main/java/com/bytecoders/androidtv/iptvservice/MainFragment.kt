@@ -10,14 +10,18 @@ import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.*
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
-import com.bytecoders.androidtv.iptvservice.data.Section
-import com.bytecoders.androidtv.iptvservice.data.SectionItem
-import com.bytecoders.androidtv.iptvservice.presenter.MainFragmentHeaderItemPresenter
+import com.bytecoders.androidtv.iptvservice.loader.SectionChannelsLoader
+import com.bytecoders.androidtv.iptvservice.m3u8parser.data.Track
+import com.bytecoders.androidtv.iptvservice.presenter.TrackInfoCardPresenter
 import com.bytecoders.androidtv.iptvservice.rich.SearchActivity
 
-class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<HashMap<Section, List<SectionItem>>> {
+private const val TAG = "MainFragment"
+
+class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<Map<String?, List<Track>>> {
     private lateinit var defaultBackground: Drawable
     private lateinit var backgroundManager: BackgroundManager
+    private lateinit var rowsAdapter: ArrayObjectAdapter
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -38,11 +42,11 @@ class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<Hash
         }
         /* metrics = DisplayMetrics()
         activity?.windowManager?.defaultDisplay?.getMetrics(metrics)*/
-        setHeaderPresenterSelector(object : PresenterSelector() {
+        /*setHeaderPresenterSelector(object : PresenterSelector() {
             override fun getPresenter(o: Any): Presenter {
                 return MainFragmentHeaderItemPresenter()
             }
-        })
+        })*/
     }
 
     private fun setupUIElements() {
@@ -59,11 +63,24 @@ class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<Hash
     }
 
     private fun loadSectionsData() {
-        /*VideoProvider.setContext(activity)
-        videosUrl = resources.getString(R.string.catalog_url)
-        loaderManager.initLoader(0, null, this)
-        */
+        loaderManager.initLoader(0, null, this).forceLoad()
     }
+
+    private fun buildRowsAdapter(sectionedChannels: Map<String?, List<Track>>?) {
+        rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
+        sectionedChannels?.let {
+            for ((genre, trackInfoList) in it) {
+                val listRowAdapter = ArrayObjectAdapter(TrackInfoCardPresenter()).apply {
+                    trackInfoList.forEach(this::add)
+                }
+                HeaderItem(genre).also { header ->
+                    rowsAdapter.add(ListRow(header, listRowAdapter))
+                }
+            }
+        }
+        adapter = rowsAdapter
+    }
+
 
     private fun setupEventListeners() {
         setOnSearchClickedListener {
@@ -86,16 +103,16 @@ class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<Hash
         }
     }
 
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<HashMap<Section, List<SectionItem>>> {
-        return Loader(requireContext())
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Map<String?, List<Track>>> {
+        return SectionChannelsLoader(requireContext())
     }
 
-    override fun onLoadFinished(loader: Loader<HashMap<Section, List<SectionItem>>>, data: HashMap<Section, List<SectionItem>>?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onLoadFinished(loader: Loader<Map<String?, List<Track>>>, data: Map<String?, List<Track>>?) {
+        Log.d(TAG, "onLoadFinished")
+        buildRowsAdapter(data)
     }
 
-    override fun onLoaderReset(loader: Loader<HashMap<Section, List<SectionItem>>>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onLoaderReset(loader: Loader<Map<String?, List<Track>>>) {
+        Log.d(TAG, "onLoaderReset")
     }
-
 }
