@@ -16,8 +16,10 @@
 package com.bytecoders.androidtv.iptvservice
 
 import android.net.Uri
+import android.util.Log
 import android.util.LongSparseArray
 import androidx.core.util.set
+import com.bytecoders.androidtv.iptvservice.data.EPGURLMapping
 import com.bytecoders.androidtv.iptvservice.m3u8parser.data.Playlist
 import com.bytecoders.androidtv.iptvservice.m3u8parser.parser.M3U8Parser
 import com.bytecoders.androidtv.iptvservice.m3u8parser.scanner.M3U8ItemScanner
@@ -35,11 +37,12 @@ import java.net.URL
 /**
  * EpgSyncJobService that periodically runs to update channels and programs.
  */
-class SampleJobService : EpgSyncWithAdsJobService() {
-    private val MPEG_DASH_CHANNEL_LOGO = "https://storage.googleapis.com/android-tv/images/mpeg_dash.png"
-    private val MPEG_DASH_ORIGINAL_NETWORK_ID = 101
+private const val A_DAY_IN_MILLIS = 86400000
+private const val TAG = "SampleJobService"
 
-    val programMapping = LongSparseArray<InternalProviderData>()
+class SampleJobService : EpgSyncWithAdsJobService() {
+    private val programMapping = LongSparseArray<EPGURLMapping>()
+    private val listings by lazy { getRichTvListings(applicationContext) }
 
     private val m3uPlayList: Playlist by lazy {
         val url = URL("http://91.121.64.179/tdt_project/output/channels.m3u8")
@@ -69,35 +72,46 @@ class SampleJobService : EpgSyncWithAdsJobService() {
                 }
             }.build()
             channelList.add(newChannel)
-            programMapping[newChannel.originalNetworkId] = InternalProviderData().apply {
+            programMapping[newChannel.originalNetworkId] = EPGURLMapping(InternalProviderData().apply {
                 videoType = Util.TYPE_HLS
                 videoUrl = trackData.url
-            }
+            }, trackData.extInfo?.tvgId)
         }
+
+        Log.d(TAG, "Found ${channelList.size} channels")
         return channelList
     }
 
-    override fun getChannels(): List<Channel> { // Add channels through an m3u file
-        //val listings = getRichTvListings(applicationContext)
-        //val listings = getM3UChannelList()
-        //return listings?.channels ?: emptyList()
-        return getM3UChannelList()
-    }
+    // For now just add channels through an m3u file
+    override fun getChannels(): List<Channel> = getM3UChannelList()
 
     override fun getOriginalProgramsForChannel(channelUri: Uri, channel: Channel,
                                                startMs: Long, endMs: Long): List<Program> {
-        val listings = getRichTvListings(applicationContext);
-        //val programsForChannel = listings?.getPrograms(channel) ?: emptyList()
-        val programsForChannel = ArrayList<Program>().apply {
+
+        val epgURLMapping = programMapping[channel.originalNetworkId]
+        epgURLMapping.epgId?.let {
+            val channelListing = listings?.getProgramsForEpg(it)
+            if (!channelListing.isNullOrEmpty()) {
+                Log.d(TAG, "Found ${channelListing.size} programs for EPG $it")
+                return ArrayList<Program>().apply {
+                    channelListing.forEach {
+                        add(Program.Builder(it)
+                                .setInternalProviderData(epgURLMapping.providerData)
+                                .build())
+                    }
+                }
+            }
+        }
+
+        // If no listings were found then return a default program
+        return ArrayList<Program>().apply {
             add(Program.Builder()
                     .setTitle("program title")
                     .setDescription("program description")
                     .setStartTimeUtcMillis(0)
-                    .setEndTimeUtcMillis(600000)
-                    .setInternalProviderData(programMapping[channel.originalNetworkId])
+                    .setEndTimeUtcMillis(A_DAY_IN_MILLIS.toLong())
+                    .setInternalProviderData(epgURLMapping.providerData)
                     .build())
         }
-
-        return programsForChannel
     }
 }
