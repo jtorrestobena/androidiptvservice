@@ -17,7 +17,11 @@ package com.bytecoders.androidtv.iptvservice.m3u8parser.data
 
 
 /**
- * Created by Emanuele on 31/08/2016.
+ * Contains a Playlist
+ * Set contains all channels by groups
+ * All entries that could not be parsed should be added to unknownEntries
  */
 data class Playlist (var trackSetMap: Map<String, Set<Track>>? = null,
-                     val playListEntries: ArrayList<Track> = ArrayList())
+                     val playListEntries: ArrayList<Track> = ArrayList(),
+                     val unknownEntries: ArrayList<String> = ArrayList(),
+                     var epgURL: String? = null)
