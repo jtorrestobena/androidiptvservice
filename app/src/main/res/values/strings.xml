@@ -22,6 +22,10 @@
     <string name="rich_setup_add_channel">Add Channels</string>
     <string name="rich_setup_cancel">Cancel Setup</string>
     <string name="rich_setup_in_progress">In Progress…</string>
+    <string name="view_settings">View settings</string>
+    <string name="no_channels_found">"No channels found"</string>
+    <string name="check_settings_question">"Do you want to check your settings?"</string>
+    <string name="cancel">Cancel</string>
     <string name="feed_error_message">No feed. Check your connection!</string>
     <string name="app_link_title_1" translatable="false">App Link Title 1</string>
     <string name="app_link_title_2" translatable="false">App Link Title 2</string>

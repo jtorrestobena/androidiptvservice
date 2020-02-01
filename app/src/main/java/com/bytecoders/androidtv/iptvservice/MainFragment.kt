@@ -7,13 +7,16 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.leanback.app.BackgroundManager
 import androidx.leanback.app.BrowseSupportFragment
+import androidx.leanback.app.GuidedStepSupportFragment
 import androidx.leanback.widget.*
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import com.bytecoders.androidtv.iptvservice.loader.SectionChannelsLoader
 import com.bytecoders.androidtv.iptvservice.m3u8parser.data.Track
 import com.bytecoders.androidtv.iptvservice.presenter.TrackInfoCardPresenter
+import com.bytecoders.androidtv.iptvservice.rich.NoChannelsFoundFragment
 import com.bytecoders.androidtv.iptvservice.rich.SearchActivity
+
 
 private const val TAG = "MainFragment"
 
@@ -28,7 +31,6 @@ class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<Map<
         loadSectionsData()
 
         prepareBackgroundManager()
-        setupUIElements()
         setupEventListeners()
 
     }
@@ -40,44 +42,24 @@ class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<Map<
         ContextCompat.getDrawable(requireContext(), R.drawable.default_background)?.let {
             defaultBackground = it
         }
-        /* metrics = DisplayMetrics()
-        activity?.windowManager?.defaultDisplay?.getMetrics(metrics)*/
-        /*setHeaderPresenterSelector(object : PresenterSelector() {
-            override fun getPresenter(o: Any): Presenter {
-                return MainFragmentHeaderItemPresenter()
-            }
-        })*/
-    }
-
-    private fun setupUIElements() {
-        /*badgeDrawable = resources.getDrawable(R.drawable.videos_by_google_banner)
-        // Badge, when set, takes precedent over title
-        title = getString(R.string.browse_title)
-        headersState = BrowseSupportFragment.HEADERS_ENABLED
-        isHeadersTransitionOnBackEnabled = true
-        // set headers background color
-        brandColor = resources.getColor(R.color.fastlane_background)
-        // set search icon color
-        searchAffordanceColor = resources.getColor(R.color.search_opaque)
-         */
     }
 
     private fun loadSectionsData() {
         loaderManager.initLoader(0, null, this).forceLoad()
     }
 
-    private fun buildRowsAdapter(sectionedChannels: Map<String?, List<Track>>?) {
+    private fun buildRowsAdapter(sectionedChannels: Map<String?, List<Track>>) {
         rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
-        sectionedChannels?.let {
-            for ((genre, trackInfoList) in it) {
-                val listRowAdapter = ArrayObjectAdapter(TrackInfoCardPresenter()).apply {
-                    trackInfoList.forEach(this::add)
-                }
-                HeaderItem(genre).also { header ->
-                    rowsAdapter.add(ListRow(header, listRowAdapter))
-                }
+
+        for ((genre, trackInfoList) in sectionedChannels) {
+            val listRowAdapter = ArrayObjectAdapter(TrackInfoCardPresenter()).apply {
+                trackInfoList.forEach(this::add)
+            }
+            HeaderItem(genre).also { header ->
+                rowsAdapter.add(ListRow(header, listRowAdapter))
             }
         }
+
         adapter = rowsAdapter
     }
 
@@ -89,7 +71,7 @@ class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<Map<
             }
         }
 
-        onItemViewClickedListener = object : OnItemViewClickedListener{
+        onItemViewClickedListener = object : OnItemViewClickedListener {
             override fun onItemClicked(itemViewHolder: Presenter.ViewHolder?, item: Any?, rowViewHolder: RowPresenter.ViewHolder?, row: Row?) {
                 Log.d("ITEM", "item clicked $itemViewHolder")
             }
@@ -108,8 +90,13 @@ class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<Map<
     }
 
     override fun onLoadFinished(loader: Loader<Map<String?, List<Track>>>, data: Map<String?, List<Track>>?) {
-        Log.d(TAG, "onLoadFinished")
-        buildRowsAdapter(data)
+        Log.d(TAG, "finished loading channels")
+        if (data.isNullOrEmpty()) {
+            Log.d(TAG, "No channels were found")
+            GuidedStepSupportFragment.add(fragmentManager!!, NoChannelsFoundFragment())
+        } else {
+            buildRowsAdapter(data)
+        }
     }
 
     override fun onLoaderReset(loader: Loader<Map<String?, List<Track>>>) {
