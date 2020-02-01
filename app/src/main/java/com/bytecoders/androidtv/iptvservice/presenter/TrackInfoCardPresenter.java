@@ -18,6 +18,7 @@ package com.bytecoders.androidtv.iptvservice.presenter;
 
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
@@ -76,7 +77,9 @@ public class TrackInfoCardPresenter extends Presenter {
 
         ImageCardView cardView = (ImageCardView) viewHolder.view;
         cardView.setTitleText(track.getExtInfo().getTitle());
-        //cardView.setContentText("text");
+        cardView.setContentText(cardView.getContext().getString(
+                TextUtils.isEmpty(track.getExtInfo().getTvgId()) ? R.string.no_epg : R.string.epg_avail
+        ));
 
         // Set card size from dimension resources.
         Resources res = cardView.getResources();

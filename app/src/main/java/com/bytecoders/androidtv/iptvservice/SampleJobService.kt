@@ -15,20 +15,19 @@
  */
 package com.bytecoders.androidtv.iptvservice
 
+import android.app.Application
 import android.net.Uri
 import android.util.Log
 import android.util.LongSparseArray
 import androidx.core.util.set
 import com.bytecoders.androidtv.iptvservice.data.EPGURLMapping
 import com.bytecoders.androidtv.iptvservice.m3u8parser.data.Playlist
-import com.bytecoders.androidtv.iptvservice.rich.RichFeedUtil.getM3UList
-import com.bytecoders.androidtv.iptvservice.rich.RichFeedUtil.getRichTvListings
+import com.bytecoders.androidtv.iptvservice.repository.ChannelRepository
 import com.google.android.exoplayer.util.Util
 import com.google.android.media.tv.companionlibrary.ads.EpgSyncWithAdsJobService
 import com.google.android.media.tv.companionlibrary.model.Channel
 import com.google.android.media.tv.companionlibrary.model.InternalProviderData
 import com.google.android.media.tv.companionlibrary.model.Program
-import java.net.URL
 
 
 /**
@@ -39,13 +38,12 @@ private const val TAG = "SampleJobService"
 
 class SampleJobService : EpgSyncWithAdsJobService() {
     private val programMapping = LongSparseArray<EPGURLMapping>()
-    private val listings by lazy { getRichTvListings(applicationContext,
-            Uri.parse(application.resources.getString(R.string.rich_input_feed_url))
-            .normalizeScheme())
+    private val listings by lazy {
+        ChannelRepository(applicationContext as Application).programListings
     }
 
     private val m3uPlayList: Playlist by lazy {
-        getM3UList(URL("http://91.121.64.179/tdt_project/output/channels.m3u8"))
+        ChannelRepository(applicationContext as Application).playlist
     }
 
     private fun getM3UChannelList(): List<Channel> {
@@ -100,8 +98,8 @@ class SampleJobService : EpgSyncWithAdsJobService() {
         // If no listings were found then return a default program
         return ArrayList<Program>().apply {
             add(Program.Builder()
-                    .setTitle("program title")
-                    .setDescription("program description")
+                    //.setTitle("program title")
+                    //.setDescription("program description")
                     .setStartTimeUtcMillis(0)
                     .setEndTimeUtcMillis(A_DAY_IN_MILLIS.toLong())
                     .setInternalProviderData(epgURLMapping.providerData)

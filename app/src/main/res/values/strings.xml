@@ -17,7 +17,6 @@
     <string name="app_name">Internet TV Setup</string>
     <string name="company_name" translatable="false">Bytecoders</string>
     <string name="rich_input_label" translatable="false">Internet TV</string>
-    <string name="rich_input_feed_url" translatable="false">https://raw.githubusercontent.com/HelmerLuzo/TDTChannels_EPG/master/TDTChannels_EPG.xml</string>
     <string name="rich_setup_first_step_title">Welcome to Internet TV</string>
     <string name="rich_setup_first_step_description">Internet TV at your fingertips</string>
     <string name="rich_setup_add_channel">Add Channels</string>
@@ -36,4 +35,6 @@
     <string name="sync_error_canceled">User canceled sync</string>
     <string name="sync_error_no_data">No programs or channels found. Check your connection.</string>
     <string name="sync_error_other">Error code %1$d</string>
+    <string name="epg_avail">EPG available</string>
+    <string name="no_epg">No EPG</string>
 </resources>

@@ -13,18 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.bytecoders.androidtv.iptvservice.rich
 
-package com.bytecoders.androidtv.iptvservice.rich;
+import android.app.Activity
+import android.os.Bundle
+import com.bytecoders.androidtv.iptvservice.R
 
-import android.app.Activity;
-import android.os.Bundle;
-
-import com.bytecoders.androidtv.iptvservice.R;
-
-public class RichAppLinkDetailsActivity extends Activity {
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.rich_app_link_details_fragment);
+class RichAppLinkDetailsActivity : Activity() {
+    override fun onCreate(savedInstanceState: Bundle) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.rich_app_link_details_fragment)
     }
 }
