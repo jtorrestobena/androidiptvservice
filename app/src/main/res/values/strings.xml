@@ -41,6 +41,11 @@
     <string name="sync_error_other">Error code %1$d</string>
     <string name="epg_avail">EPG available</string>
     <string name="no_epg">No EPG</string>
+    <string name="channel_source">Channel source</string>
+    <string name="playlist_url">Playlist URL</string>
+    <string name="epg_url">EPG URL</string>
+    <string name="channels_available">%d channels available</string>
+    <string name="invalid_url">"Invalid url %s"</string>
 
     <string-array name="entries">
         <item>item1</item>

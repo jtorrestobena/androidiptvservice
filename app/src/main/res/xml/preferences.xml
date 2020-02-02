@@ -4,7 +4,35 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
+        android:title="@string/channel_source">
+
+        <EditTextPreference
+            android:key="M3U_URL_PREFS"
+            android:title="@string/playlist_url"
+            app:useSimpleSummaryProvider="true"
+            android:dialogTitle="@string/playlist_url" />
+
+        <EditTextPreference
+            android:key="EPG_URL_PREFS"
+            android:title="@string/epg_url"
+            app:useSimpleSummaryProvider="true"
+            android:dialogTitle="@string/epg_url" />
+
+        <Preference
+            android:key="channel_summary"
+            android:title="Channels available"
+            android:summary="No channel information"
+            app:singleLineTitle="true"/>
+    </PreferenceCategory>
+<!--
+    <PreferenceCategory
         android:title="string/basic_preferences">
+
+        <Preference
+            android:key="icon"
+            android:title="string/title_icon_preference"
+            android:summary="string/summary_icon_preference"
+            android:icon="@android:drawable/ic_menu_camera"/>
 
         <Preference
             android:key="preference"
@@ -125,5 +153,5 @@
             android:selectable="false"
             app:enableCopying="true"/>
     </PreferenceCategory>
-
+-->
 </PreferenceScreen>

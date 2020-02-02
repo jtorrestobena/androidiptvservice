@@ -1,19 +1,18 @@
 package com.bytecoders.androidtv.iptvservice.repository
 
 import android.app.Application
-import android.content.Context
 import android.net.Uri
+import androidx.preference.PreferenceManager
 import com.bytecoders.androidtv.iptvservice.m3u8parser.data.Playlist
 import com.bytecoders.androidtv.iptvservice.rich.RichFeedUtil
 import com.google.android.media.tv.companionlibrary.xmltv.XmlTvParser
 import java.net.URL
 
-private const val SHARED_PREFS_NAME = "ChannelRepositoryPrefs"
-private const val M3U_URL_PREFS = "M3U_URL_PREFS"
-private const val EPG_URL_PREFS = "EPG_URL_PREFS"
+const val M3U_URL_PREFS = "M3U_URL_PREFS"
+const val EPG_URL_PREFS = "EPG_URL_PREFS"
 
 class ChannelRepository(private val application: Application) {
-    private val channelRepositoryPreferences = application.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE)
+    private val channelRepositoryPreferences = PreferenceManager.getDefaultSharedPreferences(application)
 
     var playlistURL: String?
         get() =

@@ -50,6 +50,7 @@ class NoChannelsFoundFragment : GuidedStepSupportFragment() {
     override fun onGuidedActionClicked(action: GuidedAction) {
         when (action.id) {
             GuidedAction.ACTION_ID_NEXT -> {
+                finishGuidedStepSupportFragments()
                 Intent(activity, SettingsActivity::class.java).also { intent ->
                     requireActivity().startActivity(intent)
                 }
