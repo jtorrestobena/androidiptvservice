@@ -4,6 +4,7 @@ import android.app.Application
 import android.net.Uri
 import androidx.preference.PreferenceManager
 import com.bytecoders.androidtv.iptvservice.m3u8parser.data.Playlist
+import com.bytecoders.androidtv.iptvservice.m3u8parser.data.Track
 import com.bytecoders.androidtv.iptvservice.rich.RichFeedUtil
 import com.google.android.media.tv.companionlibrary.xmltv.XmlTvParser
 import java.net.URL
@@ -48,5 +49,9 @@ class ChannelRepository(private val application: Application) {
             RichFeedUtil.getRichTvListings(application,
                     Uri.parse(it).normalizeScheme())
         }
+    }
+
+    val groupedChannels: Map<String?, List<Track>> get() = playlist.playListEntries.groupBy {
+        it.extInfo?.groupTitle
     }
 }

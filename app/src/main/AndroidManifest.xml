@@ -57,7 +57,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.bytecoders.androidtv.iptvservice.rich.SearchActivity">
+        <activity android:name="com.bytecoders.androidtv.iptvservice.rich.search.SearchActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>

@@ -100,7 +100,7 @@ class SettingsFragment : LeanbackSettingsFragmentCompat() {
             }
         }
 
-        suspend fun getPlayListEntries(repo: ChannelRepository) = withContext(Dispatchers.Default)  {
+        private suspend fun getPlayListEntries(repo: ChannelRepository) = withContext(Dispatchers.Default)  {
             repo.playlist.playListEntries.size
         }
 

@@ -14,7 +14,7 @@ import com.bytecoders.androidtv.iptvservice.loader.SectionChannelsLoader
 import com.bytecoders.androidtv.iptvservice.m3u8parser.data.Track
 import com.bytecoders.androidtv.iptvservice.presenter.SectionRowPresenter
 import com.bytecoders.androidtv.iptvservice.presenter.TrackInfoCardPresenter
-import com.bytecoders.androidtv.iptvservice.rich.SearchActivity
+import com.bytecoders.androidtv.iptvservice.rich.search.SearchActivity
 import com.bytecoders.androidtv.iptvservice.rich.settings.SetupWizard
 
 
