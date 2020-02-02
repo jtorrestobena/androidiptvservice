@@ -45,6 +45,7 @@ dependencies {
     implementation project(':library')
     implementation "androidx.recyclerview:recyclerview:$rootProject.ext.appCompatVersion"
     implementation "androidx.leanback:leanback:$rootProject.ext.leanbackVersion"
+    implementation "androidx.leanback:leanback-preference:$rootProject.ext.leanbackVersion"
     implementation "androidx.appcompat:appcompat:$rootProject.ext.appCompatVersion"
     implementation "com.google.android.exoplayer:exoplayer:$rootProject.ext.exoPlayerVersion"
     implementation "androidx.core:core-ktx:$rootProject.ext.appCompatVersion"

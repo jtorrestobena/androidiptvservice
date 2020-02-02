@@ -63,6 +63,19 @@
             </intent-filter>
         </activity>
 
+        <activity android:name="com.bytecoders.androidtv.iptvservice.rich.settings.SetupWizard">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name="com.bytecoders.androidtv.iptvservice.rich.settings.SettingsActivity"
+            android:theme="@style/Theme.LeanbackPreferences">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+
         <!-- Launched by the TV app before it uses RichTvInputService. This registers channels and
         sets up SampleJobService to provide program information in the background. -->
         <activity android:name="com.bytecoders.androidtv.iptvservice.rich.RichTvInputSetupActivity"

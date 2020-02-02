@@ -41,4 +41,19 @@
     <string name="sync_error_other">Error code %1$d</string>
     <string name="epg_avail">EPG available</string>
     <string name="no_epg">No EPG</string>
+
+    <string-array name="entries">
+        <item>item1</item>
+        <item>item2</item>
+        <item>item3</item>
+        <item>item4</item>
+    </string-array>
+
+    <string-array name="values">
+        <item>itemvalue1</item>
+        <item>itemvalue2</item>
+        <item>itemvalue3</item>
+        <item>itemvalue4</item>
+    </string-array>
+
 </resources>

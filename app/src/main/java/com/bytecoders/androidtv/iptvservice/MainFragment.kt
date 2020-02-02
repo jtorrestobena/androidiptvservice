@@ -7,15 +7,15 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.leanback.app.BackgroundManager
 import androidx.leanback.app.BrowseSupportFragment
-import androidx.leanback.app.GuidedStepSupportFragment
 import androidx.leanback.widget.*
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import com.bytecoders.androidtv.iptvservice.loader.SectionChannelsLoader
 import com.bytecoders.androidtv.iptvservice.m3u8parser.data.Track
+import com.bytecoders.androidtv.iptvservice.presenter.SectionRowPresenter
 import com.bytecoders.androidtv.iptvservice.presenter.TrackInfoCardPresenter
-import com.bytecoders.androidtv.iptvservice.rich.NoChannelsFoundFragment
 import com.bytecoders.androidtv.iptvservice.rich.SearchActivity
+import com.bytecoders.androidtv.iptvservice.rich.settings.SetupWizard
 
 
 private const val TAG = "MainFragment"
@@ -33,6 +33,7 @@ class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<Map<
         prepareBackgroundManager()
         setupEventListeners()
 
+        badgeDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.android_48dp)
     }
 
     private fun prepareBackgroundManager() {
@@ -63,6 +64,26 @@ class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<Map<
         adapter = rowsAdapter
     }
 
+    private fun buildEmptyAdapter() {
+        // Todo create cards for items
+        val emptySections: Map<String, List<String>> = mapOf(
+                "getting started" to listOf("started1", "started2"),
+                "getting fml" to listOf("fml", "fml again")
+        )
+        rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
+
+        for ((genre, trackInfoList) in emptySections) {
+            val listRowAdapter = ArrayObjectAdapter(SectionRowPresenter()).apply {
+                trackInfoList.forEach(this::add)
+            }
+            HeaderItem(genre).also { header ->
+                rowsAdapter.add(ListRow(header, listRowAdapter))
+            }
+        }
+
+        adapter = rowsAdapter
+    }
+
 
     private fun setupEventListeners() {
         setOnSearchClickedListener {
@@ -71,29 +92,19 @@ class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<Map<
             }
         }
 
-        onItemViewClickedListener = object : OnItemViewClickedListener {
-            override fun onItemClicked(itemViewHolder: Presenter.ViewHolder?, item: Any?, rowViewHolder: RowPresenter.ViewHolder?, row: Row?) {
-                Log.d("ITEM", "item clicked $itemViewHolder")
-            }
-
-        }
-        onItemViewSelectedListener = object : OnItemViewSelectedListener {
-            override fun onItemSelected(itemViewHolder: Presenter.ViewHolder?, item: Any?, rowViewHolder: RowPresenter.ViewHolder?, row: Row?) {
-                Log.d("ITEM", "item selected $itemViewHolder")
-            }
-
-        }
+        onItemViewClickedListener = OnItemViewClickedListener { itemViewHolder, item, rowViewHolder, row -> Log.d("ITEM", "item clicked $itemViewHolder") }
+        onItemViewSelectedListener = OnItemViewSelectedListener { itemViewHolder, item, rowViewHolder, row -> Log.d("ITEM", "item selected $itemViewHolder") }
     }
 
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Map<String?, List<Track>>> {
-        return SectionChannelsLoader(requireContext())
-    }
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Map<String?, List<Track>>> = SectionChannelsLoader(requireContext())
 
     override fun onLoadFinished(loader: Loader<Map<String?, List<Track>>>, data: Map<String?, List<Track>>?) {
         Log.d(TAG, "finished loading channels")
         if (data.isNullOrEmpty()) {
-            Log.d(TAG, "No channels were found")
-            GuidedStepSupportFragment.add(fragmentManager!!, NoChannelsFoundFragment())
+            buildEmptyAdapter()
+            Intent(activity, SetupWizard::class.java).also { intent ->
+                startActivity(intent)
+            }
         } else {
             buildRowsAdapter(data)
         }

@@ -20,7 +20,7 @@ allprojects {
 
 ext {
     appCompatVersion = '1.1.0'
-    leanbackVersion = '1.0.0'
+    leanbackVersion = '1.1.0-alpha03'
     exoPlayerVersion = 'r1.5.14'
     playServicesVersion = '18.3.0'
     supportTestVersion = '1.0.1'

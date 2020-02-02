@@ -15,11 +15,13 @@
  */
 package com.bytecoders.androidtv.iptvservice.rich
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.leanback.app.GuidedStepSupportFragment
 import androidx.leanback.widget.GuidanceStylist.Guidance
 import androidx.leanback.widget.GuidedAction
 import com.bytecoders.androidtv.iptvservice.R
+import com.bytecoders.androidtv.iptvservice.rich.settings.SettingsActivity
 
 /** Introduction step in the input setup flow.  */
 class NoChannelsFoundFragment : GuidedStepSupportFragment() {
@@ -47,8 +49,12 @@ class NoChannelsFoundFragment : GuidedStepSupportFragment() {
 
     override fun onGuidedActionClicked(action: GuidedAction) {
         when (action.id) {
-            GuidedAction.ACTION_ID_NEXT -> add(requireFragmentManager(), RichSetupFragment()) // TODO https://developer.android.com/reference/androidx/leanback/preference/LeanbackSettingsFragmentCompat.html
-            GuidedAction.ACTION_ID_CANCEL -> requireFragmentManager().popBackStack()
+            GuidedAction.ACTION_ID_NEXT -> {
+                Intent(activity, SettingsActivity::class.java).also { intent ->
+                    requireActivity().startActivity(intent)
+                }
+            }
+            GuidedAction.ACTION_ID_CANCEL -> finishGuidedStepSupportFragments()
         }
     }
 }
