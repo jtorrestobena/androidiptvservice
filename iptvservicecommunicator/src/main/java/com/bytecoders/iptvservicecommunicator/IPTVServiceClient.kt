@@ -8,10 +8,12 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import java.io.DataOutputStream
+import com.bytecoders.iptvservicecommunicator.IPTVService.serviceName
+import java.io.OutputStreamWriter
 import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.Socket
+import java.nio.charset.StandardCharsets
 
 
 private const val TAG = "IPTVServiceClient"
@@ -34,24 +36,6 @@ class IPTVServiceClient(application: Application) {
 
     private var clientSocket: Socket? = null
 
-    private var resolving = false
-    private val resolveListener = object: NsdManager.ResolveListener {
-        override fun onResolveFailed(nsdServiceInfo: NsdServiceInfo?, errorCode: Int) {
-            serviceStatus.postValue(ServiceStatus.UNREGISTERED)
-            Log.d(TAG, "onResolveFailed")
-            resolving = false
-        }
-
-        override fun onServiceResolved(nsdServiceInfo: NsdServiceInfo?) {
-            serviceStatus.postValue(ServiceStatus.REGISTERED)
-            Log.d(TAG, "onServiceResolved $nsdServiceInfo")
-            resolving = false
-            nsdServiceInfo?.let {
-                connectClient(it.host, it.port)
-            }
-        }
-    }
-
     // Instantiate a new DiscoveryListener
     private val discoveryListener = object : NsdManager.DiscoveryListener {
 
@@ -63,19 +47,29 @@ class IPTVServiceClient(application: Application) {
         override fun onServiceFound(service: NsdServiceInfo) {
             // A service was found! Do something with it.
             serviceStatus.postValue(ServiceStatus.REGISTERING)
-            Log.d(TAG, "Service discovery success$service")
+            Log.d(TAG, "Service discovery success $service")
             when {
                 /*service.serviceType != IPTV_SERVICE_TYPE -> // Service type is the string containing the protocol and
                     // transport layer for this service.
-                    Log.d(TAG, "Unknown Service Type: ${service.serviceType}")
+                    Log.d(TAG, "Unknown Service Type: ${service.serviceType}")*/
                 service.serviceName == serviceName -> // The name of the service tells the user what they'd be
                     // connecting to. It could be "Bob's Chat App".
-                    Log.d(TAG, "Same machine: $serviceName")*/
+                    Log.d(TAG, "Same machine: $serviceName")
                 service.serviceName.contains(IPTV_SERVICE_NAME) -> {
-                    if (!resolving) {
-                        resolving = true
-                        nsdManager.resolveService(service, resolveListener)
-                    }
+                    nsdManager.resolveService(service, object : NsdManager.ResolveListener {
+                        override fun onResolveFailed(nsdServiceInfo: NsdServiceInfo?, errorCode: Int) {
+                            serviceStatus.postValue(ServiceStatus.UNREGISTERED)
+                            Log.d(TAG, "onResolveFailed")
+                        }
+
+                        override fun onServiceResolved(nsdServiceInfo: NsdServiceInfo?) {
+                            serviceStatus.postValue(ServiceStatus.REGISTERED)
+                            Log.d(TAG, "onServiceResolved $nsdServiceInfo")
+                            nsdServiceInfo?.let {
+                                connectClient(it.host, it.port)
+                            }
+                        }
+                    })
                 }
             }
         }
@@ -115,24 +109,13 @@ class IPTVServiceClient(application: Application) {
         clientSocket = Socket().apply {
             connect(InetSocketAddress(host, port), CLIENT_SOCKET_TIMEOUT)
         }
-        sendMessage("var observed = false\n" +
-                "var max: Int by Delegates.observable(0) { property, oldValue, newValue ->\n" +
-                "    observed = true\n" +
-                "}\n" +
-                "\n" +
-                "println(max) // 0\n" +
-                "println(\"observed is\") // false\n" +
-                "\n" +
-                "max = 10\n" +
-                "println(max) // 10\n" +
-                "println(\"observed is \") // true")
         serviceStatus.postValue(ServiceStatus.READY)
     }
 
     private fun sendMessage(message: String) {
         clientSocket?.let {
-            DataOutputStream(it.getOutputStream()).use { dataOutputStream ->
-                dataOutputStream.writeUTF(message)
+            OutputStreamWriter(it.getOutputStream(), StandardCharsets.UTF_8).use { outputStream ->
+                outputStream.write(message)
             }
         } ?: run {
             Log.e(TAG, "Socket not ready, could not send message $message")

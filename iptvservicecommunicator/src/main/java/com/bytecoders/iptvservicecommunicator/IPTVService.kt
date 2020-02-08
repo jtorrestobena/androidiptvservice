@@ -12,6 +12,7 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.ServerSocket
 import java.net.Socket
+import java.nio.charset.StandardCharsets
 
 
 internal const val IPTV_SERVICE_NAME = "IPTVServiceRemoteConfig"
@@ -116,7 +117,7 @@ object IPTVService {
                 while (runServer) {
                     val socket: Socket = it.accept()
                     val `in` = BufferedReader(
-                            InputStreamReader(socket.getInputStream()))
+                            InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8))
 
                     val str = StringBuilder()
                     while (`in`.ready()) {
