@@ -5,6 +5,9 @@ import android.content.Context
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.ServerSocket
@@ -23,13 +26,18 @@ object IPTVService {
     private var serverSocket: ServerSocket? = null
     private var nsdManager: NsdManager? = null
 
-    private enum class ServiceStatus {
+    @Volatile
+    private var runServer: Boolean = false
+
+    enum class ServiceStatus {
         UNREGISTERED,
         REGISTERED,
-        REGISTERING
+        REGISTERING,
+        READY
     }
 
-    private var serviceStatus: ServiceStatus = ServiceStatus.UNREGISTERED
+    private val serviceStatus = MutableLiveData<ServiceStatus>().apply { postValue(ServiceStatus.UNREGISTERED) }
+    val statusObserver: LiveData<ServiceStatus> by lazy { Transformations.map(serviceStatus) { i -> i } }
 
     private val registrationListener = object : NsdManager.RegistrationListener {
 
@@ -38,14 +46,15 @@ object IPTVService {
             // resolve a conflict, so update the name you initially requested
             // with the name Android actually used.
             serviceName = NsdServiceInfo.serviceName
-            serviceStatus = ServiceStatus.REGISTERED
-            Log.d(TAG, "onServiceRegistered")
+            serviceStatus.postValue(ServiceStatus.REGISTERED)
             bindSocket()
+            Log.d(TAG, "onServiceRegistered $serviceName")
         }
 
         override fun onRegistrationFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
             // Registration failed! Put debugging code here to determine why.
-            serviceStatus = ServiceStatus.UNREGISTERED
+            serviceStatus.postValue(ServiceStatus.UNREGISTERED)
+            runServer = false
             serverSocket?.close()
             serverSocket = null
             Log.d(TAG, "onRegistrationFailed")
@@ -54,7 +63,7 @@ object IPTVService {
         override fun onServiceUnregistered(serviceInfo: NsdServiceInfo) {
             // Service has been unregistered. This only happens when you call
             // NsdManager.unregisterService() and pass in this listener.
-            serviceStatus = ServiceStatus.UNREGISTERED
+            serviceStatus.postValue(ServiceStatus.UNREGISTERED)
             serverSocket?.close()
             serverSocket = null
             Log.d(TAG, "onServiceUnregistered")
@@ -62,11 +71,9 @@ object IPTVService {
 
         override fun onUnregistrationFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
             // Unregistration failed. Put debugging code here to determine why.
-            serviceStatus = ServiceStatus.REGISTERED
             Log.d(TAG, "onUnregistrationFailed")
         }
     }
-
 
     private fun registerService(port: Int, application: Application) {
         // Create the NsdServiceInfo object, and populate it.
@@ -80,19 +87,18 @@ object IPTVService {
 
         nsdManager = (application.getSystemService(Context.NSD_SERVICE) as NsdManager).apply {
             registerService(serviceInfo, NsdManager.PROTOCOL_DNS_SD, registrationListener)
-            serviceStatus = ServiceStatus.REGISTERING
+            serviceStatus.postValue(ServiceStatus.REGISTERING)
         }
     }
 
     fun registerTVService(application: Application) {
-        if (serviceStatus == ServiceStatus.UNREGISTERED) {
-            // Initialize a server socket on the next available port.
-            serverSocket ?: run {
-                serverSocket = ServerSocket(0).also { socket ->
-                    // Store the chosen port.
-                    localPort = socket.localPort
-                    registerService(localPort, application)
-                }
+        serverSocket?.let {
+            registerService(localPort, application)
+        } ?: run {
+            serverSocket = ServerSocket(0).also { socket ->
+                // Store the chosen port.
+                localPort = socket.localPort
+                registerService(localPort, application)
             }
         }
     }
@@ -104,18 +110,26 @@ object IPTVService {
     private fun bindSocket() {
         serverSocket?.let {
             Log.d(TAG, "Binding socket")
-            while (true) {
-                val socket: Socket = it.accept()
-                val `in` = BufferedReader(
-                        InputStreamReader(socket.getInputStream()))
+            runServer = true
+            Thread {
+                serviceStatus.postValue(ServiceStatus.READY)
+                while (runServer) {
+                    val socket: Socket = it.accept()
+                    val `in` = BufferedReader(
+                            InputStreamReader(socket.getInputStream()))
 
-                val str: String = `in`.readLine()
+                    val str = StringBuilder()
+                    while (`in`.ready()) {
+                        str.append(`in`.readLine())
+                    }
 
-                Log.i(TAG, "Received message from client $str")
+                    Log.i(TAG, "Received message from client $str")
 
-                `in`.close()
-                socket.close()
-            }
+
+                    `in`.close()
+                    socket.close()
+                }
+            }.start()
         }
     }
 }

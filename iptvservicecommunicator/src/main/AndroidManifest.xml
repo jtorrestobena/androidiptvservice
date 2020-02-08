@@ -1,1 +1,4 @@
-<manifest package="ch.makezurich.iptvservicecommunicator" />
+<manifest package="com.bytecoders.iptvservicecommunicator"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET" />
+</manifest>

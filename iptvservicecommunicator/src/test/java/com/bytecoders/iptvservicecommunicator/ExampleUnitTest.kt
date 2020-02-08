@@ -1,4 +1,4 @@
-package ch.makezurich.iptvservicecommunicator
+package com.bytecoders.iptvservicecommunicator
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
