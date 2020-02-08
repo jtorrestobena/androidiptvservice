@@ -1,1 +1,1 @@
-include ':tvapp', ':companionlibrary', ':iptvservicecommunicator'
+include ':tvapp', ':companionlibrary', ':iptvservicecommunicator', ':mobileapp'

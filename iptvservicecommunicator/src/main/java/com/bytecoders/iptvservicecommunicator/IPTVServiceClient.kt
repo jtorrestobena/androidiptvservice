@@ -25,11 +25,13 @@ class IPTVServiceClient(application: Application) {
     private val resolveListener = object: NsdManager.ResolveListener {
         override fun onResolveFailed(nsdServiceInfo: NsdServiceInfo?, errorCode: Int) {
             serviceStatus = ServiceStatus.UNREGISTERED
+            Log.d(TAG, "onResolveFailed")
         }
 
         override fun onServiceResolved(nsdServiceInfo: NsdServiceInfo?) {
             // TODO connect
             serviceStatus = ServiceStatus.REGISTERED
+            Log.d(TAG, "onServiceResolved")
         }
     }
 
@@ -43,6 +45,7 @@ class IPTVServiceClient(application: Application) {
 
         override fun onServiceFound(service: NsdServiceInfo) {
             // A service was found! Do something with it.
+            serviceStatus = ServiceStatus.REGISTERING
             Log.d(TAG, "Service discovery success$service")
             when {
                 service.serviceType != IPTV_SERVICE_TYPE -> // Service type is the string containing the protocol and
@@ -78,5 +81,10 @@ class IPTVServiceClient(application: Application) {
 
     fun connectToTVServer() {
         nsdManager.discoverServices(IPTV_SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, discoveryListener)
+    }
+
+    // NsdHelper's tearDown method
+    fun tearDown() {
+        nsdManager.stopServiceDiscovery(discoveryListener)
     }
 }
