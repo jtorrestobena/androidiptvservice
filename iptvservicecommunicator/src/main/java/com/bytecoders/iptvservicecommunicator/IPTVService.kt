@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import com.bytecoders.iptvservicecommunicator.protocol.MessageParser
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.ServerSocket
@@ -29,6 +30,8 @@ object IPTVService {
 
     @Volatile
     private var runServer: Boolean = false
+
+    private val messageParser = MessageParser()
 
     enum class ServiceStatus {
         UNREGISTERED,
@@ -125,6 +128,7 @@ object IPTVService {
                     }
 
                     Log.i(TAG, "Received message from client $str")
+                    messageParser.parseMessage(str.toString())
 
 
                     `in`.close()
