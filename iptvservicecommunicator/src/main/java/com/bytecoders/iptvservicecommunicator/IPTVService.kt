@@ -8,18 +8,19 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import com.bytecoders.iptvservicecommunicator.protocol.MessageParser
+import com.bytecoders.iptvservicecommunicator.protocol.api.Message
+import com.bytecoders.iptvservicecommunicator.protocol.api.MessageEndpointInformation
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.ServerSocket
-import java.net.Socket
+import java.net.SocketException
 import java.nio.charset.StandardCharsets
 
 
 internal const val IPTV_SERVICE_NAME = "IPTVServiceRemoteConfig"
 internal const val IPTV_SERVICE_TYPE = "_iptvremoteconf._tcp"
 
-object IPTVService {
+object IPTVService : BaseIPTVService() {
 
     private const val TAG = "IPTVService"
 
@@ -31,8 +32,6 @@ object IPTVService {
     @Volatile
     private var runServer: Boolean = false
 
-    private val messageParser = MessageParser()
-
     enum class ServiceStatus {
         UNREGISTERED,
         REGISTERED,
@@ -41,7 +40,9 @@ object IPTVService {
     }
 
     private val serviceStatus = MutableLiveData<ServiceStatus>().apply { postValue(ServiceStatus.UNREGISTERED) }
-    val statusObserver: LiveData<ServiceStatus> by lazy { Transformations.map(serviceStatus) { i -> i } }
+    val statusObserver: LiveData<ServiceStatus> by lazy {
+        Transformations.map(serviceStatus) { i -> i }
+    }
 
     private val registrationListener = object : NsdManager.RegistrationListener {
 
@@ -57,19 +58,14 @@ object IPTVService {
 
         override fun onRegistrationFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
             // Registration failed! Put debugging code here to determine why.
-            serviceStatus.postValue(ServiceStatus.UNREGISTERED)
-            runServer = false
-            serverSocket?.close()
-            serverSocket = null
+            shutdown()
             Log.d(TAG, "onRegistrationFailed")
         }
 
         override fun onServiceUnregistered(serviceInfo: NsdServiceInfo) {
             // Service has been unregistered. This only happens when you call
             // NsdManager.unregisterService() and pass in this listener.
-            serviceStatus.postValue(ServiceStatus.UNREGISTERED)
-            serverSocket?.close()
-            serverSocket = null
+            shutdown()
             Log.d(TAG, "onServiceUnregistered")
         }
 
@@ -112,29 +108,49 @@ object IPTVService {
     }
 
     private fun bindSocket() {
-        serverSocket?.let {
+        serverSocket?.let { socket ->
             Log.d(TAG, "Binding socket")
             runServer = true
             Thread {
                 serviceStatus.postValue(ServiceStatus.READY)
-                while (runServer) {
-                    val socket: Socket = it.accept()
-                    val `in` = BufferedReader(
-                            InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8))
+                while (runServer) try {
+                    socket.accept()?.let {
+                        val str = BufferedReader(InputStreamReader(it.getInputStream(), StandardCharsets.UTF_8)).let(BufferedReader::readText)
 
-                    val str = StringBuilder()
-                    while (`in`.ready()) {
-                        str.append(`in`.readLine())
+                        Log.i(TAG, "Received message from client raw: $str")
+                        messageParser.processIncomingMessage(str)
                     }
-
-                    Log.i(TAG, "Received message from client $str")
-                    messageParser.parseMessage(str.toString())
-
-
-                    `in`.close()
-                    socket.close()
+                } catch (socketException: SocketException) {
+                    Log.d(TAG, "Exception reading from server socket", socketException)
+                    runServer = false
                 }
             }.start()
+        }
+    }
+
+    public fun shutdown() {
+        Log.d(TAG, "Shutting down service")
+        serviceStatus.postValue(ServiceStatus.UNREGISTERED)
+        runServer = false
+        serverSocket?.close()
+        serverSocket = null
+    }
+
+    override fun sendMessageInternal(message: String) {
+        /* TODO serverSocket?.accept()?.let {
+            OutputStreamWriter(it.getOutputStream(), StandardCharsets.UTF_8).use { outputStream ->
+                outputStream.write(message)
+            }
+            Log.d(TAG, "Sent message $message")
+        } ?: run {
+            Log.e(TAG, "Socket not ready, could not send message $message")
+        }*/
+    }
+
+    override fun onMessageReceived(message: Message) {
+        if (message is MessageEndpointInformation) {
+            // Reply with server's device information
+            sendMessage(MessageEndpointInformation())
         }
     }
 }

@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.bytecoders.iptvservicecommunicator.IPTVService.serviceName
+import com.bytecoders.iptvservicecommunicator.protocol.api.MessageEndpointInformation
 import java.io.OutputStreamWriter
 import java.net.InetAddress
 import java.net.InetSocketAddress
@@ -19,17 +20,19 @@ import java.nio.charset.StandardCharsets
 private const val TAG = "IPTVServiceClient"
 private const val CLIENT_SOCKET_TIMEOUT: Int = 15000
 
-class IPTVServiceClient(application: Application) {
+class IPTVServiceClient(application: Application) : BaseIPTVService() {
 
     enum class ServiceStatus {
         UNREGISTERED,
         REGISTERED,
         REGISTERING,
+        DISCOVERY,
         READY
     }
 
     private val serviceStatus = MutableLiveData<ServiceStatus>().apply { postValue(ServiceStatus.UNREGISTERED) }
     val clientServiceStatus: LiveData<ServiceStatus> by lazy { Transformations.map(serviceStatus) { i -> i } }
+    val clientServiceLifecycle by lazy { StatusLiveData(this) }
     private val nsdManager: NsdManager by lazy {
         application.getSystemService(Context.NSD_SERVICE) as NsdManager
     }
@@ -42,6 +45,7 @@ class IPTVServiceClient(application: Application) {
         // Called as soon as service discovery begins.
         override fun onDiscoveryStarted(regType: String) {
             Log.d(TAG, "Service discovery started")
+            serviceStatus.postValue(ServiceStatus.DISCOVERY)
         }
 
         override fun onServiceFound(service: NsdServiceInfo) {
@@ -82,6 +86,7 @@ class IPTVServiceClient(application: Application) {
 
         override fun onDiscoveryStopped(serviceType: String) {
             Log.i(TAG, "Discovery stopped: $serviceType")
+            serviceStatus.postValue(ServiceStatus.UNREGISTERED)
         }
 
         override fun onStartDiscoveryFailed(serviceType: String, errorCode: Int) {
@@ -101,18 +106,22 @@ class IPTVServiceClient(application: Application) {
 
     // NsdHelper's tearDown method
     fun tearDown() {
-        nsdManager.stopServiceDiscovery(discoveryListener)
-
+        try {
+            nsdManager.stopServiceDiscovery(discoveryListener)
+        } catch (illegalSateException: IllegalStateException) {
+            Log.e(TAG, "Could not stop service discovery", illegalSateException)
+        }
     }
 
     private fun connectClient(host: InetAddress, port: Int) {
         clientSocket = Socket().apply {
             connect(InetSocketAddress(host, port), CLIENT_SOCKET_TIMEOUT)
         }
+        sendMessage(MessageEndpointInformation())
         serviceStatus.postValue(ServiceStatus.READY)
     }
 
-    private fun sendMessage(message: String) {
+    override fun sendMessageInternal(message: String) {
         clientSocket?.let {
             OutputStreamWriter(it.getOutputStream(), StandardCharsets.UTF_8).use { outputStream ->
                 outputStream.write(message)

@@ -2,7 +2,9 @@ package com.bytecoders.iptvservice.mobileconfig
 
 import android.app.Application
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -28,21 +30,13 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications))
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-    }
+        iptvClient.clientServiceLifecycle.observe(this, Observer{
+            Toast.makeText(applicationContext, "Status: $it", Toast.LENGTH_SHORT).show()
+        })
 
-    override fun onPause() {
-        super.onPause()
-        iptvClient.tearDown()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        iptvClient.connectToTVServer()
-    }
-
-    override fun onDestroy() {
-        iptvClient.tearDown()
-        super.onDestroy()
+        iptvClient.messagesLiveData.observe(this, Observer {
+            Toast.makeText(applicationContext, "Message: $it", Toast.LENGTH_SHORT).show()
+        })
     }
 
 }

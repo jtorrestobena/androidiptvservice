@@ -8,10 +8,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 abstract class Message
 
+@Serializable
 @SerialName("Endpoint")
-@Serializable
-data class MessageEndpointInformation(val name: String, val version: Double = 1.0): Message()
+data class MessageEndpointInformation(val name: String = android.os.Build.MODEL, val version: Double = 1.0): Message()
 
-@SerialName("PlayList")
 @Serializable
+@SerialName("PlayList")
 data class MessagePlayListConfig(val playlistURL: String, val epgURL: String?): Message()

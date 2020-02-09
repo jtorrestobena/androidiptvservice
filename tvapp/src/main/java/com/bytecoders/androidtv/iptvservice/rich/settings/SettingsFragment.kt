@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.leanback.preference.LeanbackPreferenceFragmentCompat
 import androidx.leanback.preference.LeanbackSettingsFragmentCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.*
 import com.bytecoders.androidtv.iptvservice.R
@@ -75,6 +76,12 @@ class SettingsFragment : LeanbackSettingsFragmentCompat() {
 
         override fun onResume() {
             super.onResume()
+            IPTVService.statusObserver.observe(viewLifecycleOwner, Observer {
+                Toast.makeText(requireContext(), "Status: $it", Toast.LENGTH_SHORT).show()
+            })
+            IPTVService.messagesLiveData.observe(viewLifecycleOwner, Observer {
+                Toast.makeText(requireContext(), "Message: $it", Toast.LENGTH_SHORT).show()
+            })
             IPTVService.registerTVService(requireContext().applicationContext as Application)
         }
 
