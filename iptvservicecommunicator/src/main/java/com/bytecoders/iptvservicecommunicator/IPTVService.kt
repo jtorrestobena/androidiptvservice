@@ -8,13 +8,9 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import com.bytecoders.iptvservicecommunicator.network.Server
 import com.bytecoders.iptvservicecommunicator.protocol.api.Message
 import com.bytecoders.iptvservicecommunicator.protocol.api.MessageEndpointInformation
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.net.ServerSocket
-import java.net.SocketException
-import java.nio.charset.StandardCharsets
 
 
 internal const val IPTV_SERVICE_NAME = "IPTVServiceRemoteConfig"
@@ -26,7 +22,7 @@ object IPTVService : BaseIPTVService() {
 
     internal var serviceName: String? = null
     private var localPort: Int = 0
-    private var serverSocket: ServerSocket? = null
+    private val server by lazy { Server { messageParser.processIncomingMessage(it) } }
     private var nsdManager: NsdManager? = null
 
     @Volatile
@@ -92,15 +88,8 @@ object IPTVService : BaseIPTVService() {
     }
 
     fun registerTVService(application: Application) {
-        serverSocket?.let {
-            registerService(localPort, application)
-        } ?: run {
-            serverSocket = ServerSocket(0).also { socket ->
-                // Store the chosen port.
-                localPort = socket.localPort
-                registerService(localPort, application)
-            }
-        }
+        localPort = server.port
+        registerService(localPort, application)
     }
 
     fun unregisterTVService() {
@@ -108,43 +97,20 @@ object IPTVService : BaseIPTVService() {
     }
 
     private fun bindSocket() {
-        serverSocket?.let { socket ->
-            Log.d(TAG, "Binding socket")
-            runServer = true
-            Thread {
-                serviceStatus.postValue(ServiceStatus.READY)
-                while (runServer) try {
-                    socket.accept()?.let {
-                        val str = BufferedReader(InputStreamReader(it.getInputStream(), StandardCharsets.UTF_8)).let(BufferedReader::readText)
-
-                        Log.i(TAG, "Received message from client raw: $str")
-                        messageParser.processIncomingMessage(str)
-                    }
-                } catch (socketException: SocketException) {
-                    Log.d(TAG, "Exception reading from server socket", socketException)
-                    runServer = false
-                }
-            }.start()
-        }
+        Log.d(TAG, "Binding socket")
+        serviceStatus.postValue(ServiceStatus.READY)
+        server.start()
     }
 
-    public fun shutdown() {
+    fun shutdown() {
         Log.d(TAG, "Shutting down service")
         serviceStatus.postValue(ServiceStatus.UNREGISTERED)
         runServer = false
-        serverSocket?.close()
-        serverSocket = null
+        server.close()
     }
 
     override fun sendMessageInternal(message: String) {
-        /* TODO serverSocket?.accept()?.let {
-            OutputStreamWriter(it.getOutputStream(), StandardCharsets.UTF_8).use { outputStream ->
-                outputStream.write(message)
-            }
-            Log.d(TAG, "Sent message $message")
-        } ?: run {
-            Log.e(TAG, "Socket not ready, could not send message $message")
-        }*/
+        server.write(message)
     }
 
     override fun onMessageReceived(message: Message) {

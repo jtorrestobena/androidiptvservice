@@ -9,12 +9,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.bytecoders.iptvservicecommunicator.IPTVService.serviceName
+import com.bytecoders.iptvservicecommunicator.network.Session
 import com.bytecoders.iptvservicecommunicator.protocol.api.MessageEndpointInformation
-import java.io.OutputStreamWriter
 import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.Socket
-import java.nio.charset.StandardCharsets
 
 
 private const val TAG = "IPTVServiceClient"
@@ -37,7 +36,7 @@ class IPTVServiceClient(application: Application) : BaseIPTVService() {
         application.getSystemService(Context.NSD_SERVICE) as NsdManager
     }
 
-    private var clientSocket: Socket? = null
+    private var session: Session? = null
 
     // Instantiate a new DiscoveryListener
     private val discoveryListener = object : NsdManager.DiscoveryListener {
@@ -114,20 +113,21 @@ class IPTVServiceClient(application: Application) : BaseIPTVService() {
     }
 
     private fun connectClient(host: InetAddress, port: Int) {
-        clientSocket = Socket().apply {
+        session = Session(Socket().apply {
             connect(InetSocketAddress(host, port), CLIENT_SOCKET_TIMEOUT)
+        }) {
+            Log.d(TAG, "Incoming message on client: $it")
+            messageParser.processIncomingMessage(it)
+        }.apply {
+            start()
         }
         sendMessage(MessageEndpointInformation())
         serviceStatus.postValue(ServiceStatus.READY)
     }
 
     override fun sendMessageInternal(message: String) {
-        clientSocket?.let {
-            OutputStreamWriter(it.getOutputStream(), StandardCharsets.UTF_8).use { outputStream ->
-                outputStream.write(message)
-            }
-        } ?: run {
-            Log.e(TAG, "Socket not ready, could not send message $message")
+        session?.write(message) ?: run {
+            Log.e(TAG, "Session not ready, could not send message $message")
         }
     }
 }
