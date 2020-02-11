@@ -16,7 +16,7 @@ import java.util.concurrent.CountDownLatch
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
-class CommunitaionUnitTest {
+class CommunicationUnitTest {
     private val messageParser = MessageParser()
 
     @Test
