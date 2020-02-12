@@ -33,8 +33,13 @@ class Server(private val messageListener: (String) -> Unit) {
         Log.e(TAG, "Could not send message to client")
     }
 
-    fun close() {
+    fun closeSession() {
         session?.close()
+        session = null
+    }
+
+    fun close() {
+        closeSession()
         serverSocket.close()
     }
 }

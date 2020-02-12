@@ -6,6 +6,12 @@ public class Log {
         return 0;
     }
 
+    public static int d(String tag, String msg, Throwable exc) {
+        Log.d(tag, msg);
+        exc.printStackTrace();
+        return 0;
+    }
+
     public static int i(String tag, String msg) {
         System.out.println("INFO: " + tag + ": " + msg);
         return 0;
