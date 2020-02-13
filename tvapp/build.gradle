@@ -44,6 +44,7 @@ afterEvaluate {
 dependencies {
     implementation project(':companionlibrary')
     implementation project(':iptvservicecommunicator')
+    implementation project(':m3u8parser')
     implementation "androidx.recyclerview:recyclerview:$rootProject.ext.appCompatVersion"
     implementation "androidx.leanback:leanback:$rootProject.ext.leanbackVersion"
     implementation "androidx.leanback:leanback-preference:$rootProject.ext.leanbackVersion"
@@ -54,6 +55,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$rootProject.ext.kotlin_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0"
     implementation 'com.github.bumptech.glide:glide:4.11.0'
+    implementation("com.squareup.okhttp3:okhttp:4.3.1")
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'net.sf.kxml:kxml2:2.3.0'

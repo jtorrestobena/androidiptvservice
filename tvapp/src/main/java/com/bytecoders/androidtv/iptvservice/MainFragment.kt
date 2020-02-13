@@ -11,7 +11,6 @@ import androidx.leanback.widget.*
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import com.bytecoders.androidtv.iptvservice.loader.SectionChannelsLoader
-import com.bytecoders.androidtv.iptvservice.m3u8parser.data.Track
 import com.bytecoders.androidtv.iptvservice.presenter.SectionRowPresenter
 import com.bytecoders.androidtv.iptvservice.presenter.TrackInfoCardPresenter
 import com.bytecoders.androidtv.iptvservice.rich.search.SearchActivity
@@ -20,7 +19,7 @@ import com.bytecoders.androidtv.iptvservice.rich.settings.SetupWizard
 
 private const val TAG = "MainFragment"
 
-class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<Map<String?, List<Track>>> {
+class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<Map<String?, List<com.bytecoders.m3u8parser.data.Track>>> {
     private lateinit var defaultBackground: Drawable
     private lateinit var backgroundManager: BackgroundManager
     private lateinit var rowsAdapter: ArrayObjectAdapter
@@ -49,7 +48,7 @@ class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<Map<
         loaderManager.initLoader(0, null, this).forceLoad()
     }
 
-    private fun buildRowsAdapter(sectionedChannels: Map<String?, List<Track>>) {
+    private fun buildRowsAdapter(sectionedChannels: Map<String?, List<com.bytecoders.m3u8parser.data.Track>>) {
         rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
 
         for ((genre, trackInfoList) in sectionedChannels) {
@@ -96,9 +95,9 @@ class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<Map<
         onItemViewSelectedListener = OnItemViewSelectedListener { itemViewHolder, item, rowViewHolder, row -> Log.d("ITEM", "item selected $itemViewHolder") }
     }
 
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Map<String?, List<Track>>> = SectionChannelsLoader(requireContext())
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Map<String?, List<com.bytecoders.m3u8parser.data.Track>>> = SectionChannelsLoader(requireContext())
 
-    override fun onLoadFinished(loader: Loader<Map<String?, List<Track>>>, data: Map<String?, List<Track>>?) {
+    override fun onLoadFinished(loader: Loader<Map<String?, List<com.bytecoders.m3u8parser.data.Track>>>, data: Map<String?, List<com.bytecoders.m3u8parser.data.Track>>?) {
         Log.d(TAG, "finished loading channels")
         if (data.isNullOrEmpty()) {
             buildEmptyAdapter()
@@ -110,7 +109,7 @@ class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<Map<
         }
     }
 
-    override fun onLoaderReset(loader: Loader<Map<String?, List<Track>>>) {
+    override fun onLoaderReset(loader: Loader<Map<String?, List<com.bytecoders.m3u8parser.data.Track>>>) {
         Log.d(TAG, "onLoaderReset")
     }
 }

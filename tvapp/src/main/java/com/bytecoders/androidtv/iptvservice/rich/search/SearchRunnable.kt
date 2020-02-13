@@ -3,12 +3,11 @@ package com.bytecoders.androidtv.iptvservice.rich.search
 import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.leanback.widget.HeaderItem
 import androidx.leanback.widget.ListRow
-import com.bytecoders.androidtv.iptvservice.m3u8parser.data.Track
 import com.bytecoders.androidtv.iptvservice.presenter.TrackInfoCardPresenter
 
 class SearchRunnable(private val rowsAdapter: ArrayObjectAdapter): Runnable {
     var searchQuery: String? = null
-    var groupedChannels: Map<String?, List<Track>>? = null
+    var groupedChannels: Map<String?, List<com.bytecoders.m3u8parser.data.Track>>? = null
     override fun run() {
         searchQuery?.let { search ->
             groupedChannels?.let {

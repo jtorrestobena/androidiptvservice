@@ -1,13 +1,11 @@
 package com.bytecoders.androidtv.iptvservice.repository
 
 import android.app.Application
-import android.net.Uri
 import androidx.preference.PreferenceManager
-import com.bytecoders.androidtv.iptvservice.m3u8parser.data.Playlist
-import com.bytecoders.androidtv.iptvservice.m3u8parser.data.Track
 import com.bytecoders.androidtv.iptvservice.rich.RichFeedUtil
+import com.bytecoders.m3u8parser.data.Playlist
+import com.bytecoders.m3u8parser.data.Track
 import com.google.android.media.tv.companionlibrary.xmltv.XmlTvParser
-import java.net.URL
 
 const val M3U_URL_PREFS = "M3U_URL_PREFS"
 const val EPG_URL_PREFS = "EPG_URL_PREFS"
@@ -36,7 +34,7 @@ class ChannelRepository(private val application: Application) {
     // Gets the playlist and updates the EPG URL
     val playlist: Playlist by lazy {
         playlistURL?.let { url ->
-            val newPlayList = RichFeedUtil.getM3UList(URL(url))
+            val newPlayList = RichFeedUtil.getM3UList(url)
             newPlayList.epgURL?.let {
                 this.epgURL = it
             }
@@ -46,8 +44,7 @@ class ChannelRepository(private val application: Application) {
 
     val programListings: XmlTvParser.TvListing? get() {
         return epgURL?.let {
-            RichFeedUtil.getRichTvListings(application,
-                    Uri.parse(it).normalizeScheme())
+            RichFeedUtil.getRichTvListings(it)
         }
     }
 

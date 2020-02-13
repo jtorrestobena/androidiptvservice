@@ -24,7 +24,7 @@ import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bytecoders.androidtv.iptvservice.R;
-import com.bytecoders.androidtv.iptvservice.m3u8parser.data.Track;
+import com.bytecoders.m3u8parser.data.Track;
 
 import androidx.core.content.ContextCompat;
 import androidx.leanback.widget.ImageCardView;

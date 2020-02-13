@@ -16,19 +16,15 @@
 
 package com.bytecoders.androidtv.iptvservice.rich
 
-import android.content.ContentResolver
-import android.content.Context
-import android.net.Uri
 import android.util.Log
-import com.bytecoders.androidtv.iptvservice.m3u8parser.data.Playlist
-import com.bytecoders.androidtv.iptvservice.m3u8parser.parser.M3U8Parser
-import com.bytecoders.androidtv.iptvservice.m3u8parser.scanner.M3U8ItemScanner
+import com.bytecoders.androidtv.iptvservice.net.Network
+import com.bytecoders.m3u8parser.data.Playlist
+import com.bytecoders.m3u8parser.parser.M3U8Parser
+import com.bytecoders.m3u8parser.scanner.M3U8ItemScanner
 import com.google.android.media.tv.companionlibrary.xmltv.XmlTvParser
 import java.io.BufferedInputStream
 import java.io.IOException
 import java.io.InputStream
-import java.net.HttpURLConnection
-import java.net.URL
 
 /**
  * Static helper methods for fetching the channel feed.
@@ -45,14 +41,14 @@ object RichFeedUtil {
     private val URLCONNECTION_CONNECTION_TIMEOUT_MS = 3000  // 3 sec
     private val URLCONNECTION_READ_TIMEOUT_MS = 10000  // 10 sec
 
-    fun getRichTvListings(context: Context, catalogUri: Uri): XmlTvParser.TvListing? {
+    fun getRichTvListings(catalogUri: String): XmlTvParser.TvListing? {
         if (sSampleTvListing != null) {
             return sSampleTvListing
         }
         var inputStream: InputStream? = null
         try {
-            inputStream = getInputStream(context, catalogUri)
-            sSampleTvListing = XmlTvParser.parse(inputStream!!)
+            inputStream = Network.getInputStreamforURL(catalogUri)
+            sSampleTvListing = XmlTvParser.parse(inputStream)
         } catch (e: IOException) {
             Log.e(TAG, "Error in fetching $catalogUri", e)
         } catch (e: XmlTvParser.XmlTvParseException) {
@@ -70,35 +66,8 @@ object RichFeedUtil {
         return sSampleTvListing
     }
 
-    fun getM3UList(url: URL): Playlist {
-        val urlConnection: HttpURLConnection = url.openConnection() as HttpURLConnection
-        try {
-            return M3U8Parser(BufferedInputStream(urlConnection.inputStream),
-                    M3U8ItemScanner.Encoding.UTF_8).parse()
-        } finally {
-            urlConnection.disconnect()
-        }
-    }
-
-    @Throws(IOException::class)
-    fun getInputStream(context: Context, uri: Uri): InputStream? {
-        val inputStream: InputStream?
-        if (ContentResolver.SCHEME_ANDROID_RESOURCE == uri.scheme
-                || ContentResolver.SCHEME_ANDROID_RESOURCE == uri.scheme
-                || ContentResolver.SCHEME_FILE == uri.scheme) {
-            inputStream = context.contentResolver.openInputStream(uri)
-        } else {
-            val urlConnection = URL(uri.toString()).openConnection()
-            urlConnection.connectTimeout = URLCONNECTION_CONNECTION_TIMEOUT_MS
-            urlConnection.readTimeout = URLCONNECTION_READ_TIMEOUT_MS
-            inputStream = urlConnection.getInputStream()
-        }
-
-        return if (inputStream == null) null else BufferedInputStream(inputStream)
-    }
-
-    @JvmStatic
-    fun getEPGListings() {
-
+    fun getM3UList(url: String): Playlist {
+        return M3U8Parser(BufferedInputStream(Network.getInputStreamforURL(url).buffered()),
+                M3U8ItemScanner.Encoding.UTF_8).parse()
     }
 }
