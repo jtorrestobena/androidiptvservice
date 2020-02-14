@@ -3,4 +3,12 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="iptv_url">IPTV url:</string>
+    <string name="epg_url">EPG URL</string>
+    <string name="download">Download</string>
+    <string name="send">Send</string>
+    <string name="new_epg_url">New EPG URL</string>
+    <string name="update_program_guide">Update program guide source?</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 </resources>

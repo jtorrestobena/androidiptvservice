@@ -1,18 +1,26 @@
 package com.bytecoders.iptvservice.mobileconfig.livedata
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 
+private const val TAG = "PersistedLiveData"
 abstract class PersistedLiveData<T>(private val readFunction: () -> T?,
                             private val writeFunction: (T?) -> Unit): MutableLiveData<T>() {
+    init {
+        Log.d(TAG, "init")
+        readFunction()?.let(::postValue)
+    }
+
     override fun onActive() {
         super.onActive()
-        postValue(readFunction())
+        Log.d(TAG, "onactive")
     }
 
     override fun setValue(newValue: T) {
         if (newValue != value) {
             writeFunction(newValue)
         }
-        super.setValue(value)
+        Log.d(TAG, "setvalue $newValue")
+        super.setValue(newValue)
     }
 }

@@ -1,6 +1,6 @@
 package com.bytecoders.m3u8parser.parser
 
-import com.bytecoders.androidtv.iptvservice.net.Network
+import com.bytecoders.iptvservicecommunicator.net.Network
 import com.bytecoders.m3u8parser.data.Playlist
 import com.bytecoders.m3u8parser.scanner.M3U8ItemScanner
 import com.google.android.media.tv.companionlibrary.xmltv.XmlTvParser

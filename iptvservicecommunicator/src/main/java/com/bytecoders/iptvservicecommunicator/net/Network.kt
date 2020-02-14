@@ -1,4 +1,4 @@
-package com.bytecoders.androidtv.iptvservice.net
+package com.bytecoders.iptvservicecommunicator.net
 
 import okhttp3.OkHttpClient
 import okhttp3.Request

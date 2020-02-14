@@ -17,7 +17,7 @@
 package com.bytecoders.androidtv.iptvservice.rich
 
 import android.util.Log
-import com.bytecoders.androidtv.iptvservice.net.Network
+import com.bytecoders.iptvservicecommunicator.net.Network
 import com.bytecoders.m3u8parser.data.Playlist
 import com.bytecoders.m3u8parser.parser.M3U8Parser
 import com.bytecoders.m3u8parser.scanner.M3U8ItemScanner

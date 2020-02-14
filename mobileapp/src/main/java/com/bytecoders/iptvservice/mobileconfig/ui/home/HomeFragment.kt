@@ -2,10 +2,8 @@ package com.bytecoders.iptvservice.mobileconfig.ui.home
 
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bytecoders.iptvservice.mobileconfig.R
@@ -14,14 +12,21 @@ import com.bytecoders.iptvservice.mobileconfig.ui.BaseFragment
 
 class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
 
-    override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View? = super.onCreateView(inflater, container, savedInstanceState)?.apply {
-        viewModel.epgURL.observe(viewLifecycleOwner, Observer {
-            Log.e("THISMUSTGO", "the url $it")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.playlist.observe(viewLifecycleOwner, Observer {
+            it.epgURL?.let(::showNewEPGDialog)
         })
+    }
+
+    private fun showNewEPGDialog(epgURL: String) {
+        AlertDialog.Builder(requireContext())
+                .setTitle(getString(R.string.new_epg_url))
+                .setMessage(getString(R.string.update_program_guide))
+                .setPositiveButton(getString(R.string.ok)) { _, _ -> viewBinding.epgUrl.setText(epgURL) }
+                .setNegativeButton(getString(R.string.cancel), null)
+                .create().show()
+
     }
 
     override fun getLayoutId(): Int = R.layout.fragment_home
