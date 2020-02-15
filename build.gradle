@@ -19,6 +19,19 @@ allprojects {
     }
 }
 
+ext.flavorConfig = { // 1
+
+    flavorDimensions "network"
+    productFlavors {
+        std {
+            dimension "network"
+        }
+        dev {
+            dimension "network"
+        }
+    }
+}
+
 ext {
     appCompatVersion = '1.1.0'
     leanbackVersion = '1.1.0-alpha03'

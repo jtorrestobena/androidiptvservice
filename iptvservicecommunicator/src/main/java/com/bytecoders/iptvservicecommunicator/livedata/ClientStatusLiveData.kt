@@ -1,8 +1,9 @@
-package com.bytecoders.iptvservicecommunicator
+package com.bytecoders.iptvservicecommunicator.livedata
 
 import androidx.lifecycle.MediatorLiveData
+import com.bytecoders.iptvservicecommunicator.IPTVServiceClient
 
-class StatusLiveData(private val iptvServiceClient: IPTVServiceClient):
+class ClientStatusLiveData(private val iptvServiceClient: IPTVServiceClient):
         MediatorLiveData<IPTVServiceClient.ServiceStatus>() {
 
     override fun onActive() {

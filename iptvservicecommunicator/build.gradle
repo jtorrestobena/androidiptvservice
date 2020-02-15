@@ -24,6 +24,21 @@ android {
         }
     }
 
+    with flavorConfig
+    productFlavors {
+        std {
+            dimension "network"
+            buildConfigField "int", "SERVER_PORT", "0"
+            buildConfigField "boolean", "NETWORK_DISCOVERY_ENABLED", "true"
+            buildConfigField "String", "SERVER_IP", "null"
+        }
+        dev {
+            dimension "network"
+            buildConfigField "int", "SERVER_PORT", "34231"
+            buildConfigField "boolean", "NETWORK_DISCOVERY_ENABLED", "false"
+            buildConfigField "String", "SERVER_IP", "\"192.168.0.87\""
+        }
+    }
 }
 
 dependencies {

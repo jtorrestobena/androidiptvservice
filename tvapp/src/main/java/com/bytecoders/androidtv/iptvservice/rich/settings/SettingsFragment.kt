@@ -74,20 +74,14 @@ class SettingsFragment : LeanbackSettingsFragmentCompat() {
                     .registerOnSharedPreferenceChangeListener(prefsListener);
         }
 
-        override fun onResume() {
-            super.onResume()
-            IPTVService.statusObserver.observe(viewLifecycleOwner, Observer {
-                Toast.makeText(requireContext(), "Status: $it", Toast.LENGTH_SHORT).show()
-            })
+        override fun onActivityCreated(savedInstanceState: Bundle?) {
+            super.onActivityCreated(savedInstanceState)
             IPTVService.messagesLiveData.observe(viewLifecycleOwner, Observer {
                 Toast.makeText(requireContext(), "Message: $it", Toast.LENGTH_SHORT).show()
             })
-            IPTVService.registerTVService(requireContext().applicationContext as Application)
-        }
-
-        override fun onPause() {
-            super.onPause()
-            IPTVService.unregisterTVService()
+            IPTVService.getStatusObserverLifeCycle(requireContext().applicationContext as Application).observe(viewLifecycleOwner, Observer {
+                Toast.makeText(requireContext(), "Status: $it", Toast.LENGTH_SHORT).show()
+            })
         }
 
         override fun onDestroy() {

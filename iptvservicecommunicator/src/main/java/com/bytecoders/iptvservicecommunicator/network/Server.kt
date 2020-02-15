@@ -6,10 +6,10 @@ import java.net.SocketException
 
 private const val TAG = ""
 
-class Server(private val messageListener: (String) -> Unit) {
+class Server( serverPort: Int = 0, private val messageListener: (String) -> Unit) {
 
     private var runServer = false
-    private val serverSocket = ServerSocket(0)
+    private val serverSocket = ServerSocket(serverPort)
     val port: Int get() = serverSocket.localPort
     var session: Session? = null
 

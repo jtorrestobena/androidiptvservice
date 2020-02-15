@@ -35,6 +35,8 @@ android {
     lintOptions {
         abortOnError false
     }
+
+    with flavorConfig
 }
 
 afterEvaluate {

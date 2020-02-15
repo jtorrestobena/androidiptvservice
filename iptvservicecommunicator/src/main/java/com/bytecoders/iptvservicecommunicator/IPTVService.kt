@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import com.bytecoders.iptvservicecommunicator.livedata.ServerStatusLiveData
 import com.bytecoders.iptvservicecommunicator.network.Server
 import com.bytecoders.iptvservicecommunicator.protocol.api.Message
 import com.bytecoders.iptvservicecommunicator.protocol.api.MessageEndpointInformation
@@ -22,7 +23,7 @@ object IPTVService : BaseIPTVService() {
 
     internal var serviceName: String? = null
     private var localPort: Int = 0
-    private val server by lazy { Server { messageParser.processIncomingMessage(it) } }
+    private val server by lazy { Server(BuildConfig.SERVER_PORT) { messageParser.processIncomingMessage(it) } }
     private var nsdManager: NsdManager? = null
 
     @Volatile
@@ -39,6 +40,7 @@ object IPTVService : BaseIPTVService() {
     val statusObserver: LiveData<ServiceStatus> by lazy {
         Transformations.map(serviceStatus) { i -> i }
     }
+
 
     private val registrationListener = object : NsdManager.RegistrationListener {
 
@@ -87,9 +89,15 @@ object IPTVService : BaseIPTVService() {
         }
     }
 
+    fun getStatusObserverLifeCycle(application: Application): ServerStatusLiveData = ServerStatusLiveData(application, this)
+
     fun registerTVService(application: Application) {
-        localPort = server.port
-        registerService(localPort, application)
+        if (BuildConfig.NETWORK_DISCOVERY_ENABLED) {
+            localPort = server.port
+            registerService(localPort, application)
+        } else {
+            bindSocket()
+        }
     }
 
     fun unregisterTVService() {
@@ -97,7 +105,7 @@ object IPTVService : BaseIPTVService() {
     }
 
     private fun bindSocket() {
-        Log.d(TAG, "Binding socket")
+        Log.d(TAG, "Binding socket on ${server.port}")
         serviceStatus.postValue(ServiceStatus.READY)
         server.start()
     }

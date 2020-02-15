@@ -9,11 +9,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.bytecoders.iptvservicecommunicator.IPTVService.serviceName
+import com.bytecoders.iptvservicecommunicator.livedata.ClientStatusLiveData
 import com.bytecoders.iptvservicecommunicator.network.Session
 import com.bytecoders.iptvservicecommunicator.protocol.api.MessageEndpointInformation
 import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.Socket
+import java.net.SocketTimeoutException
 
 
 private const val TAG = "IPTVServiceClient"
@@ -31,7 +33,7 @@ class IPTVServiceClient(application: Application) : BaseIPTVService() {
 
     private val serviceStatus = MutableLiveData<ServiceStatus>().apply { postValue(ServiceStatus.UNREGISTERED) }
     val clientServiceStatus: LiveData<ServiceStatus> by lazy { Transformations.map(serviceStatus) { i -> i } }
-    val clientServiceLifecycle by lazy { StatusLiveData(this) }
+    val clientServiceLifecycle by lazy { ClientStatusLiveData(this) }
     private val nsdManager: NsdManager by lazy {
         application.getSystemService(Context.NSD_SERVICE) as NsdManager
     }
@@ -100,7 +102,14 @@ class IPTVServiceClient(application: Application) : BaseIPTVService() {
     }
 
     fun connectToTVServer() {
-        nsdManager.discoverServices(IPTV_SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, discoveryListener)
+        if (BuildConfig.NETWORK_DISCOVERY_ENABLED) {
+            nsdManager.discoverServices(IPTV_SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, discoveryListener)
+        } else {
+            // Connect directly to the emulator
+            Thread {
+                connectClient(InetAddress.getByName(BuildConfig.SERVER_IP), BuildConfig.SERVER_PORT)
+            }.start()
+        }
     }
 
     // NsdHelper's tearDown method
@@ -109,10 +118,12 @@ class IPTVServiceClient(application: Application) : BaseIPTVService() {
             nsdManager.stopServiceDiscovery(discoveryListener)
         } catch (illegalSateException: IllegalStateException) {
             Log.e(TAG, "Could not stop service discovery", illegalSateException)
+        } catch (illegalArgumentException: IllegalArgumentException) {
+            Log.e(TAG, "Error stopping service discovery", illegalArgumentException)
         }
     }
 
-    private fun connectClient(host: InetAddress, port: Int) {
+    private fun connectClient(host: InetAddress, port: Int) = try {
         session = Session(Socket().apply {
             connect(InetSocketAddress(host, port), CLIENT_SOCKET_TIMEOUT)
         }) {
@@ -123,6 +134,9 @@ class IPTVServiceClient(application: Application) : BaseIPTVService() {
         }
         sendMessage(MessageEndpointInformation())
         serviceStatus.postValue(ServiceStatus.READY)
+    } catch (socketTimeoutException: SocketTimeoutException) {
+        serviceStatus.postValue(ServiceStatus.UNREGISTERED)
+        Log.d(TAG, "Timeout connecting to server", socketTimeoutException)
     }
 
     override fun sendMessageInternal(message: String) {
