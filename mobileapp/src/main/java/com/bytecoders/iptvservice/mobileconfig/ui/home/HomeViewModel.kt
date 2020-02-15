@@ -1,24 +1,20 @@
 package com.bytecoders.iptvservice.mobileconfig.ui.home
 
 import android.content.SharedPreferences
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import com.bytecoders.iptvservice.mobileconfig.MainActivityViewModel
 import com.bytecoders.iptvservice.mobileconfig.livedata.StringSettings
-import com.bytecoders.iptvservice.mobileconfig.repository.ChannelRepository
 import com.bytecoders.iptvservice.mobileconfig.ui.BaseFragmentViewModel
+import com.bytecoders.iptvservice.mobileconfig.ui.BaseViewModelFactory
 import com.bytecoders.iptvservicecommunicator.protocol.api.MessagePlayListConfig
-import com.bytecoders.m3u8parser.data.Playlist
 
 
 private const val M3U_URL_PREFS = "M3U_URL_PREFS"
 private const val EPG_URL_PREFS = "EPG_URL_PREFS"
 
-class HomeViewModel(sharedPreferences: SharedPreferences) : BaseFragmentViewModel() {
-
-    val channelRepository = ChannelRepository()
-    val playlist: LiveData<Playlist> = Transformations.map(channelRepository.playlist) { i -> i }
+class HomeViewModel(sharedPreferences: SharedPreferences, sharedViewModel: MainActivityViewModel)
+    : BaseFragmentViewModel(sharedViewModel) {
     val m3uURL = StringSettings(sharedPreferences, M3U_URL_PREFS)
     val epgURL = StringSettings(sharedPreferences, EPG_URL_PREFS)
     val downloadProgress = channelRepository.percentage
@@ -41,10 +37,11 @@ class HomeViewModel(sharedPreferences: SharedPreferences) : BaseFragmentViewMode
     }
 }
 
-class HomeViewModelFactory(private val sharedPreferences: SharedPreferences) : ViewModelProvider.Factory {
+class HomeViewModelFactory(private val sharedPreferences: SharedPreferences,
+                           sharedViewModel: MainActivityViewModel) : BaseViewModelFactory(sharedViewModel) {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HomeViewModel::class.java))
-            return HomeViewModel(sharedPreferences) as T
+            return HomeViewModel(sharedPreferences, sharedViewModel) as T
         throw IllegalArgumentException("Unexpected class $modelClass")
     }
 
