@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.bytecoders.iptvservice.mobileconfig.repository.ChannelRepository
 import com.bytecoders.iptvservicecommunicator.IPTVServiceClient
 import com.bytecoders.m3u8parser.data.Playlist
+import com.google.android.media.tv.companionlibrary.xmltv.XmlTvParser
 
 class MainActivityViewModel(application: Application): ViewModel() {
     internal val iptvClient: IPTVServiceClient by lazy {
@@ -16,6 +17,7 @@ class MainActivityViewModel(application: Application): ViewModel() {
 
     val channelRepository = ChannelRepository()
     val playlist: LiveData<Playlist> = Transformations.map(channelRepository.playlist) { i -> i }
+    val listings: LiveData<XmlTvParser.TvListing?> = Transformations.map(channelRepository.listing) { i -> i }
 }
 
 class MainActivityViewModelFactory (private val application: Application) : ViewModelProvider.Factory {

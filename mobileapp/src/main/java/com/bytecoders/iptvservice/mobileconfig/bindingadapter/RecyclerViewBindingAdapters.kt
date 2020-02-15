@@ -4,12 +4,13 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.bytecoders.m3u8parser.data.Playlist
+import com.google.android.media.tv.companionlibrary.xmltv.XmlTvParser
 
-@BindingAdapter("playlist")
-fun RecyclerView.bindPlaylist(playlist: Playlist?) {
+@BindingAdapter("playlist", "program_listings", requireAll = false)
+fun RecyclerView.bindPlaylist(playlist: Playlist?, listings: XmlTvParser.TvListing?) {
     playlist?.let {
         addItemDecoration(DividerItemDecoration(context,
                 DividerItemDecoration.HORIZONTAL))
-        adapter = PlayListChannelsAdapter(it)
+        adapter = PlayListChannelsAdapter(it, listings)
     }
 }

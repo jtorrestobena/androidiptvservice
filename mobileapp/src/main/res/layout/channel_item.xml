@@ -8,6 +8,10 @@
         <variable
             name="track"
             type="com.bytecoders.m3u8parser.data.Track" />
+
+        <variable
+            name="program"
+            type="com.google.android.media.tv.companionlibrary.model.Program" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -35,6 +39,17 @@
             app:layout_constraintEnd_toStartOf="@id/foto_guideline"
             tools:text="Channel title" />
 
+        <TextView
+            android:id="@+id/channel_group"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:text="@{track.extInfo.groupTitle}"
+            app:layout_constraintTop_toBottomOf="@id/channel_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/foto_guideline"
+            tools:text="Channel group" />
+
         <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -43,5 +58,16 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/foto_guideline" />
+
+        <TextView
+            android:id="@+id/program_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:text="@{program.title}"
+            app:layout_constraintTop_toBottomOf="@id/channel_group"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/foto_guideline"
+            tools:text="Channel Program" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

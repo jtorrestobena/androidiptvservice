@@ -38,9 +38,6 @@ object RichFeedUtil {
 
     private var sSampleTvListing: XmlTvParser.TvListing? = null
 
-    private val URLCONNECTION_CONNECTION_TIMEOUT_MS = 3000  // 3 sec
-    private val URLCONNECTION_READ_TIMEOUT_MS = 10000  // 10 sec
-
     fun getRichTvListings(catalogUri: String): XmlTvParser.TvListing? {
         if (sSampleTvListing != null) {
             return sSampleTvListing

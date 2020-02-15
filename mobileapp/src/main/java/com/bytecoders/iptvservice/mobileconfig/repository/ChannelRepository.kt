@@ -1,19 +1,26 @@
 package com.bytecoders.iptvservice.mobileconfig.repository
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.bytecoders.iptvservicecommunicator.net.Network
 import com.bytecoders.iptvservicecommunicator.net.Network.inputStreamAndLength
 import com.bytecoders.m3u8parser.data.Playlist
 import com.bytecoders.m3u8parser.parser.M3U8Parser
 import com.bytecoders.m3u8parser.scanner.M3U8ItemScanner
+import com.google.android.media.tv.companionlibrary.xmltv.XmlTvParser
+import java.io.IOException
 import java.util.concurrent.Executors
 import kotlin.math.roundToInt
 
+private const val TAG = "ChannelRepository"
+
 class ChannelRepository {
     val playlist = MutableLiveData<Playlist>()
+    var listing = MutableLiveData<XmlTvParser.TvListing?>()
     val percentage = MutableLiveData<Int>().apply {
         postValue(0)
     }
-    val executor = Executors.newSingleThreadExecutor()
+    val executor = Executors.newFixedThreadPool(2)
 
     fun loadChannels(url: String) = executor.submit {
         percentage.postValue(0)
@@ -22,5 +29,18 @@ class ChannelRepository {
             ((it.toFloat() / inputStreamWithLength.second) * 100).roundToInt().let (percentage::postValue)
         })
         percentage.postValue(100)
+    }
+
+    fun loadPlayList(url: String) = executor.submit {
+        Network.inputStreamforURL(url).use {
+            try {
+                listing.postValue(XmlTvParser.parse(it))
+            } catch (e: IOException) {
+                Log.e(TAG, "Error in fetching $url", e)
+            } catch (e: XmlTvParser.XmlTvParseException) {
+                Log.e(TAG, "Error in parsing $url", e)
+
+            }
+        }
     }
 }

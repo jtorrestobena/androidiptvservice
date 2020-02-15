@@ -28,6 +28,7 @@ class HomeViewModel(sharedPreferences: SharedPreferences, sharedViewModel: MainA
 
     fun downloadList() {
         m3uURL.value?.let (channelRepository::loadChannels)
+        epgURL.value?.let (channelRepository::loadPlayList)
     }
 
     fun sendList() {
