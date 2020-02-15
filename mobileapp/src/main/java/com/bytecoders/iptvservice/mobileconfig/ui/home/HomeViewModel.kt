@@ -21,6 +21,14 @@ class HomeViewModel(sharedPreferences: SharedPreferences) : BaseFragmentViewMode
     val playlist: LiveData<Playlist> = Transformations.map(channelRepository.playlist) { i -> i }
     val m3uURL = StringSettings(sharedPreferences, M3U_URL_PREFS)
     val epgURL = StringSettings(sharedPreferences, EPG_URL_PREFS)
+    val downloadProgress = channelRepository.percentage
+    val channelsText = Transformations.map(playlist) {
+        "${it.playListEntries.size} channels"
+    }
+
+    val errorText = Transformations.map(playlist) {
+        "${it.unknownEntries.size} unknown"
+    }
 
     fun downloadList() {
         m3uURL.value?.let (channelRepository::loadChannels)

@@ -12,10 +12,7 @@ import com.bytecoders.iptvservicecommunicator.IPTVService.serviceName
 import com.bytecoders.iptvservicecommunicator.livedata.ClientStatusLiveData
 import com.bytecoders.iptvservicecommunicator.network.Session
 import com.bytecoders.iptvservicecommunicator.protocol.api.MessageEndpointInformation
-import java.net.InetAddress
-import java.net.InetSocketAddress
-import java.net.Socket
-import java.net.SocketTimeoutException
+import java.net.*
 
 
 private const val TAG = "IPTVServiceClient"
@@ -137,6 +134,9 @@ class IPTVServiceClient(application: Application) : BaseIPTVService() {
     } catch (socketTimeoutException: SocketTimeoutException) {
         serviceStatus.postValue(ServiceStatus.UNREGISTERED)
         Log.d(TAG, "Timeout connecting to server", socketTimeoutException)
+    } catch (connectException: ConnectException) {
+        serviceStatus.postValue(ServiceStatus.UNREGISTERED)
+        Log.d(TAG, "Failed to connect", connectException)
     }
 
     override fun sendMessageInternal(message: String) {

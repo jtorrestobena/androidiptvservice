@@ -47,7 +47,7 @@ object RichFeedUtil {
         }
         var inputStream: InputStream? = null
         try {
-            inputStream = Network.getInputStreamforURL(catalogUri)
+            inputStream = Network.inputStreamforURL(catalogUri)
             sSampleTvListing = XmlTvParser.parse(inputStream)
         } catch (e: IOException) {
             Log.e(TAG, "Error in fetching $catalogUri", e)
@@ -67,7 +67,7 @@ object RichFeedUtil {
     }
 
     fun getM3UList(url: String): Playlist {
-        return M3U8Parser(BufferedInputStream(Network.getInputStreamforURL(url).buffered()),
+        return M3U8Parser(BufferedInputStream(Network.inputStreamforURL(url).buffered()),
                 M3U8ItemScanner.Encoding.UTF_8).parse()
     }
 }

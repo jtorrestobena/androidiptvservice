@@ -49,6 +49,7 @@
         android:icon="@drawable/android_48dp"
         android:label="@string/app_name"
         android:theme="@style/Theme.Leanback"
+        android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning,MissingTvBanner">
         <activity android:name=".MainActivity">
             <intent-filter>

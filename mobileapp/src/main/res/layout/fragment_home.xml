@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -9,75 +10,135 @@
             type="com.bytecoders.iptvservice.mobileconfig.ui.home.HomeViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="0dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:elevation="15dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/padding_small">
-            <TextView
-                android:id="@+id/iptv_url_tv"
-                style="@style/AppTheme.LabelText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:importantForAutofill="no"
-                android:text="@string/iptv_url" />
+            android:padding="@dimen/padding_small">
 
-            <EditText
-                android:id="@+id/iptv_url"
-                android:layout_width="match_parent"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/playlist_cardview"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:importantForAutofill="no"
-                android:text="@={viewmodel.m3uURL}" />
+                android:elevation="@dimen/cardview_elevation"
+                android:layout_margin="@dimen/margin_small"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/epg_url_tv"
-                style="@style/AppTheme.LabelText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:importantForAutofill="no"
-                android:text="@string/epg_url" />
-
-            <EditText
-                android:id="@+id/epg_url"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:importantForAutofill="no"
-                android:text="@={viewmodel.epgURL}" />
                 <LinearLayout
-                    android:weightSum="2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <Button
-                        android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_small">
+
+                    <TextView
+                        android:id="@+id/iptv_url_tv"
+                        style="@style/AppTheme.LabelText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/download_list"
-                        android:layout_marginEnd="@dimen/button_margin"
-                        android:text="@string/download"
-                        android:onClick="@{() -> viewmodel.downloadList()}"/>
-                    <Button
-                        android:layout_weight="1"
+                        android:importantForAutofill="no"
+                        android:text="@string/iptv_url" />
+
+                    <EditText
+                        android:id="@+id/iptv_url"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/send_list"
-                        android:layout_marginStart="@dimen/button_margin"
-                        android:text="@string/send"
-                        android:onClick="@{() -> viewmodel.sendList()}"/>
+                        android:importantForAutofill="no"
+                        android:text="@={viewmodel.m3uURL}" />
+
+                    <TextView
+                        android:id="@+id/epg_url_tv"
+                        style="@style/AppTheme.LabelText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:importantForAutofill="no"
+                        android:text="@string/epg_url" />
+
+                    <EditText
+                        android:id="@+id/epg_url"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:importantForAutofill="no"
+                        android:text="@={viewmodel.epgURL}" />
+
+                    <ProgressBar
+                        android:id="@+id/progressbarPredict"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:progress="@{viewmodel.downloadProgress}"
+                        tools:progress="50" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <Button
+                            android:id="@+id/download_list"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/button_margin"
+                            android:layout_weight="1"
+                            android:onClick="@{() -> viewmodel.downloadList()}"
+                            android:text="@string/download" />
+
+                        <Button
+                            android:id="@+id/send_list"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/button_margin"
+                            android:layout_weight="1"
+                            android:onClick="@{() -> viewmodel.sendList()}"
+                            android:text="@string/send" />
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_small"
+                android:elevation="@dimen/cardview_elevation"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/playlist_cardview">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/padding_small"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/channels"
+                        style="@style/AppTheme.LabelText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_small"
+                        android:gravity="center"
+                        android:importantForAutofill="no"
+                        android:text="@{viewmodel.channelsText}"
+                        tools:text="300 channels" />
+
+                    <TextView
+                        android:id="@+id/errors"
+                        style="@style/AppTheme.LabelText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_small"
+                        android:gravity="center"
+                        android:importantForAutofill="no"
+                        android:text="@{viewmodel.errorText}"
+                        tools:text="3 errors" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </layout>

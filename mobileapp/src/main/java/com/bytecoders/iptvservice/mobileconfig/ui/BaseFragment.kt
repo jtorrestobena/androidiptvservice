@@ -21,6 +21,7 @@ abstract class BaseFragment<VM : BaseFragmentViewModel, VB : ViewDataBinding>: F
         viewModel.setActivityViewModel((activity as MainActivity).viewModel)
         viewBinding = DataBindingUtil.inflate(inflater, getLayoutId(), container, false)
         viewBinding.setVariable(BR.viewmodel, viewModel)
+        viewBinding.lifecycleOwner = this
         return viewBinding.root
     }
 

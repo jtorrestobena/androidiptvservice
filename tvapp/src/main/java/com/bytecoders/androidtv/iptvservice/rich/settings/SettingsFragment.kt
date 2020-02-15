@@ -80,6 +80,7 @@ class SettingsFragment : LeanbackSettingsFragmentCompat() {
             super.onCreate(savedInstanceState)
             PreferenceManager.getDefaultSharedPreferences(requireContext())
                     .registerOnSharedPreferenceChangeListener(prefsListener)
+            IPTVService.registerTVService(requireContext().applicationContext as Application)
         }
 
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -97,7 +98,7 @@ class SettingsFragment : LeanbackSettingsFragmentCompat() {
                     }
                 }
             })
-            IPTVService.getStatusObserverLifeCycle(requireContext().applicationContext as Application).observe(viewLifecycleOwner, Observer {
+            IPTVService.statusObserver.observe(viewLifecycleOwner, Observer {
                 serverStatus?.summary = it.toString()
             })
         }
@@ -105,7 +106,8 @@ class SettingsFragment : LeanbackSettingsFragmentCompat() {
         override fun onDestroy() {
             super.onDestroy()
             PreferenceManager.getDefaultSharedPreferences(requireContext())
-                    .registerOnSharedPreferenceChangeListener(prefsListener);
+                    .registerOnSharedPreferenceChangeListener(prefsListener)
+            IPTVService.unregisterTVService()
         }
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {

@@ -27,16 +27,23 @@ import java.util.*
  */
 class M3U8Parser(inputStream: InputStream?, protected val encoding: M3U8ItemScanner.Encoding) {
     private val m3U8ItemScanner = M3U8ItemScanner(inputStream, encoding)
+    private var charsRead: Int = 0
+
     @Throws(IOException::class, ParseException::class, PlaylistParseException::class)
-    fun parse(): Playlist {
+    fun parse(progressRead: ((Int) -> Unit)? = null): Playlist {
         val playlist = Playlist()
         val m3uPropertyParser = M3UPropertyParser()
         val extInfoParser = ExtInfoParser()
         var track: Track
         var extInfo: ExtInfo?
         val trackList: MutableList<Track> = LinkedList()
+        charsRead = 0
         while (m3U8ItemScanner.hasNext()) {
             val m3UItem = m3U8ItemScanner.nextM3UItem()
+            progressRead?.let {
+                charsRead += m3UItem.itemString.length
+                it.invoke(charsRead)
+            }
             when(m3UItem.itemType) {
                 ItemType.M3U -> {
                     // Try parsing EPG URL
