@@ -2,9 +2,9 @@ package com.bytecoders.iptvservice.mobileconfig.ui.dashboard
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import com.bytecoders.iptvservice.mobileconfig.ui.BaseFragmentViewModel
 
-class DashboardViewModel : ViewModel() {
+class DashboardViewModel : BaseFragmentViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
         value = "This is dashboard Fragment"

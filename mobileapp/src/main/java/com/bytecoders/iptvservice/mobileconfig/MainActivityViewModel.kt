@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.bytecoders.iptvservicecommunicator.IPTVServiceClient
 
 class MainActivityViewModel(application: Application): ViewModel() {
-    val iptvClient: IPTVServiceClient by lazy {
+    internal val iptvClient: IPTVServiceClient by lazy {
         IPTVServiceClient(application)
     }
 }

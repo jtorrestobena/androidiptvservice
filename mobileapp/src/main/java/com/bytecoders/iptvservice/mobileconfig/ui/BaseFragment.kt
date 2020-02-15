@@ -8,17 +8,17 @@ import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
 import com.bytecoders.iptvservice.mobileconfig.BR
+import com.bytecoders.iptvservice.mobileconfig.MainActivity
 
-abstract class BaseFragment<VM : ViewModel, VB : ViewDataBinding>: Fragment() {
+abstract class BaseFragment<VM : BaseFragmentViewModel, VB : ViewDataBinding>: Fragment() {
     protected lateinit var viewModel: VM
     protected lateinit var viewBinding: VB
 
     // Obtains ViewModel and inflates the view
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = createViewModel()
-        //return inflater.inflate(getLayoutId(), container, false)
+        viewModel.setActivityViewModel((activity as MainActivity).viewModel)
         viewBinding = DataBindingUtil.inflate(inflater, getLayoutId(), container, false)
         viewBinding.setVariable(BR.viewmodel, viewModel)
         return viewBinding.root

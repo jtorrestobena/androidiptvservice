@@ -7,13 +7,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.bytecoders.iptvservice.mobileconfig.livedata.StringSettings
 import com.bytecoders.iptvservice.mobileconfig.repository.ChannelRepository
+import com.bytecoders.iptvservice.mobileconfig.ui.BaseFragmentViewModel
+import com.bytecoders.iptvservicecommunicator.protocol.api.MessagePlayListConfig
 import com.bytecoders.m3u8parser.data.Playlist
 
 
 private const val M3U_URL_PREFS = "M3U_URL_PREFS"
 private const val EPG_URL_PREFS = "EPG_URL_PREFS"
 
-class HomeViewModel(sharedPreferences: SharedPreferences) : ViewModel() {
+class HomeViewModel(sharedPreferences: SharedPreferences) : BaseFragmentViewModel() {
 
     val channelRepository = ChannelRepository()
     val playlist: LiveData<Playlist> = Transformations.map(channelRepository.playlist) { i -> i }
@@ -25,7 +27,9 @@ class HomeViewModel(sharedPreferences: SharedPreferences) : ViewModel() {
     }
 
     fun sendList() {
-
+        m3uURL.value?.let {
+            sharedViewModel.iptvClient.sendMessage(MessagePlayListConfig(it, epgURL.value))
+        }
     }
 }
 
