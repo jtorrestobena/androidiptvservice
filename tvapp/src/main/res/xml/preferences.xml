@@ -23,6 +23,11 @@
             android:title="Channels available"
             android:summary="No channel information"
             app:singleLineTitle="true"/>
+        <Preference
+            android:key="server_status"
+            android:title="Remote Configuration"
+            android:summary="No status"
+            app:singleLineTitle="true"/>
     </PreferenceCategory>
 <!--
     <PreferenceCategory

@@ -4,8 +4,10 @@ import android.app.Application
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.webkit.URLUtil
 import android.widget.Toast
+import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.leanback.preference.LeanbackPreferenceFragmentCompat
 import androidx.leanback.preference.LeanbackSettingsFragmentCompat
@@ -14,8 +16,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.preference.*
 import com.bytecoders.androidtv.iptvservice.R
 import com.bytecoders.androidtv.iptvservice.repository.ChannelRepository
+import com.bytecoders.androidtv.iptvservice.repository.EPG_URL_PREFS
 import com.bytecoders.androidtv.iptvservice.repository.M3U_URL_PREFS
 import com.bytecoders.iptvservicecommunicator.IPTVService
+import com.bytecoders.iptvservicecommunicator.protocol.api.MessageEndpointInformation
+import com.bytecoders.iptvservicecommunicator.protocol.api.MessagePlayListConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -57,6 +62,7 @@ class SettingsFragment : LeanbackSettingsFragmentCompat() {
      */
     class MainPreferenceFragment : LeanbackPreferenceFragmentCompat() {
         private var channelSummary: Preference? = null
+        private var serverStatus: Preference? = null
         private val channelRepository by lazy {
             ChannelRepository(requireContext().applicationContext as Application)
         }
@@ -64,23 +70,35 @@ class SettingsFragment : LeanbackSettingsFragmentCompat() {
         private val prefsListener = SharedPreferences.OnSharedPreferenceChangeListener { pref, key ->
             Log.d(TAG, "Prefs listener $pref value $key")
             when (key) {
-                M3U_URL_PREFS -> loadChannels()
+                M3U_URL_PREFS -> {
+                    loadChannels()
+                }
             }
         }
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             PreferenceManager.getDefaultSharedPreferences(requireContext())
-                    .registerOnSharedPreferenceChangeListener(prefsListener);
+                    .registerOnSharedPreferenceChangeListener(prefsListener)
         }
 
-        override fun onActivityCreated(savedInstanceState: Bundle?) {
-            super.onActivityCreated(savedInstanceState)
+        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+            super.onViewCreated(view, savedInstanceState)
             IPTVService.messagesLiveData.observe(viewLifecycleOwner, Observer {
                 Toast.makeText(requireContext(), "Message: $it", Toast.LENGTH_SHORT).show()
+                if (it is MessageEndpointInformation) {
+                    serverStatus?.summary = "Connected to ${it.name}"
+                } else if (it is MessagePlayListConfig) {
+                    PreferenceManager.getDefaultSharedPreferences(requireContext()).edit {
+                        putString(M3U_URL_PREFS, it.playlistURL)
+                        it.epgURL?.let {  epg ->
+                            putString(EPG_URL_PREFS, epg)
+                        }
+                    }
+                }
             })
             IPTVService.getStatusObserverLifeCycle(requireContext().applicationContext as Application).observe(viewLifecycleOwner, Observer {
-                Toast.makeText(requireContext(), "Status: $it", Toast.LENGTH_SHORT).show()
+                serverStatus?.summary = it.toString()
             })
         }
 
@@ -93,6 +111,7 @@ class SettingsFragment : LeanbackSettingsFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.preferences, rootKey)
             channelSummary = preferenceManager.findPreference("channel_summary")
+            serverStatus = preferenceManager.findPreference("server_status")
             loadChannels()
         }
 

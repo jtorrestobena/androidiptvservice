@@ -1,23 +1,27 @@
 package com.bytecoders.iptvservicecommunicator.network
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
+import com.bytecoders.iptvservicecommunicator.IPTVService
 import java.net.ServerSocket
 import java.net.SocketException
 
 private const val TAG = ""
 
-class Server( serverPort: Int = 0, private val messageListener: (String) -> Unit) {
+class Server(serverPort: Int = 0, private val messageListener: (String) -> Unit) {
 
     private var runServer = false
     private val serverSocket = ServerSocket(serverPort)
     val port: Int get() = serverSocket.localPort
     var session: Session? = null
+    var serviceStatus: MutableLiveData<IPTVService.ServiceStatus>? = null
 
     fun start() {
         runServer = true
         Thread {
             while (runServer) try {
                 serverSocket.accept()?.let {
+                    serviceStatus?.postValue(IPTVService.ServiceStatus.CLIENT_CONNECTED)
                     session = Session(it, messageListener).apply {
                         start()
                     }

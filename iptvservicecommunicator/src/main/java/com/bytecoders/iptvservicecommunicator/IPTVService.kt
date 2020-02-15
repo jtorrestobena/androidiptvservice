@@ -33,7 +33,8 @@ object IPTVService : BaseIPTVService() {
         UNREGISTERED,
         REGISTERED,
         REGISTERING,
-        READY
+        READY,
+        CLIENT_CONNECTED
     }
 
     private val serviceStatus = MutableLiveData<ServiceStatus>().apply { postValue(ServiceStatus.UNREGISTERED) }
@@ -107,6 +108,7 @@ object IPTVService : BaseIPTVService() {
     private fun bindSocket() {
         Log.d(TAG, "Binding socket on ${server.port}")
         serviceStatus.postValue(ServiceStatus.READY)
+        server.serviceStatus = serviceStatus
         server.start()
     }
 

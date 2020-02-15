@@ -17,6 +17,7 @@ class ServerStatusLiveData(private val application: Application,
     override fun onInactive() {
         super.onInactive()
         iptvServiceServer.shutdown()
+        iptvServiceServer.unregisterTVService()
         removeSource(iptvServiceServer.statusObserver)
     }
 }
