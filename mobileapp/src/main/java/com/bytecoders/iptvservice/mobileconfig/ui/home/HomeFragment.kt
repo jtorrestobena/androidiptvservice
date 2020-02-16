@@ -13,6 +13,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //TODO this dialog must be singleliveevent
         viewModel.playlist.observe(viewLifecycleOwner, Observer {
             it.epgURL?.let { epg ->
                 if (viewModel.epgURL.value != epg) {

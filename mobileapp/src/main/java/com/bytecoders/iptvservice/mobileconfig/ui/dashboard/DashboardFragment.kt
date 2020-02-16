@@ -34,12 +34,20 @@ class DashboardFragment : BaseFragment<DashboardViewModel, FragmentDashboardBind
         })
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.recyclerviewState?.let {
+            viewBinding.channelsRecyclerview.layoutManager?.onRestoreInstanceState(it)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.recyclerviewState = viewBinding.channelsRecyclerview.layoutManager?.onSaveInstanceState()
+    }
+
     override fun getLayoutId(): Int = R.layout.fragment_dashboard
 
     override fun createViewModel(sharedViewModel: MainActivityViewModel): DashboardViewModel =
             getDefaultProvider(sharedViewModel).get(DashboardViewModel::class.java)
-/*
-
-
- */
 }
