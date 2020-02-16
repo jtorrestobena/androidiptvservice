@@ -9,5 +9,8 @@
     <color name="primaryTextColor">#ffffff</color>
     <color name="secondaryTextColor">#000000</color>
 
+    <color name="grey_alpha">#37000000</color>
+    <color name="white">#ffffff</color>
+
     <color name="primaryDark_dashboard">#C8001970</color>
 </resources>

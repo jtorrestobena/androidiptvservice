@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View" />
 
         <variable
             name="track"
@@ -12,19 +13,25 @@
         <variable
             name="program"
             type="com.google.android.media.tv.companionlibrary.model.Program" />
+
+        <variable
+            name="editMode"
+            type="boolean" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_small"
+        android:foreground="?selectableItemBackground"
+        android:background="@color/white"
+        android:padding="@dimen/padding_small"
         android:orientation="vertical">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/foto_guideline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintGuide_percent="0.75"
+            app:layout_constraintGuide_percent="0.25"
             android:orientation="vertical" />
 
         <TextView
@@ -35,8 +42,8 @@
             android:gravity="start"
             android:text="@{track.extInfo.title}"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/foto_guideline"
+            app:layout_constraintEnd_toStartOf="@id/handle_drag"
+            app:layout_constraintStart_toEndOf="@id/foto_guideline"
             tools:text="Channel title" />
 
         <TextView
@@ -46,18 +53,20 @@
             android:gravity="start"
             android:text="@{track.extInfo.groupTitle}"
             app:layout_constraintTop_toBottomOf="@id/channel_title"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/foto_guideline"
+            app:layout_constraintEnd_toStartOf="@id/handle_drag"
+            app:layout_constraintStart_toEndOf="@id/foto_guideline"
             tools:text="Channel group" />
 
         <ImageView
+            android:id="@+id/tvlogo_iv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_dashboard_black_24dp"
             app:image_url="@{track.extInfo.tvgLogoUrl}"
+            android:layout_marginEnd="@dimen/margin_small"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/foto_guideline" />
+            app:layout_constraintEnd_toStartOf="@id/foto_guideline"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/program_title"
@@ -66,8 +75,20 @@
             android:gravity="start"
             android:text="@{program.title}"
             app:layout_constraintTop_toBottomOf="@id/channel_group"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/foto_guideline"
+            app:layout_constraintEnd_toStartOf="@id/handle_drag"
+            app:layout_constraintStart_toEndOf="@id/foto_guideline"
             tools:text="Channel Program" />
+
+        <ImageView
+            android:id="@+id/handle_drag"
+            android:layout_width="?listPreferredItemHeight"
+            android:layout_height="0dp"
+            android:layout_gravity="center_vertical|end"
+            android:scaleType="center"
+            android:src="@drawable/ic_reorder_24px"
+            android:visibility="@{editMode ? View.VISIBLE : View.GONE}"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
