@@ -20,6 +20,7 @@
             android:layout_height="0dp"
             app:playlist="@{viewmodel.playlist}"
             app:program_listings="@{viewmodel.listings}"
+            app:edit_mode="@{viewmodel.editMode}"
             app:layoutManager="LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -41,13 +42,15 @@
             android:src="@drawable/dashboard_background"
             android:background="@color/primaryColor" />
 
-        <TextView
+        <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginBottom="24dp"
-            android:text="@string/app_name"
+            android:switchPadding="30dp"
+            android:text="@{viewmodel.editMode ? @string/edit_on : @string/edit_off}"
+            android:checked="@={viewmodel.editMode}"
             android:textColor="?android:attr/textColorPrimaryInverse"
             android:textSize="32sp"
             android:textStyle="bold"

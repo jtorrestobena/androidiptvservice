@@ -8,14 +8,16 @@ import com.bytecoders.m3u8parser.data.Playlist
 import com.google.android.media.tv.companionlibrary.xmltv.XmlTvParser
 
 
-@BindingAdapter("playlist", "program_listings", requireAll = false)
-fun RecyclerView.bindPlaylist(playlist: Playlist?, listings: XmlTvParser.TvListing?) {
+@BindingAdapter("playlist", "program_listings", "edit_mode", requireAll = false)
+fun RecyclerView.bindPlaylist(playlist: Playlist?, listings: XmlTvParser.TvListing?, editMode: Boolean?) {
     playlist?.let {
         addItemDecoration(DividerItemDecoration(context,
                 DividerItemDecoration.VERTICAL))
         val channelsAdapter = PlayListChannelsAdapter(it, listings)
-        val touchHelper = ItemTouchHelper(PlayListTouchHelperCallback(channelsAdapter))
-        touchHelper.attachToRecyclerView(this)
+        if (editMode == true) {
+            val touchHelper = ItemTouchHelper(PlayListTouchHelperCallback(channelsAdapter))
+            touchHelper.attachToRecyclerView(this)
+        }
         adapter = channelsAdapter
     }
 }

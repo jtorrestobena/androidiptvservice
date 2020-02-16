@@ -4,10 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.bytecoders.iptvservice.mobileconfig.MainActivityViewModel
 import com.bytecoders.iptvservice.mobileconfig.ui.dashboard.DashboardViewModel
+import com.bytecoders.iptvservice.mobileconfig.ui.home.HomeViewModel
 import com.bytecoders.iptvservice.mobileconfig.ui.notifications.NotificationsViewModel
 
-open class BaseViewModelFactory(protected val sharedViewModel: MainActivityViewModel) : ViewModelProvider.Factory {
+open class BaseViewModelFactory(private val sharedViewModel: MainActivityViewModel) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(HomeViewModel::class.java))
+            return HomeViewModel(sharedViewModel) as T
         if (modelClass.isAssignableFrom(DashboardViewModel::class.java))
             return DashboardViewModel(sharedViewModel) as T
         if (modelClass.isAssignableFrom(NotificationsViewModel::class.java))

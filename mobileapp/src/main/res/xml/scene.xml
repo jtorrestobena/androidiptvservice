@@ -57,7 +57,7 @@
             android:scaleY="0.625"
             app:layout_constraintBottom_toBottomOf="@id/toolbar_image"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/toolbar_image"></Constraint>
+            app:layout_constraintTop_toTopOf="@id/toolbar_image" />
 
     </ConstraintSet>
 

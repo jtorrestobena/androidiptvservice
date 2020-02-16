@@ -11,4 +11,6 @@
     <string name="update_program_guide">Update program guide source?</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="edit_on">Edit channels</string>
+    <string name="edit_off">View channels</string>
 </resources>
