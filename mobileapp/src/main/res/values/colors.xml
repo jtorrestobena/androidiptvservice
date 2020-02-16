@@ -8,4 +8,6 @@
     <color name="secondaryDarkColor">#ba000d</color>
     <color name="primaryTextColor">#ffffff</color>
     <color name="secondaryTextColor">#000000</color>
+
+    <color name="primaryDark_dashboard">#C8001970</color>
 </resources>
