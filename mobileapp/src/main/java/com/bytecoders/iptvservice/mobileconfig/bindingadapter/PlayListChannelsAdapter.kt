@@ -10,9 +10,11 @@ import com.bytecoders.m3u8parser.data.Playlist
 import com.bytecoders.m3u8parser.data.Track
 import com.google.android.media.tv.companionlibrary.model.Program
 import com.google.android.media.tv.companionlibrary.xmltv.XmlTvParser
+import java.util.*
+
 
 class PlayListChannelsAdapter(private val playlist: Playlist, private val listings: XmlTvParser.TvListing?):
-        RecyclerView.Adapter<PlaylistViewHolder>() {
+        RecyclerView.Adapter<PlaylistViewHolder>(), ItemTouchHelperAdapter {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistViewHolder {
         return PlaylistViewHolder(DataBindingUtil
                 .inflate(LayoutInflater.from(parent.context), R.layout.channel_item, parent, false))
@@ -27,6 +29,24 @@ class PlayListChannelsAdapter(private val playlist: Playlist, private val listin
             val listings = listings?.getProgramsForEpg(it)
             return@let if (!listings.isNullOrEmpty()) listings.get(0) else null
         })
+    }
+
+    override fun onItemMove(fromPosition: Int, toPosition: Int) {
+        if (fromPosition < toPosition) {
+            for (i in fromPosition until toPosition) {
+                Collections.swap(playlist.playListEntries, i, i + 1)
+            }
+        } else {
+            for (i in fromPosition downTo toPosition + 1) {
+                Collections.swap(playlist.playListEntries, i, i - 1)
+            }
+        }
+        notifyItemMoved(fromPosition, toPosition)
+    }
+
+    override fun onItemDismiss(position: Int) {
+        playlist.playListEntries.removeAt(position)
+        notifyItemRemoved(position)
     }
 
 }

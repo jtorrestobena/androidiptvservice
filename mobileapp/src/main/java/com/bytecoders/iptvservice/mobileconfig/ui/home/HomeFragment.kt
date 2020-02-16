@@ -17,7 +17,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.playlist.observe(viewLifecycleOwner, Observer {
             it.epgURL?.let { epg ->
-                if (viewBinding.epgUrl.text.toString() != epg) {
+                if (viewModel.epgURL.value != epg) {
                     showNewEPGDialog(epg)
                 }
             }
