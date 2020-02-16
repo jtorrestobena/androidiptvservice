@@ -23,14 +23,15 @@ object RecyclerViewBindingAdapters {
     } else null
 }
 
-@BindingAdapter("playlist", "program_listings", "edit_mode", requireAll = false)
-fun RecyclerView.bindPlaylist(playlist: Playlist?, listings: XmlTvParser.TvListing?, editMode: Boolean?) {
+@BindingAdapter("playlist", "program_listings", "edit_mode", "click_listener", requireAll = false)
+fun RecyclerView.bindPlaylist(playlist: Playlist?, listings: XmlTvParser.TvListing?, editMode: Boolean?,
+                              viewHolderClickListener: ViewHolderClickListener?) {
     touchHelper?.attachToRecyclerView(null)
     touchHelper = null
     playlist?.let { list ->
         addItemDecoration(DividerItemDecoration(context,
                 DividerItemDecoration.VERTICAL))
-        val channelsAdapter = PlayListChannelsAdapter(list, listings, getDragListener(editMode == true))
+        val channelsAdapter = PlayListChannelsAdapter(list, listings, getDragListener(editMode == true), viewHolderClickListener)
         if (editMode == true) {
             touchHelper = ItemTouchHelper(PlayListTouchHelperCallback(channelsAdapter)).apply {
                 attachToRecyclerView(this@bindPlaylist)

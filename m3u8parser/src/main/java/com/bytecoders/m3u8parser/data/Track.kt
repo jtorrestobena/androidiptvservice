@@ -15,6 +15,7 @@
  */
 package com.bytecoders.m3u8parser.data
 
+import java.io.Serializable
 
 
 /**
@@ -22,7 +23,7 @@ package com.bytecoders.m3u8parser.data
  */
 class Track(var extInfo: ExtInfo? = null,
             var url: String? = null,
-            var position: Int = 0) : Comparable<Track> {
+            var position: Int = 0) : Comparable<Track>, Serializable {
     override fun compareTo(other: Track): Int {
         return extInfo!!.title!!.compareTo(other.extInfo!!.title!!)
     }

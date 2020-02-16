@@ -15,11 +15,30 @@
         android:id="@+id/navigation_dashboard"
         android:name="com.bytecoders.iptvservice.mobileconfig.ui.dashboard.DashboardFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_dashboard" >
+        <action
+            android:id="@+id/action_navigation_dashboard_to_navigation_channel_detail"
+            app:destination="@id/navigation_channel_detail" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.bytecoders.iptvservice.mobileconfig.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
+
+    <fragment
+        android:id="@+id/navigation_channel_detail"
+        android:name="com.bytecoders.iptvservice.mobileconfig.ui.dashboard.ChannelDetailFragment"
+        android:label="@string/title_notifications"
+        tools:layout="@layout/channel_detail_fragment" >
+        <argument
+            android:name="transition_name"
+            app:argType="string"
+            app:nullable="false" />
+        <argument
+            android:name="track"
+            app:argType="com.bytecoders.m3u8parser.data.Track"
+            app:nullable="false" />
+    </fragment>
 </navigation>

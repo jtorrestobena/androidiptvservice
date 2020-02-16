@@ -3,6 +3,7 @@ package com.bytecoders.iptvservice.mobileconfig.bindingadapter
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +17,7 @@ import java.util.*
 
 
 class PlayListChannelsAdapter(private val playlist: Playlist, private val listings: XmlTvParser.TvListing?,
-                              private val startDragListener: OnStartDragListener?):
+                              private val startDragListener: OnStartDragListener?, private val viewHolderClickListener: ViewHolderClickListener?):
         RecyclerView.Adapter<PlaylistViewHolder>(), ItemTouchHelperAdapter {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistViewHolder {
         return PlaylistViewHolder(DataBindingUtil
@@ -32,7 +33,11 @@ class PlayListChannelsAdapter(private val playlist: Playlist, private val listin
         holder.bind(track, track.extInfo?.tvgId?.let {
             val listings = listings?.getProgramsForEpg(it)
             return@let if (!listings.isNullOrEmpty()) listings[0] else null
-        }, startDragListener != null)
+        }, startDragListener != null, viewHolderClickListener ?: object : ViewHolderClickListener{
+            override fun onViewClicked(view: View, track: Track) {
+                // Does nothing, it's used in case there's no need for listening
+            }
+        })
 
         holder.binding.handleDrag.setOnTouchListener { _, motionEvent ->
             if (motionEvent.action ==
@@ -41,6 +46,8 @@ class PlayListChannelsAdapter(private val playlist: Playlist, private val listin
             }
             return@setOnTouchListener true
         }
+
+        holder.binding.tvlogoIv.transitionName = "PLAYLIST_TRANSITION_$position"
     }
 
     override fun onItemMove(fromPosition: Int, toPosition: Int) {
@@ -63,12 +70,19 @@ class PlayListChannelsAdapter(private val playlist: Playlist, private val listin
 
 }
 
+interface ViewHolderClickListener {
+    fun onViewClicked(view: View, track: Track)
+}
+
 class PlaylistViewHolder(internal val binding: ChannelItemBinding):
         RecyclerView.ViewHolder(binding.root), ItemTouchHelperViewHolder {
-    fun bind(track: Track, program: Program?, editMode: Boolean) {
+    fun bind(track: Track, program: Program?, editMode: Boolean, viewHolderClickListener: ViewHolderClickListener) {
         binding.track = track
         binding.program = program
         binding.editMode = editMode
+        binding.playlistItem.setOnClickListener {
+            viewHolderClickListener.onViewClicked(binding.tvlogoIv, track)
+        }
         binding.executePendingBindings()
     }
 

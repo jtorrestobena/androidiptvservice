@@ -22,6 +22,7 @@
             app:playlist="@{viewmodel.playlist}"
             app:program_listings="@{viewmodel.listings}"
             app:edit_mode="@{viewmodel.editMode}"
+            app:click_listener="@{viewmodel.itemListener}"
             app:layoutManager="LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
