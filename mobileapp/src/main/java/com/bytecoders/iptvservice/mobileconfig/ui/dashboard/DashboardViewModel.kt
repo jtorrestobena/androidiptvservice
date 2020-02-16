@@ -8,4 +8,7 @@ private const val LIST_EDIT_MODE = "LIST_EDIT_MODE"
 
 class DashboardViewModel(sharedViewModel: MainActivityViewModel) : BaseFragmentViewModel(sharedViewModel) {
     val editMode = BooleanSettings(sharedViewModel.defaultPrefs, LIST_EDIT_MODE, false)
+    fun saveItemOrder() {
+        sharedViewModel.savePositionOrder()
+    }
 }

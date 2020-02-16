@@ -25,7 +25,7 @@
                 app:customIntegerValue="255" />
         </Constraint>
         <Constraint
-            android:id="@id/title"
+            android:id="@id/edit_mode_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -48,7 +48,7 @@
                 app:customIntegerValue="0" />
         </Constraint>
         <Constraint
-            android:id="@id/title"
+            android:id="@id/edit_mode_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"

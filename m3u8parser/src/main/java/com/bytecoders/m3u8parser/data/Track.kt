@@ -21,7 +21,8 @@ package com.bytecoders.m3u8parser.data
  * Created by Emanuele on 31/08/2016.
  */
 class Track(var extInfo: ExtInfo? = null,
-            var url: String? = null) : Comparable<Track> {
+            var url: String? = null,
+            var position: Int = 0) : Comparable<Track> {
     override fun compareTo(other: Track): Int {
         return extInfo!!.title!!.compareTo(other.extInfo!!.title!!)
     }

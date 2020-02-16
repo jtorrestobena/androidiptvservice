@@ -28,6 +28,7 @@ import java.util.*
 class M3U8Parser(inputStream: InputStream?, protected val encoding: M3U8ItemScanner.Encoding) {
     private val m3U8ItemScanner = M3U8ItemScanner(inputStream, encoding)
     private var charsRead: Int = 0
+    private var channelsRead: Int = 0
 
     @Throws(IOException::class, ParseException::class, PlaylistParseException::class)
     fun parse(progressRead: ((Int) -> Unit)? = null): Playlist {
@@ -38,6 +39,7 @@ class M3U8Parser(inputStream: InputStream?, protected val encoding: M3U8ItemScan
         var extInfo: ExtInfo?
         val trackList: MutableList<Track> = LinkedList()
         charsRead = 0
+        channelsRead = 0
         while (m3U8ItemScanner.hasNext()) {
             val m3UItem = m3U8ItemScanner.nextM3UItem()
             progressRead?.let {
@@ -59,7 +61,9 @@ class M3U8Parser(inputStream: InputStream?, protected val encoding: M3U8ItemScan
                     extInfo = extInfoParser.parse(getExtInfLine(m3U8ItemStringArray))
                     track.extInfo = extInfo
                     track.url = getTrackUrl(m3U8ItemStringArray)
+                    track.position = channelsRead
                     trackList.add(track)
+                    channelsRead++
                 }
                 ItemType.UNKNOWN -> {
                     playlist.unknownEntries.add(m3UItem.itemString)

@@ -22,6 +22,10 @@ class MainActivityViewModel(application: Application): ViewModel() {
     val defaultPrefs by lazy {
         PreferenceManager.getDefaultSharedPreferences(application)
     }
+
+    fun savePositionOrder() {
+        channelRepository.savePositionOrder()
+    }
 }
 
 class MainActivityViewModelFactory (private val application: Application) : ViewModelProvider.Factory {

@@ -9,7 +9,9 @@ import com.bytecoders.m3u8parser.parser.M3U8Parser
 import com.bytecoders.m3u8parser.scanner.M3U8ItemScanner
 import com.google.android.media.tv.companionlibrary.xmltv.XmlTvParser
 import java.io.IOException
+import java.util.*
 import java.util.concurrent.Executors
+import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 
 private const val TAG = "ChannelRepository"
@@ -17,6 +19,7 @@ private const val TAG = "ChannelRepository"
 class ChannelRepository {
     val playlist = MutableLiveData<Playlist>()
     var listing = MutableLiveData<XmlTvParser.TvListing?>()
+    var positions = ArrayList<Int>()
     val percentage = MutableLiveData<Int>().apply {
         postValue(0)
     }
@@ -42,5 +45,14 @@ class ChannelRepository {
 
             }
         }
+    }
+
+    fun savePositionOrder() {
+        positions.clear()
+        playlist.value?.playListEntries?.forEach {
+            positions.add(it.position)
+        }
+
+        Log.d("POSITIONS", "positions are "+ Arrays.toString(positions.toArray()))
     }
 }
