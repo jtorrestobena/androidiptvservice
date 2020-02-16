@@ -10,7 +10,7 @@ import com.google.android.media.tv.companionlibrary.xmltv.XmlTvParser
 fun RecyclerView.bindPlaylist(playlist: Playlist?, listings: XmlTvParser.TvListing?) {
     playlist?.let {
         addItemDecoration(DividerItemDecoration(context,
-                DividerItemDecoration.HORIZONTAL))
+                DividerItemDecoration.VERTICAL))
         adapter = PlayListChannelsAdapter(it, listings)
     }
 }

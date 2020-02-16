@@ -24,7 +24,8 @@ class PlayListChannelsAdapter(private val playlist: Playlist, private val listin
     override fun onBindViewHolder(holder: PlaylistViewHolder, position: Int) {
         val track = playlist.playListEntries[position]
         holder.bind(track, track.extInfo?.tvgId?.let {
-            return@let listings?.getProgramsForEpg(it)?.get(0)
+            val listings = listings?.getProgramsForEpg(it)
+            return@let if (!listings.isNullOrEmpty()) listings.get(0) else null
         })
     }
 
