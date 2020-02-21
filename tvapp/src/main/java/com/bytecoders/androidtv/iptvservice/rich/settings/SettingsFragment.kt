@@ -1,6 +1,7 @@
 package com.bytecoders.androidtv.iptvservice.rich.settings
 
 import android.app.Application
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -18,6 +19,7 @@ import com.bytecoders.androidtv.iptvservice.R
 import com.bytecoders.androidtv.iptvservice.repository.ChannelRepository
 import com.bytecoders.androidtv.iptvservice.repository.EPG_URL_PREFS
 import com.bytecoders.androidtv.iptvservice.repository.M3U_URL_PREFS
+import com.bytecoders.androidtv.iptvservice.rich.RichTvInputSetupActivity
 import com.bytecoders.iptvservicecommunicator.IPTVService
 import com.bytecoders.iptvservicecommunicator.protocol.api.MessageEndpointInformation
 import com.bytecoders.iptvservicecommunicator.protocol.api.MessagePlayListConfig
@@ -87,13 +89,19 @@ class SettingsFragment : LeanbackSettingsFragmentCompat() {
             super.onViewCreated(view, savedInstanceState)
             IPTVService.messagesLiveData.observe(viewLifecycleOwner, Observer {
                 Toast.makeText(requireContext(), "Message: $it", Toast.LENGTH_SHORT).show()
-                if (it is MessageEndpointInformation) {
-                    serverStatus?.summary = "Connected to ${it.name}"
-                } else if (it is MessagePlayListConfig) {
-                    PreferenceManager.getDefaultSharedPreferences(requireContext()).edit {
-                        putString(M3U_URL_PREFS, it.playlistURL)
-                        it.epgURL?.let {  epg ->
-                            putString(EPG_URL_PREFS, epg)
+                when (it) {
+                    is MessageEndpointInformation -> {
+                        serverStatus?.summary = "Connected to ${it.name}"
+                    }
+                    is MessagePlayListConfig -> {
+                        PreferenceManager.getDefaultSharedPreferences(requireContext()).edit {
+                            putString(M3U_URL_PREFS, it.playlistURL)
+                            it.epgURL?.let {  epg ->
+                                putString(EPG_URL_PREFS, epg)
+                            }
+                        }
+                        Intent(activity, RichTvInputSetupActivity::class.java).also { intent ->
+                            startActivity(intent)
                         }
                     }
                 }

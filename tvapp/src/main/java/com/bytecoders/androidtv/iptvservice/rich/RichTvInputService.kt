@@ -178,7 +178,8 @@ class DrTvInputSessionImpl(
     private fun handlePlayerReady() {
         val tracks = ArrayList<TvTrackInfo>()
 
-        val trackSelections = player!!.currentTrackSelections.all.filter { it != null }
+        // Filter not null is strictly needed
+        val trackSelections = player!!.currentTrackSelections.all.filterNotNull()
         trackSelections.forEach { trackSelection ->
 
             val format = trackSelection.selectedFormat
