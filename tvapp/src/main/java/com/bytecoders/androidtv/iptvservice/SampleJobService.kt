@@ -22,7 +22,7 @@ import android.util.LongSparseArray
 import androidx.core.util.set
 import com.bytecoders.androidtv.iptvservice.data.EPGURLMapping
 import com.bytecoders.androidtv.iptvservice.repository.ChannelRepository
-import com.google.android.exoplayer.util.Util
+import com.google.android.exoplayer2.C
 import com.google.android.media.tv.companionlibrary.ads.EpgSyncWithAdsJobService
 import com.google.android.media.tv.companionlibrary.model.Channel
 import com.google.android.media.tv.companionlibrary.model.InternalProviderData
@@ -64,7 +64,7 @@ class SampleJobService : EpgSyncWithAdsJobService() {
             }.build()
             channelList.add(newChannel)
             programMapping[newChannel.originalNetworkId] = EPGURLMapping(InternalProviderData().apply {
-                videoType = Util.TYPE_HLS
+                videoType = C.TYPE_HLS
                 videoUrl = trackData.url
             }, trackData.extInfo?.tvgId)
         }

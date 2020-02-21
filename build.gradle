@@ -36,7 +36,7 @@ ext.flavorConfig = { // 1
 ext {
     appCompatVersion = '1.1.0'
     leanbackVersion = '1.1.0-alpha03'
-    exoPlayerVersion = 'r1.5.14'
+    exoPlayerVersion = '2.11.1'
     playServicesVersion = '18.3.0'
     supportTestVersion = '1.0.1'
 }
