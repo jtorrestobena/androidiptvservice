@@ -54,7 +54,7 @@ class DrTvInputSessionImpl(
     private val unknownType = -1
 
     private val defaultBandwidthMeter = DefaultBandwidthMeter.Builder(context).build()
-    private val trackSelector = DefaultTrackSelector()
+    private val trackSelector = DefaultTrackSelector(context)
     private val eventLogger = EventLogger(trackSelector)
     private val dataSourceFactory: DataSource.Factory = buildDataSourceFactory()
 
