@@ -38,6 +38,7 @@
             style="@style/AppTheme.LabelText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_small"
             android:gravity="start"
             android:text="@{viewmodel.track.extInfo.title}"
             app:layout_constraintTop_toTopOf="parent"
@@ -50,6 +51,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="start"
+            android:layout_marginEnd="@dimen/margin_small"
             android:text="@{viewmodel.track.extInfo.groupTitle}"
             app:layout_constraintTop_toBottomOf="@id/channel_title"
             app:layout_constraintEnd_toEndOf="parent"
@@ -63,6 +65,7 @@
             android:layout_height="wrap_content"
             android:gravity="start"
             android:text="@{viewmodel.playingNow.title}"
+            android:layout_marginEnd="@dimen/margin_small"
             app:layout_constraintTop_toBottomOf="@id/channel_group"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/foto_guideline"
@@ -81,6 +84,7 @@
             android:id="@+id/program_end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_small"
             android:text="@{viewmodel.getDateString(viewmodel.playingNow.endTimeUtcMillis)}"
             app:layout_constraintTop_toBottomOf="@id/program_title"
             app:layout_constraintEnd_toEndOf="parent"
@@ -92,11 +96,23 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_marginEnd="@dimen/margin_small"
             app:layout_constraintTop_toBottomOf="@id/program_end"
             app:layout_constraintStart_toEndOf="@id/foto_guideline"
             app:layout_constraintEnd_toEndOf="parent"
             android:progress="@{viewmodel.playingNow.percentageElapsed}"
             tools:progress="50" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/channels_recyclerview"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:epg_list="@{viewmodel.programChannels}"
+            app:layoutManager="LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/program_percent_elapsed"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

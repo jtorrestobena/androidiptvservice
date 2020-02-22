@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View" />
+
+        <variable
+            name="program"
+            type="com.google.android.media.tv.companionlibrary.model.Program" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/playlist_item"
+        android:clickable="true"
+        android:foreground="?selectableItemBackground"
+        android:background="@color/white"
+        android:padding="@dimen/padding_small"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/program_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            style="@style/AppTheme.LabelText"
+            android:gravity="start"
+            android:text="@{program.title}"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="Channel Program" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/logo_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintGuide_percent="0.3"
+            android:orientation="vertical" />
+
+        <ImageView
+            android:id="@+id/tvlogo_iv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            android:src="@drawable/ic_dashboard_black_24dp"
+            app:image_url="@{program.posterArtUri}"
+            android:layout_marginEnd="@dimen/margin_small"
+            app:layout_constraintTop_toBottomOf="@id/program_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/logo_guideline" />
+        <TextView
+
+            android:id="@+id/program_description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:text="@{program.description}"
+            app:layout_constraintTop_toBottomOf="@id/program_title"
+            app:layout_constraintStart_toEndOf="@id/logo_guideline"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="This the program description that can spread across several lines" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

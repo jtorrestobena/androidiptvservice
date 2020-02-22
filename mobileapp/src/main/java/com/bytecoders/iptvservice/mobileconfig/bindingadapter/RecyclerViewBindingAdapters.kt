@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bytecoders.iptvservice.mobileconfig.bindingadapter.RecyclerViewBindingAdapters.getDragListener
 import com.bytecoders.iptvservice.mobileconfig.bindingadapter.RecyclerViewBindingAdapters.touchHelper
 import com.bytecoders.m3u8parser.data.Playlist
+import com.google.android.media.tv.companionlibrary.model.Program
 import com.google.android.media.tv.companionlibrary.xmltv.XmlTvParser
 
 object RecyclerViewBindingAdapters {
@@ -38,5 +39,14 @@ fun RecyclerView.bindPlaylist(playlist: Playlist?, listings: XmlTvParser.TvListi
             }
         }
         adapter = channelsAdapter
+    }
+}
+
+@BindingAdapter("epg_list")
+fun RecyclerView.bindEpgPrograms(nullableList: List<Program>?) {
+    nullableList?.let {
+        addItemDecoration(DividerItemDecoration(context,
+                DividerItemDecoration.VERTICAL))
+        adapter = EpgAdapter(it)
     }
 }
