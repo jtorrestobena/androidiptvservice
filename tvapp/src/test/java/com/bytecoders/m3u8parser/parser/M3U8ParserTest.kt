@@ -3,8 +3,10 @@ package com.bytecoders.m3u8parser.parser
 import com.bytecoders.iptvservicecommunicator.net.Network
 import com.bytecoders.m3u8parser.data.Playlist
 import com.bytecoders.m3u8parser.scanner.M3U8ItemScanner
+import com.google.android.media.tv.companionlibrary.ProgramUtils
 import com.google.android.media.tv.companionlibrary.xmltv.XmlTvParser
 import junit.framework.Assert.assertFalse
+import junit.framework.Assert.assertNotNull
 import org.junit.Assert
 import org.junit.Test
 import org.xmlpull.v1.XmlPullParserFactory
@@ -36,7 +38,9 @@ class M3U8ParserTest {
                 Network.inputStreamforURL(url),
                 XmlPullParserFactory.newInstance().newPullParser())
         assertFalse(listings.allPrograms.isEmpty())
-        assertFalse(listings.getProgramsForEpg("La1.TDTChannelsEPG").isEmpty())
+        assertFalse(listings.getProgramsForEpg("Antena3.TDTChannelsEPG").isEmpty())
+        assertNotNull(ProgramUtils.getPlayingNow(listings.getProgramsForEpg("Antena3.TDTChannelsEPG")))
+        assertFalse(ProgramUtils.getUpcomingPrograms(listings.getProgramsForEpg("Antena3.TDTChannelsEPG")).isEmpty())
     }
 
     @Test
