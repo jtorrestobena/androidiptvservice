@@ -125,6 +125,18 @@ public final class Program implements Comparable<Program> {
         return mEndTimeUtcMillis;
     }
 
+    public long getElapsedTime() {
+        return System.currentTimeMillis() - mStartTimeUtcMillis;
+    }
+
+    public long getDuration() {
+        return mEndTimeUtcMillis - mStartTimeUtcMillis;
+    }
+
+    public int getPercentageElapsed() {
+        return (int) (((double) getElapsedTime() / getDuration()) * 100);
+    }
+
     /**
      * @return The value of {@link TvContract.Programs#COLUMN_SHORT_DESCRIPTION} for the channel.
      */

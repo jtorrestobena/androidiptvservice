@@ -62,11 +62,41 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="start"
-            android:text="TODO programs"
+            android:text="@{viewmodel.playingNow.title}"
             app:layout_constraintTop_toBottomOf="@id/channel_group"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/foto_guideline"
             tools:text="Channel Program" />
+
+        <TextView
+            android:id="@+id/program_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{viewmodel.getDateString(viewmodel.playingNow.startTimeUtcMillis)}"
+            app:layout_constraintTop_toBottomOf="@id/program_title"
+            app:layout_constraintStart_toEndOf="@id/foto_guideline"
+            tools:text="01/02/2020 09:00" />
+
+        <TextView
+            android:id="@+id/program_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{viewmodel.getDateString(viewmodel.playingNow.endTimeUtcMillis)}"
+            app:layout_constraintTop_toBottomOf="@id/program_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="01/02/2020 10:30" />
+
+        <ProgressBar
+            android:id="@+id/program_percent_elapsed"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:layout_constraintTop_toBottomOf="@id/program_end"
+            app:layout_constraintStart_toEndOf="@id/foto_guideline"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:progress="@{viewmodel.playingNow.percentageElapsed}"
+            tools:progress="50" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
