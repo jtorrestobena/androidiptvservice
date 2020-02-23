@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * XMLTV document parser which conforms to http://wiki.xmltv.org/index.php/Main_Page
@@ -140,7 +141,14 @@ public class XmlTvParser {
             new SimpleDateFormat("yyyyMMddHHmmss Z", Locale.US);
     private static final String TAG = "XmlTvParser";
 
-    private XmlTvParser() {}
+    public interface StatusListener {
+        void onNewProgram();
+
+        void onNewChannel();
+    }
+
+    private XmlTvParser() {
+    }
 
     /**
      * Converts a TV ratings from an XML file to {@link TvContentRating}.
@@ -162,17 +170,26 @@ public class XmlTvParser {
      * @return A TvListing containing your channels and programs
      */
     public static TvListing parse(@NonNull InputStream inputStream) throws XmlTvParseException {
-        return parse(inputStream, Xml.newPullParser());
+        return parse(inputStream, (StatusListener) null);
+    }
+
+    public static TvListing parse(@NonNull InputStream inputStream, @Nullable StatusListener listener) throws XmlTvParseException {
+        return parse(inputStream, Xml.newPullParser(), listener);
     }
 
     /**
      * Reads an InputStream and parses the data to identify channels and programs
      *
      * @param inputStream The InputStream of your data
-     * @param parser The XmlPullParser the developer selects to parse this data
+     * @param parser      The XmlPullParser the developer selects to parse this data
      * @return A TvListing containing your channels and programs
      */
     public static TvListing parse(@NonNull InputStream inputStream, @NonNull XmlPullParser parser)
+            throws XmlTvParseException {
+        return parse(inputStream, parser, null);
+    }
+
+    private static TvListing parse(@NonNull InputStream inputStream, @NonNull XmlPullParser parser, @Nullable StatusListener listener)
             throws XmlTvParseException {
         try {
             parser.setInput(inputStream, null);
@@ -180,14 +197,14 @@ public class XmlTvParser {
             if (eventType != XmlPullParser.START_TAG || !TAG_TV.equals(parser.getName())) {
                 throw new XmlTvParseException("Input stream does not contain an XMLTV description");
             }
-            return parseTvListings(parser);
+            return parseTvListings(parser, listener);
         } catch (XmlPullParserException | IOException | ParseException e) {
             Log.w(TAG, e.getMessage());
         }
         return null;
     }
 
-    private static TvListing parseTvListings(XmlPullParser parser)
+    private static TvListing parseTvListings(XmlPullParser parser, @Nullable StatusListener listener)
             throws IOException, XmlPullParserException, ParseException {
         List<Channel> channels = new ArrayList<>();
         List<Program> programs = new ArrayList<>();
@@ -195,10 +212,16 @@ public class XmlTvParser {
             if (parser.getEventType() == XmlPullParser.START_TAG
                     && TAG_CHANNEL.equalsIgnoreCase(parser.getName())) {
                 channels.add(parseChannel(parser));
+                if (listener != null) {
+                    listener.onNewChannel();
+                }
             }
             if (parser.getEventType() == XmlPullParser.START_TAG
                     && TAG_PROGRAM.equalsIgnoreCase(parser.getName())) {
                 programs.add(parseProgram(parser));
+                if (listener != null) {
+                    listener.onNewProgram();
+                }
             }
         }
         return new TvListing(channels, programs);
@@ -514,12 +537,16 @@ public class XmlTvParser {
             }
         }
 
-        /** @return All channels found by the XmlTvParser. */
+        /**
+         * @return All channels found by the XmlTvParser.
+         */
         public List<Channel> getChannels() {
             return mChannels;
         }
 
-        /** @return All programs found by the XmlTvParser. */
+        /**
+         * @return All programs found by the XmlTvParser.
+         */
         public List<Program> getAllPrograms() {
             return mPrograms;
         }
@@ -574,7 +601,9 @@ public class XmlTvParser {
         }
     }
 
-    /** An exception that indicates the provided XMLTV file is invalid or improperly formatted. */
+    /**
+     * An exception that indicates the provided XMLTV file is invalid or improperly formatted.
+     */
     public static class XmlTvParseException extends Exception {
         public XmlTvParseException(String msg) {
             super(msg);

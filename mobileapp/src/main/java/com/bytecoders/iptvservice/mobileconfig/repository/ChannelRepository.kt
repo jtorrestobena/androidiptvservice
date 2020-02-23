@@ -3,6 +3,7 @@ package com.bytecoders.iptvservice.mobileconfig.repository
 import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.bytecoders.iptvservice.mobileconfig.livedata.LiveDataCounter
 import com.bytecoders.iptvservice.mobileconfig.livedata.SingleLiveEvent
 import com.bytecoders.iptvservice.mobileconfig.livedata.StringSettings
 import com.bytecoders.iptvservicecommunicator.net.Network
@@ -34,11 +35,13 @@ class ChannelRepository(sharedPreferences: SharedPreferences) {
     }
     val executor = Executors.newFixedThreadPool(2)
     val channelsAvailable = MutableLiveData<Int>(0)
+    val channelProgramCount = LiveDataCounter()
+    val programCount = LiveDataCounter()
 
     fun loadChannels(url: String) = executor.submit {
         percentage.postValue(0)
         val inputStreamWithLength = inputStreamAndLength(url)
-        playlist.postValue(M3U8Parser(inputStreamWithLength.first, M3U8ItemScanner.Encoding.UTF_8).parse() { charsRead, channelsRead ->
+        playlist.postValue(M3U8Parser(inputStreamWithLength.first, M3U8ItemScanner.Encoding.UTF_8).parse { charsRead, channelsRead ->
             ((charsRead.toFloat() / inputStreamWithLength.second) * 100).roundToInt().let (percentage::postValue)
             channelsAvailable.postValue(channelsRead)
         }.apply {
@@ -50,10 +53,15 @@ class ChannelRepository(sharedPreferences: SharedPreferences) {
         percentage.postValue(100)
     }
 
-    fun loadPlayList(url: String) = executor.submit {
+    fun loadPlayListListings(url: String) = executor.submit {
         Network.inputStreamforURL(url).use {
             try {
-                listing.postValue(XmlTvParser.parse(it))
+                channelProgramCount.reset()
+                programCount.reset()
+                listing.postValue(XmlTvParser.parse(it, object : XmlTvParser.StatusListener{
+                    override fun onNewChannel() = channelProgramCount.increment()
+                    override fun onNewProgram() = programCount.increment()
+                }))
             } catch (e: IOException) {
                 Log.e(TAG, "Error in fetching $url", e)
             } catch (e: XmlTvParser.XmlTvParseException) {

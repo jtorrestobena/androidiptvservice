@@ -21,9 +21,17 @@ class HomeViewModel(sharedViewModel: MainActivityViewModel)
         "${it.unknownEntries.size} unknown"
     }
 
+    val channelEpg = Transformations.map(channelRepository.channelProgramCount) {
+        "$it channel with EPG"
+    }
+
+    val programCount = Transformations.map(channelRepository.programCount) {
+        "$it programs found"
+    }
+
     fun downloadList() {
         m3uURL.value?.let (channelRepository::loadChannels)
-        epgURL.value?.let (channelRepository::loadPlayList)
+        epgURL.value?.let (channelRepository::loadPlayListListings)
     }
 
     fun sendList() {

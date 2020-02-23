@@ -144,6 +144,26 @@
                         android:importantForAutofill="no"
                         android:text="@{viewmodel.errorText}"
                         tools:text="3 errors" />
+                    <TextView
+                        android:id="@+id/channel_epg"
+                        style="@style/AppTheme.LabelText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_small"
+                        android:gravity="center"
+                        android:importantForAutofill="no"
+                        android:text="@{viewmodel.channelEpg}"
+                        tools:text="3 channel with EPG" />
+                    <TextView
+                        android:id="@+id/channel_program"
+                        style="@style/AppTheme.LabelText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_small"
+                        android:gravity="center"
+                        android:importantForAutofill="no"
+                        android:text="@{viewmodel.programCount}"
+                        tools:text="3 programs found" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
