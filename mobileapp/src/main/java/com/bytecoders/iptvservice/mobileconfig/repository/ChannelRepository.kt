@@ -6,6 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import com.bytecoders.iptvservice.mobileconfig.livedata.LiveDataCounter
 import com.bytecoders.iptvservice.mobileconfig.livedata.SingleLiveEvent
 import com.bytecoders.iptvservice.mobileconfig.livedata.StringSettings
+import com.bytecoders.iptvservicecommunicator.extensions.toIntList
+import com.bytecoders.iptvservicecommunicator.extensions.toStringSet
 import com.bytecoders.iptvservicecommunicator.net.Network
 import com.bytecoders.iptvservicecommunicator.net.Network.inputStreamAndLength
 import com.bytecoders.m3u8parser.data.Playlist
@@ -13,17 +15,16 @@ import com.bytecoders.m3u8parser.parser.M3U8Parser
 import com.bytecoders.m3u8parser.scanner.M3U8ItemScanner
 import com.google.android.media.tv.companionlibrary.xmltv.XmlTvParser
 import java.io.IOException
-import java.util.*
 import java.util.concurrent.Executors
-import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 
 private const val TAG = "ChannelRepository"
 
 private const val M3U_URL_PREFS = "M3U_URL_PREFS"
 private const val EPG_URL_PREFS = "EPG_URL_PREFS"
+private const val POSITION_PREFS = "POSITION_PREFS"
 
-class ChannelRepository(sharedPreferences: SharedPreferences) {
+class ChannelRepository(private val sharedPreferences: SharedPreferences) {
     val m3uURL = StringSettings(sharedPreferences, M3U_URL_PREFS)
     val epgURL = StringSettings(sharedPreferences, EPG_URL_PREFS)
     val newURLEvent = SingleLiveEvent<String>()
@@ -37,6 +38,9 @@ class ChannelRepository(sharedPreferences: SharedPreferences) {
     val channelsAvailable = MutableLiveData<Int>(0)
     val channelProgramCount = LiveDataCounter()
     val programCount = LiveDataCounter()
+    var savedPositions: List<Int>
+        get() = sharedPreferences.getStringSet(POSITION_PREFS, null).toIntList()
+        private set(value) = sharedPreferences.edit().putStringSet(POSITION_PREFS, value.toStringSet()).apply()
 
     fun loadChannels(url: String) = executor.submit {
         percentage.postValue(0)
@@ -76,7 +80,6 @@ class ChannelRepository(sharedPreferences: SharedPreferences) {
         playlist.value?.playListEntries?.forEach {
             positions.add(it.position)
         }
-
-        Log.d("POSITIONS", "positions are "+ Arrays.toString(positions.toArray()))
+        savedPositions = positions
     }
 }
