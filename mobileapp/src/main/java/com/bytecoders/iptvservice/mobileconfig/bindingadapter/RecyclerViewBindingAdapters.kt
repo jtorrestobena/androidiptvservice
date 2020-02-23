@@ -3,6 +3,7 @@ package com.bytecoders.iptvservice.mobileconfig.bindingadapter
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bytecoders.iptvservice.mobileconfig.bindingadapter.RecyclerViewBindingAdapters.getDragListener
 import com.bytecoders.iptvservice.mobileconfig.bindingadapter.RecyclerViewBindingAdapters.touchHelper
@@ -42,11 +43,17 @@ fun RecyclerView.bindPlaylist(playlist: Playlist?, listings: XmlTvParser.TvListi
     }
 }
 
-@BindingAdapter("epg_list")
-fun RecyclerView.bindEpgPrograms(nullableList: List<Program>?) {
-    nullableList?.let {
+@BindingAdapter("epg_list", "scroll_to_program", requireAll = false)
+fun RecyclerView.bindEpgPrograms(nullableList: List<Program>?, scrollToProgram: Program?) {
+    nullableList?.let { list ->
         addItemDecoration(DividerItemDecoration(context,
                 DividerItemDecoration.VERTICAL))
-        adapter = EpgAdapter(it)
+        adapter = EpgAdapter(list)
+        scrollToProgram?.let { program ->
+            val position = list.indexOf(program)
+            if (position in list.indices) {
+                (layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(position, 0)
+            }
+        }
     }
 }

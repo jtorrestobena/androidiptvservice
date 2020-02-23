@@ -11,6 +11,7 @@ import com.bytecoders.iptvservice.mobileconfig.R
 import com.bytecoders.iptvservice.mobileconfig.databinding.ChannelItemBinding
 import com.bytecoders.m3u8parser.data.Playlist
 import com.bytecoders.m3u8parser.data.Track
+import com.google.android.media.tv.companionlibrary.ProgramUtils
 import com.google.android.media.tv.companionlibrary.model.Program
 import com.google.android.media.tv.companionlibrary.xmltv.XmlTvParser
 import java.util.*
@@ -32,7 +33,7 @@ class PlayListChannelsAdapter(private val playlist: Playlist, private val listin
         val track = playlist.playListEntries[position]
         holder.bind(track, track.extInfo?.tvgId?.let {
             val listings = listings?.getProgramsForEpg(it)
-            return@let if (!listings.isNullOrEmpty()) listings[0] else null
+            return@let if (!listings.isNullOrEmpty()) ProgramUtils.getPlayingNow(listings) else null
         }, startDragListener != null, viewHolderClickListener ?: object : ViewHolderClickListener{
             override fun onViewClicked(view: View, track: Track) {
                 // Does nothing, it's used in case there's no need for listening

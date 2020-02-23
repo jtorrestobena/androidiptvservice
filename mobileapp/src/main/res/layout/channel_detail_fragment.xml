@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="com.bytecoders.iptvservice.mobileconfig.util.DateUtils" />
 
         <variable
             name="viewmodel"
@@ -40,6 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/margin_small"
             android:gravity="start"
+            android:layout_marginTop="@dimen/margin_small"
             android:text="@{viewmodel.track.extInfo.title}"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -75,7 +77,7 @@
             android:id="@+id/program_start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{viewmodel.getDateString(viewmodel.playingNow.startTimeUtcMillis)}"
+            android:text="@{DateUtils.getDateString(viewmodel.playingNow.startTimeUtcMillis)}"
             app:layout_constraintTop_toBottomOf="@id/program_title"
             app:layout_constraintStart_toEndOf="@id/foto_guideline"
             tools:text="01/02/2020 09:00" />
@@ -85,7 +87,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/margin_small"
-            android:text="@{viewmodel.getDateString(viewmodel.playingNow.endTimeUtcMillis)}"
+            android:text="@{DateUtils.getDateString(viewmodel.playingNow.endTimeUtcMillis)}"
             app:layout_constraintTop_toBottomOf="@id/program_title"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="01/02/2020 10:30" />
@@ -108,6 +110,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:epg_list="@{viewmodel.programChannels}"
+            app:scroll_to_program="@{viewmodel.playingNow}"
             app:layoutManager="LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -5,6 +5,7 @@
 
     <data>
         <import type="android.view.View" />
+        <import type="com.bytecoders.iptvservice.mobileconfig.util.DateUtils" />
 
         <variable
             name="program"
@@ -20,6 +21,15 @@
         android:background="@color/white"
         android:padding="@dimen/padding_small"
         android:orientation="vertical">
+        <TextView
+            android:id="@+id/program_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_small"
+            android:text="@{DateUtils.getDateString(program.startTimeUtcMillis)}"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="01/02/2020 10:30" />
 
         <TextView
             android:id="@+id/program_title"
@@ -28,7 +38,7 @@
             style="@style/AppTheme.LabelText"
             android:gravity="start"
             android:text="@{program.title}"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/program_start"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="Channel Program" />
