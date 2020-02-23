@@ -23,10 +23,6 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, MainActivityViewModelFactory(application))
                 .get(MainActivityViewModel::class.java)
 
-        viewModel.iptvClient.clientServiceLifecycle.observe(this, Observer{
-            Toast.makeText(applicationContext, "Status: $it", Toast.LENGTH_SHORT).show()
-        })
-
         viewModel.iptvClient.messagesLiveData.observe(this, Observer {
             Toast.makeText(applicationContext, "Message: $it", Toast.LENGTH_SHORT).show()
         })

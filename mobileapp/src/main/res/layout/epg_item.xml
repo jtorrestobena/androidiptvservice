@@ -67,6 +67,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="start"
+            android:layout_marginTop="@dimen/margin_small"
             android:text="@{program.description}"
             app:layout_constraintTop_toBottomOf="@id/program_title"
             app:layout_constraintStart_toEndOf="@id/logo_guideline"

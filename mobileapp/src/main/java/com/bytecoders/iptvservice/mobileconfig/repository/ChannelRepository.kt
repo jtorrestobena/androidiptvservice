@@ -33,12 +33,14 @@ class ChannelRepository(sharedPreferences: SharedPreferences) {
         postValue(0)
     }
     val executor = Executors.newFixedThreadPool(2)
+    val channelsAvailable = MutableLiveData<Int>(0)
 
     fun loadChannels(url: String) = executor.submit {
         percentage.postValue(0)
         val inputStreamWithLength = inputStreamAndLength(url)
-        playlist.postValue(M3U8Parser(inputStreamWithLength.first, M3U8ItemScanner.Encoding.UTF_8).parse() {
-            ((it.toFloat() / inputStreamWithLength.second) * 100).roundToInt().let (percentage::postValue)
+        playlist.postValue(M3U8Parser(inputStreamWithLength.first, M3U8ItemScanner.Encoding.UTF_8).parse() { charsRead, channelsRead ->
+            ((charsRead.toFloat() / inputStreamWithLength.second) * 100).roundToInt().let (percentage::postValue)
+            channelsAvailable.postValue(channelsRead)
         }.apply {
             // Notify the EPG URL in the list if it is newer than the one already set
             if (epgURL != this@ChannelRepository.epgURL.value) {

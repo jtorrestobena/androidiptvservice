@@ -1,6 +1,7 @@
 package com.bytecoders.iptvservice.mobileconfig.ui
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.bytecoders.iptvservice.mobileconfig.MainActivityViewModel
 import com.bytecoders.m3u8parser.data.Playlist
@@ -11,4 +12,5 @@ abstract class BaseFragmentViewModel(protected val sharedViewModel: MainActivity
     val channelRepository get() = sharedViewModel.channelRepository
     val playlist: LiveData<Playlist> get () = sharedViewModel.playlist
     val listings: LiveData<XmlTvParser.TvListing?> = sharedViewModel.listings
+    val channelsAvailable: LiveData<Int> = Transformations.map(channelRepository.channelsAvailable) { i -> i }
 }

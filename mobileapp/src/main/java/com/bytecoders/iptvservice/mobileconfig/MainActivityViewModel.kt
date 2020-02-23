@@ -13,7 +13,7 @@ import com.bytecoders.m3u8parser.data.Playlist
 import com.google.android.media.tv.companionlibrary.xmltv.XmlTvParser
 
 class MainActivityViewModel(application: Application): ViewModel() {
-    internal val iptvClient: IPTVServiceClient by lazy {
+    val iptvClient: IPTVServiceClient by lazy {
         IPTVServiceClient(application)
     }
 

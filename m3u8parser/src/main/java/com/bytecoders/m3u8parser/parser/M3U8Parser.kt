@@ -31,7 +31,7 @@ class M3U8Parser(inputStream: InputStream?, protected val encoding: M3U8ItemScan
     private var channelsRead: Int = 0
 
     @Throws(IOException::class, ParseException::class, PlaylistParseException::class)
-    fun parse(progressRead: ((Int) -> Unit)? = null): Playlist {
+    fun parse(progressRead: ((Int, Int) -> Unit)? = null): Playlist {
         val playlist = Playlist()
         val m3uPropertyParser = M3UPropertyParser()
         val extInfoParser = ExtInfoParser()
@@ -42,10 +42,6 @@ class M3U8Parser(inputStream: InputStream?, protected val encoding: M3U8ItemScan
         channelsRead = 0
         while (m3U8ItemScanner.hasNext()) {
             val m3UItem = m3U8ItemScanner.nextM3UItem()
-            progressRead?.let {
-                charsRead += m3UItem.itemString.length
-                it.invoke(charsRead)
-            }
             when(m3UItem.itemType) {
                 ItemType.M3U -> {
                     // Try parsing EPG URL
@@ -68,6 +64,10 @@ class M3U8Parser(inputStream: InputStream?, protected val encoding: M3U8ItemScan
                 ItemType.UNKNOWN -> {
                     playlist.unknownEntries.add(m3UItem.itemString)
                 }
+            }
+            progressRead?.let {
+                charsRead += m3UItem.itemString.length
+                it.invoke(charsRead, channelsRead)
             }
         }
         val trackSetMap: Map<String, Set<Track>> = trackList.groupBy{

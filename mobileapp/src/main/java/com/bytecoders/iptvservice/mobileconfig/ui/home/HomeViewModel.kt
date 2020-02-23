@@ -10,10 +10,11 @@ class HomeViewModel(sharedViewModel: MainActivityViewModel)
     val m3uURL = sharedViewModel.channelRepository.m3uURL
     val epgURL = sharedViewModel.channelRepository.epgURL
     val newURLEvent = sharedViewModel.channelRepository.newURLEvent
+    val serviceStatus = sharedViewModel.iptvClient.clientServiceLifecycle
 
     val downloadProgress = channelRepository.percentage
-    val channelsText = Transformations.map(playlist) {
-        "${it.playListEntries.size} channels"
+    val channelsText = Transformations.map(channelsAvailable) {
+        "$it channels"
     }
 
     val errorText = Transformations.map(playlist) {
