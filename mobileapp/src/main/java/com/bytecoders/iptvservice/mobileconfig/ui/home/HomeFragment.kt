@@ -13,13 +13,8 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //TODO this dialog must be singleliveevent
-        viewModel.playlist.observe(viewLifecycleOwner, Observer {
-            it.epgURL?.let { epg ->
-                if (viewModel.epgURL.value != epg) {
-                    showNewEPGDialog(epg)
-                }
-            }
+        viewModel.newURLEvent.observe(viewLifecycleOwner, Observer {
+            showNewEPGDialog(it)
         })
     }
 
@@ -27,7 +22,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
         AlertDialog.Builder(requireContext())
                 .setTitle(getString(R.string.new_epg_url))
                 .setMessage(getString(R.string.update_program_guide))
-                .setPositiveButton(getString(R.string.ok)) { _, _ -> viewBinding.epgUrl.setText(epgURL) }
+                .setPositiveButton(getString(R.string.ok)) { _, _ -> viewModel.epgURL.postValue(epgURL) }
                 .setNegativeButton(getString(R.string.cancel), null)
                 .create().show()
 

@@ -19,12 +19,10 @@ class MainActivityViewModel(application: Application): ViewModel() {
 
     val stateMap = HashMap<String, Parcelable?>()
 
-    val channelRepository = ChannelRepository()
+    val defaultPrefs = PreferenceManager.getDefaultSharedPreferences(application)
+    val channelRepository by lazy { ChannelRepository(defaultPrefs) }
     val playlist: LiveData<Playlist> = Transformations.map(channelRepository.playlist) { i -> i }
     val listings: LiveData<XmlTvParser.TvListing?> = Transformations.map(channelRepository.listing) { i -> i }
-    val defaultPrefs by lazy {
-        PreferenceManager.getDefaultSharedPreferences(application)
-    }
 
     fun savePositionOrder() {
         channelRepository.savePositionOrder()

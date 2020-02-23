@@ -1,7 +1,10 @@
 package com.bytecoders.iptvservice.mobileconfig.repository
 
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.bytecoders.iptvservice.mobileconfig.livedata.SingleLiveEvent
+import com.bytecoders.iptvservice.mobileconfig.livedata.StringSettings
 import com.bytecoders.iptvservicecommunicator.net.Network
 import com.bytecoders.iptvservicecommunicator.net.Network.inputStreamAndLength
 import com.bytecoders.m3u8parser.data.Playlist
@@ -16,7 +19,13 @@ import kotlin.math.roundToInt
 
 private const val TAG = "ChannelRepository"
 
-class ChannelRepository {
+private const val M3U_URL_PREFS = "M3U_URL_PREFS"
+private const val EPG_URL_PREFS = "EPG_URL_PREFS"
+
+class ChannelRepository(sharedPreferences: SharedPreferences) {
+    val m3uURL = StringSettings(sharedPreferences, M3U_URL_PREFS)
+    val epgURL = StringSettings(sharedPreferences, EPG_URL_PREFS)
+    val newURLEvent = SingleLiveEvent<String>()
     val playlist = MutableLiveData<Playlist>()
     var listing = MutableLiveData<XmlTvParser.TvListing?>()
     var positions = ArrayList<Int>()
@@ -30,6 +39,11 @@ class ChannelRepository {
         val inputStreamWithLength = inputStreamAndLength(url)
         playlist.postValue(M3U8Parser(inputStreamWithLength.first, M3U8ItemScanner.Encoding.UTF_8).parse() {
             ((it.toFloat() / inputStreamWithLength.second) * 100).roundToInt().let (percentage::postValue)
+        }.apply {
+            // Notify the EPG URL in the list if it is newer than the one already set
+            if (epgURL != this@ChannelRepository.epgURL.value) {
+                newURLEvent.postValue(epgURL)
+            }
         })
         percentage.postValue(100)
     }
