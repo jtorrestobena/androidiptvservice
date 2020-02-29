@@ -13,6 +13,7 @@
     <androidx.constraintlayout.motion.widget.MotionLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/dashboard_motion_layout"
         app:layoutDescription="@xml/scene">
 
         <androidx.recyclerview.widget.RecyclerView

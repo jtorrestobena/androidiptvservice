@@ -8,6 +8,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.bytecoders.iptvservice.mobileconfig.MainActivityViewModel
 import com.bytecoders.iptvservice.mobileconfig.R
 import com.bytecoders.iptvservice.mobileconfig.databinding.FragmentDashboardBinding
+import com.bytecoders.iptvservice.mobileconfig.model.LayoutState
 import com.bytecoders.iptvservice.mobileconfig.ui.BaseFragment
 import com.bytecoders.m3u8parser.data.Track
 
@@ -36,6 +37,9 @@ class DashboardFragment : BaseFragment<DashboardViewModel, FragmentDashboardBind
 
     override fun onResume() {
         super.onResume()
+        viewModel.layoutState?.let {
+            viewBinding.dashboardMotionLayout.progress = (it as LayoutState).progress
+        }
         viewModel.recyclerviewState?.let {
             viewBinding.channelsRecyclerview.layoutManager?.onRestoreInstanceState(it)
         }
@@ -43,6 +47,7 @@ class DashboardFragment : BaseFragment<DashboardViewModel, FragmentDashboardBind
 
     override fun onPause() {
         super.onPause()
+        viewModel.layoutState = LayoutState(viewBinding.dashboardMotionLayout.progress)
         viewModel.recyclerviewState = viewBinding.channelsRecyclerview.layoutManager?.onSaveInstanceState()
     }
 
