@@ -33,13 +33,20 @@ fun RecyclerView.bindPlaylist(playlist: Playlist?, listings: XmlTvParser.TvListi
     playlist?.let { list ->
         addItemDecoration(DividerItemDecoration(context,
                 DividerItemDecoration.VERTICAL))
-        val channelsAdapter = PlayListChannelsAdapter(list, listings, getDragListener(editMode == true), viewHolderClickListener)
+        val channelsAdapter: PlayListChannelsAdapter = adapter as? PlayListChannelsAdapter
+                ?: PlayListChannelsAdapter(list, viewHolderClickListener).apply {
+                    adapter = this
+                }
+        channelsAdapter.listings = listings
+        editMode?.let {
+            channelsAdapter.setEditMode(it, getDragListener(it))
+        }
+
         if (editMode == true) {
             touchHelper = ItemTouchHelper(PlayListTouchHelperCallback(channelsAdapter)).apply {
                 attachToRecyclerView(this@bindPlaylist)
             }
         }
-        adapter = channelsAdapter
     }
 }
 

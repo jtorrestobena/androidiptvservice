@@ -6,6 +6,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bytecoders.iptvservice.mobileconfig.R
 import com.bytecoders.iptvservice.mobileconfig.databinding.ChannelItemBinding
@@ -17,9 +18,21 @@ import com.google.android.media.tv.companionlibrary.xmltv.XmlTvParser
 import java.util.*
 
 
-class PlayListChannelsAdapter(private val playlist: Playlist, private val listings: XmlTvParser.TvListing?,
-                              private val startDragListener: OnStartDragListener?, private val viewHolderClickListener: ViewHolderClickListener?):
+class PlayListChannelsAdapter(private val playlist: Playlist,
+                              private val viewHolderClickListener: ViewHolderClickListener?):
         RecyclerView.Adapter<PlaylistViewHolder>(), ItemTouchHelperAdapter {
+
+    private var editMode: Boolean? = null
+    var listings: XmlTvParser.TvListing? = null
+        set(value) {
+            if (listings != value) {
+                field = value
+                update()
+            }
+        }
+
+    private var startDragListener: OnStartDragListener? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistViewHolder {
         return PlaylistViewHolder(DataBindingUtil
                 .inflate(LayoutInflater.from(parent.context), R.layout.channel_item, parent, false))
@@ -67,6 +80,26 @@ class PlayListChannelsAdapter(private val playlist: Playlist, private val listin
     override fun onItemDismiss(position: Int) {
         playlist.playListEntries.removeAt(position)
         notifyItemRemoved(position)
+    }
+
+    fun setEditMode(editMode: Boolean, startDragListener: OnStartDragListener?) {
+        this.startDragListener = startDragListener
+        if (this.editMode != editMode) {
+            this.editMode = editMode
+            update()
+        }
+    }
+
+    private fun update() = DiffUtil.calculateDiff(EditModeDiff(playlist.playListEntries)).dispatchUpdatesTo(this)
+
+    class EditModeDiff(private val track: List<Track>): DiffUtil.Callback() {
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean = track[oldItemPosition].position == track[newItemPosition].position
+
+        override fun getOldListSize(): Int = track.size
+
+        override fun getNewListSize(): Int = track.size
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean = false
     }
 
 }

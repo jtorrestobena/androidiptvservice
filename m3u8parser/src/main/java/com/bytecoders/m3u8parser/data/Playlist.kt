@@ -29,11 +29,13 @@ data class Playlist (var trackSetMap: Map<String, Set<Track>>? = null,
     fun applyPositions(positions: List<Int>) {
         if (positions.isNotEmpty()) {
             val filteredList = ArrayList<Track>(positions.size)
-            positions.forEach {
-                filteredList.add(this.playListEntries[it])
+            with(playListEntries) {
+                positions.forEach {
+                    filteredList.add(this[it])
+                }
+                clear()
+                addAll(filteredList)
             }
-            playListEntries.clear()
-            playListEntries.addAll(filteredList)
         }
     }
 }
