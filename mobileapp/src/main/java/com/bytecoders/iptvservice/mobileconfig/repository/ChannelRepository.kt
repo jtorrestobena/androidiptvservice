@@ -6,10 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import com.bytecoders.iptvservice.mobileconfig.livedata.LiveDataCounter
 import com.bytecoders.iptvservice.mobileconfig.livedata.SingleLiveEvent
 import com.bytecoders.iptvservice.mobileconfig.livedata.StringSettings
-import com.bytecoders.iptvservicecommunicator.extensions.toIntList
-import com.bytecoders.iptvservicecommunicator.extensions.toStringSet
 import com.bytecoders.iptvservicecommunicator.net.Network
 import com.bytecoders.iptvservicecommunicator.net.Network.inputStreamAndLength
+import com.bytecoders.iptvservicecommunicator.protocol.MessageParser
+import com.bytecoders.iptvservicecommunicator.protocol.api.MessagePlayListCustomConfig
 import com.bytecoders.m3u8parser.data.Playlist
 import com.bytecoders.m3u8parser.parser.M3U8Parser
 import com.bytecoders.m3u8parser.scanner.M3U8ItemScanner
@@ -38,17 +38,25 @@ class ChannelRepository(private val sharedPreferences: SharedPreferences) {
     val channelsAvailable = MutableLiveData<Int>(0)
     val channelProgramCount = LiveDataCounter()
     val programCount = LiveDataCounter()
-    var savedPositions: List<Int>
-        get() = sharedPreferences.getStringSet(POSITION_PREFS, null).toIntList()
-        private set(value) = sharedPreferences.edit().putStringSet(POSITION_PREFS, value.toStringSet()).apply()
+    private val messageParser = MessageParser()
+    private var savedPositions: List<Int>
+        get() = sharedPreferences.getString(POSITION_PREFS, null)?.let {
+                return@let (messageParser.parseMessage(it) as? MessagePlayListCustomConfig)?.channelSelection ?: emptyList()
+            } ?: emptyList()
+
+        set(value) =
+            sharedPreferences.edit().putString(POSITION_PREFS, messageParser.serializeMessage(MessagePlayListCustomConfig(value))).apply()
+
 
     fun loadChannels(url: String) = executor.submit {
         percentage.postValue(0)
         val inputStreamWithLength = inputStreamAndLength(url)
+        Log.d(TAG, "Configuration for positions $positions")
         playlist.postValue(M3U8Parser(inputStreamWithLength.first, M3U8ItemScanner.Encoding.UTF_8).parse { charsRead, channelsRead ->
             ((charsRead.toFloat() / inputStreamWithLength.second) * 100).roundToInt().let (percentage::postValue)
             channelsAvailable.postValue(channelsRead)
         }.apply {
+            applyPositions(savedPositions)
             // Notify the EPG URL in the list if it is newer than the one already set
             if (epgURL != this@ChannelRepository.epgURL.value) {
                 newURLEvent.postValue(epgURL)

@@ -24,4 +24,16 @@ package com.bytecoders.m3u8parser.data
 data class Playlist (var trackSetMap: Map<String, Set<Track>>? = null,
                      val playListEntries: ArrayList<Track> = ArrayList(),
                      val unknownEntries: ArrayList<String> = ArrayList(),
-                     var epgURL: String? = null)
+                     var epgURL: String? = null) {
+
+    fun applyPositions(positions: List<Int>) {
+        if (positions.isNotEmpty()) {
+            val filteredList = ArrayList<Track>(positions.size)
+            positions.forEach {
+                filteredList.add(this.playListEntries[it])
+            }
+            playListEntries.clear()
+            playListEntries.addAll(filteredList)
+        }
+    }
+}
