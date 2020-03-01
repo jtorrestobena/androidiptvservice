@@ -46,7 +46,7 @@ public class TrackInfoCardPresenter extends Presenter {
                 ContextCompat.getColor(parent.getContext(), R.color.black);
         mSelectedBackgroundColor =
                 ContextCompat.getColor(parent.getContext(), R.color.dark_grey);
-        mDefaultCardImage = parent.getResources().getDrawable(R.drawable.android_48dp, null);
+        mDefaultCardImage = parent.getResources().getDrawable(R.drawable.baseline_live_tv_white_48, null);
 
         ImageCardView cardView = new ImageCardView(parent.getContext()) {
             @Override

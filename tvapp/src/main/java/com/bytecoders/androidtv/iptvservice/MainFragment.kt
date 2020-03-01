@@ -32,7 +32,7 @@ class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<Map<
         prepareBackgroundManager()
         setupEventListeners()
 
-        badgeDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.android_48dp)
+        badgeDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.baseline_live_tv_white_48)
     }
 
     private fun prepareBackgroundManager() {

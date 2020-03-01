@@ -42,6 +42,6 @@ class RichSetupFragment : ChannelSetupStepFragment<SampleJobService>() {
     override fun onCreateGuidance(savedInstanceState: Bundle?): Guidance =
             Guidance(getString(R.string.rich_input_label),
                     getString(R.string.tif_channel_setup_description), null,
-                    requireActivity().getDrawable(R.mipmap.ic_launcher))
+                    requireActivity().getDrawable(R.drawable.baseline_live_tv_white_48))
 
 }
