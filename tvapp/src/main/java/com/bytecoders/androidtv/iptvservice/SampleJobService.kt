@@ -95,10 +95,9 @@ class SampleJobService : EpgSyncJobService() {
         // If no listings were found then return a default program
         return ArrayList<Program>().apply {
             add(Program.Builder()
-                    //.setTitle("program title")
-                    //.setDescription("program description")
-                    .setStartTimeUtcMillis(0)
-                    .setEndTimeUtcMillis(A_DAY_IN_MILLIS.toLong())
+                    .setTitle(channel.displayName)
+                    .setStartTimeUtcMillis(System.currentTimeMillis())
+                    .setEndTimeUtcMillis(System.currentTimeMillis() + A_DAY_IN_MILLIS.toLong())
                     .setInternalProviderData(epgURLMapping.providerData)
                     .build())
         }
