@@ -1,6 +1,7 @@
 package com.bytecoders.iptvservice.mobileconfig
 
 import android.app.Application
+import android.content.SharedPreferences
 import android.os.Parcelable
 import android.preference.PreferenceManager
 import androidx.lifecycle.LiveData
@@ -19,7 +20,7 @@ class MainActivityViewModel(application: Application): ViewModel() {
 
     val stateMap = HashMap<String, Parcelable?>()
 
-    val defaultPrefs = PreferenceManager.getDefaultSharedPreferences(application)
+    val defaultPrefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
     val channelRepository by lazy { ChannelRepository(defaultPrefs) }
     val playlist: LiveData<Playlist> = Transformations.map(channelRepository.playlist) { i -> i }
     val listings: LiveData<XmlTvParser.TvListing?> = Transformations.map(channelRepository.listing) { i -> i }
@@ -30,6 +31,7 @@ class MainActivityViewModel(application: Application): ViewModel() {
 }
 
 class MainActivityViewModelFactory (private val application: Application) : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MainActivityViewModel::class.java))
             return MainActivityViewModel(application) as T

@@ -23,10 +23,10 @@ import androidx.core.util.set
 import com.bytecoders.androidtv.iptvservice.data.EPGURLMapping
 import com.bytecoders.androidtv.iptvservice.repository.ChannelRepository
 import com.google.android.exoplayer2.C
-import com.google.android.media.tv.companionlibrary.ads.EpgSyncWithAdsJobService
 import com.google.android.media.tv.companionlibrary.model.Channel
 import com.google.android.media.tv.companionlibrary.model.InternalProviderData
 import com.google.android.media.tv.companionlibrary.model.Program
+import com.google.android.media.tv.companionlibrary.sync.EpgSyncJobService
 
 
 /**
@@ -35,7 +35,7 @@ import com.google.android.media.tv.companionlibrary.model.Program
 private const val A_DAY_IN_MILLIS = 86400000
 private const val TAG = "SampleJobService"
 
-class SampleJobService : EpgSyncWithAdsJobService() {
+class SampleJobService : EpgSyncJobService() {
     private val programMapping = LongSparseArray<EPGURLMapping>()
     private val listings by lazy {
         ChannelRepository(applicationContext as Application).programListings
@@ -76,17 +76,15 @@ class SampleJobService : EpgSyncWithAdsJobService() {
     // For now just add channels through an m3u file
     override fun getChannels(): List<Channel> = getM3UChannelList()
 
-    override fun getOriginalProgramsForChannel(channelUri: Uri, channel: Channel,
-                                               startMs: Long, endMs: Long): List<Program> {
-
+    override fun getProgramsForChannel(channelUri: Uri?, channel: Channel, startMs: Long, endMs: Long): MutableList<Program> {
         val epgURLMapping = programMapping[channel.originalNetworkId]
         epgURLMapping.epgId?.let {
             val channelListing = listings?.getProgramsForEpg(it)
             if (!channelListing.isNullOrEmpty()) {
                 Log.d(TAG, "Found ${channelListing.size} programs for EPG $it")
                 return ArrayList<Program>().apply {
-                    channelListing.forEach {
-                        add(Program.Builder(it)
+                    channelListing.forEach { program ->
+                        add(Program.Builder(program)
                                 .setInternalProviderData(epgURLMapping.providerData)
                                 .build())
                     }
