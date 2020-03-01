@@ -29,7 +29,7 @@ class FirstStepFragment : GuidedStepSupportFragment() {
         val title = getString(R.string.rich_input_label)
 
         val description = getString(R.string.rich_setup_first_step_description)
-        val icon = requireActivity().getDrawable(R.drawable.android_48dp)
+        val icon = requireActivity().getDrawable(R.mipmap.ic_launcher)
         return Guidance(title, description, null, icon)
     }
 
