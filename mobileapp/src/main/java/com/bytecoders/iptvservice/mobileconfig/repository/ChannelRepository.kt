@@ -39,14 +39,13 @@ class ChannelRepository(private val sharedPreferences: SharedPreferences) {
     val channelProgramCount = LiveDataCounter()
     val programCount = LiveDataCounter()
     private val messageParser = MessageParser()
-    private var savedPositions: List<Int>
+    var savedPositions: List<Int>
         get() = sharedPreferences.getString(POSITION_PREFS, null)?.let {
                 return@let (messageParser.parseMessage(it) as? MessagePlayListCustomConfig)?.channelSelection ?: emptyList()
             } ?: emptyList()
 
-        set(value) =
+        private set(value) =
             sharedPreferences.edit().putString(POSITION_PREFS, messageParser.serializeMessage(MessagePlayListCustomConfig(value))).apply()
-
 
     fun loadChannels(url: String) = executor.submit {
         percentage.postValue(0)

@@ -8,7 +8,7 @@ import java.util.concurrent.Executors
 
 
 private const val TAG = "Session"
-private const val RECORD_SEPARATOR = 0x1E.toString()
+private const val RECORD_SEPARATOR = 0x1E.toChar().toString()
 
 class Session(private val socket: Socket, private val messageListener: (String) -> Unit) {
 

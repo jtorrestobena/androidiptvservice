@@ -4,6 +4,7 @@ import androidx.lifecycle.Transformations
 import com.bytecoders.iptvservice.mobileconfig.MainActivityViewModel
 import com.bytecoders.iptvservice.mobileconfig.ui.BaseFragmentViewModel
 import com.bytecoders.iptvservicecommunicator.protocol.api.MessagePlayListConfig
+import com.bytecoders.iptvservicecommunicator.protocol.api.MessagePlayListCustomConfig
 
 class HomeViewModel(sharedViewModel: MainActivityViewModel)
     : BaseFragmentViewModel(sharedViewModel) {
@@ -35,6 +36,11 @@ class HomeViewModel(sharedViewModel: MainActivityViewModel)
     }
 
     fun sendList() {
+        sharedViewModel.channelRepository.savedPositions.let {
+            if (it.isNotEmpty()) {
+                sharedViewModel.iptvClient.sendMessage(MessagePlayListCustomConfig(it))
+            }
+        }
         m3uURL.value?.let {
             sharedViewModel.iptvClient.sendMessage(MessagePlayListConfig(it, epgURL.value))
         }

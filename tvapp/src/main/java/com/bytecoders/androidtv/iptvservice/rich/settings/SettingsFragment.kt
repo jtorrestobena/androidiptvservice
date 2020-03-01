@@ -23,6 +23,7 @@ import com.bytecoders.androidtv.iptvservice.rich.RichTvInputSetupActivity
 import com.bytecoders.iptvservicecommunicator.IPTVService
 import com.bytecoders.iptvservicecommunicator.protocol.api.MessageEndpointInformation
 import com.bytecoders.iptvservicecommunicator.protocol.api.MessagePlayListConfig
+import com.bytecoders.iptvservicecommunicator.protocol.api.MessagePlayListCustomConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -92,6 +93,9 @@ class SettingsFragment : LeanbackSettingsFragmentCompat() {
                 when (it) {
                     is MessageEndpointInformation -> {
                         serverStatus?.summary = "Connected to ${it.name}"
+                    }
+                    is MessagePlayListCustomConfig -> {
+                        ChannelRepository(requireContext().applicationContext as Application).savedPositions = it.channelSelection
                     }
                     is MessagePlayListConfig -> {
                         PreferenceManager.getDefaultSharedPreferences(requireContext()).edit {
