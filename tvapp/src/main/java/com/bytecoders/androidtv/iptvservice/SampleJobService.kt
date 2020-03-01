@@ -22,6 +22,7 @@ import android.util.LongSparseArray
 import androidx.core.util.set
 import com.bytecoders.androidtv.iptvservice.data.EPGURLMapping
 import com.bytecoders.androidtv.iptvservice.repository.ChannelRepository
+import com.bytecoders.m3u8parser.data.Playlist
 import com.google.android.exoplayer2.C
 import com.google.android.media.tv.companionlibrary.model.Channel
 import com.google.android.media.tv.companionlibrary.model.InternalProviderData
@@ -41,7 +42,7 @@ class SampleJobService : EpgSyncJobService() {
         ChannelRepository(applicationContext as Application).programListings
     }
 
-    private val m3uPlayList: com.bytecoders.m3u8parser.data.Playlist by lazy {
+    private val m3uPlayList: Playlist by lazy {
         ChannelRepository(applicationContext as Application).playlist
     }
 

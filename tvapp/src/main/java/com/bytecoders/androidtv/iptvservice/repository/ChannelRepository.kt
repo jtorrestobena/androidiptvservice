@@ -13,7 +13,7 @@ const val M3U_URL_PREFS = "M3U_URL_PREFS"
 const val EPG_URL_PREFS = "EPG_URL_PREFS"
 private const val POSITION_PREFS = "POSITION_PREFS"
 
-class ChannelRepository(private val application: Application) {
+class ChannelRepository(application: Application) {
     private val channelRepositoryPreferences = PreferenceManager.getDefaultSharedPreferences(application)
 
     var playlistURL: String?
