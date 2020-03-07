@@ -75,7 +75,7 @@ class ChannelRepository(private val application: Application) {
         eventLogDatabase.insertEvents(EventLog(EventType.type_information, "Playlist download",
                 "Downloaded playlist from $url in ${System.currentTimeMillis() - start} ms." +
                         " Containing ${playlist.value?.playListEntries?.size ?: 0} channels." +
-                        "EPG URL: ${playlist.value?.epgURL}"))
+                        " EPG URL: ${playlist.value?.epgURL}"))
     }
 
     fun loadPlayListListings(url: String) = executor.submit {
@@ -90,7 +90,7 @@ class ChannelRepository(private val application: Application) {
                 }))
                 eventLogDatabase.insertEvents(EventLog(EventType.type_information, "EPG list download",
                         "Downloaded program list from $url in ${System.currentTimeMillis() - start} ms." +
-                                " Containing $programCount programs for $channelProgramCount channels."))
+                                " Containing ${programCount.value} programs for ${channelProgramCount.value} channels."))
             } catch (e: IOException) {
                 Log.e(TAG, "Error in fetching $url", e)
                 eventLogDatabase.insertEvents(EventLog(EventType.type_error, "Error in fetching $url", e.message ?: ""))

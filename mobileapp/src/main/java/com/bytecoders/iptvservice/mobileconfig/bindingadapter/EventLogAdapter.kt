@@ -1,7 +1,6 @@
 package com.bytecoders.iptvservice.mobileconfig.bindingadapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -22,11 +21,17 @@ class EventLogAdapter(private val eventList: List<EventLog>): RecyclerView.Adapt
         holder.bind(eventList[position])
     }
 
+    override fun onViewDetachedFromWindow(holder: EventLogViewHolder) {
+        super.onViewDetachedFromWindow(holder)
+        holder.close()
+    }
+
     class EventLogViewHolder(private val binding: EventlogItemBinding):
-            RecyclerView.ViewHolder(binding.root) {
+            ExpandableViewHolder(binding.root, binding.logMessage) {
         fun bind(eventLog: EventLog) {
             binding.eventLog = eventLog
             binding.executePendingBindings()
+            setupClickListener()
         }
     }
 }

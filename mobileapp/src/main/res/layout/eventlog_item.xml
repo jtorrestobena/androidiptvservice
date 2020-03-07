@@ -22,7 +22,7 @@
         android:padding="@dimen/padding_small"
         android:orientation="vertical">
         <TextView
-            android:id="@+id/program_start"
+            android:id="@+id/log_timestamp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/margin_small"
@@ -32,46 +32,46 @@
             tools:text="01/02/2020 10:30" />
 
         <TextView
-            android:id="@+id/program_title"
+            android:id="@+id/log_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             style="@style/AppTheme.LabelText"
             android:gravity="start"
             android:text="@{eventLog.eventTitle}"
-            app:layout_constraintTop_toBottomOf="@id/program_start"
+            app:layout_constraintTop_toBottomOf="@id/log_timestamp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="Log Title" />
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/logo_guideline"
+            android:id="@+id/log_guideline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintGuide_percent="0.3"
             android:orientation="vertical" />
 
         <ImageView
-            android:id="@+id/tvlogo_iv"
+            android:id="@+id/log_type_iv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_small"
             android:src="@drawable/ic_dashboard_black_24dp"
             android:layout_marginEnd="@dimen/margin_small"
-            app:layout_constraintTop_toBottomOf="@id/program_title"
+            app:layout_constraintTop_toBottomOf="@id/log_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/logo_guideline" />
         <TextView
 
-            android:id="@+id/program_description"
+            android:id="@+id/log_message"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="start"
             android:layout_marginTop="@dimen/margin_small"
             android:text="@{eventLog.eventMessage}"
-            android:maxLines="@integer/epg_description_max_lines"
+            android:maxLines="@integer/item_description_max_lines"
             android:ellipsize="end"
-            app:layout_constraintTop_toBottomOf="@id/program_title"
-            app:layout_constraintStart_toEndOf="@id/logo_guideline"
+            app:layout_constraintTop_toBottomOf="@id/log_title"
+            app:layout_constraintStart_toEndOf="@id/log_guideline"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="This the program description that can spread across several lines" />
 

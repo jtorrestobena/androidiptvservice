@@ -25,29 +25,13 @@ class EpgAdapter(private val list: List<Program>): RecyclerView.Adapter<EpgAdapt
         holder.close()
     }
 
-    class EpgViewHolder(private val binding: EpgItemBinding): RecyclerView.ViewHolder(binding.root) {
-        private var expanded = false
-        private val defaultLinesEpg by lazy {
-            itemView.context.resources.getInteger(R.integer.epg_description_max_lines)
-        }
+    class EpgViewHolder(private val binding: EpgItemBinding):
+            ExpandableViewHolder(binding.root, binding.programDescription) {
 
         fun bind(program: Program) {
             binding.program = program
             binding.executePendingBindings()
-            itemView.setOnClickListener {
-                // Show any remaining lines on tap
-                if (!expanded) {
-                    binding.programDescription.maxLines = Int.MAX_VALUE
-                    expanded = true
-                }
-            }
-        }
-
-        fun close() {
-            if (expanded) {
-                binding.programDescription.maxLines = defaultLinesEpg
-                expanded = false
-            }
+            setupClickListener()
         }
     }
 }
