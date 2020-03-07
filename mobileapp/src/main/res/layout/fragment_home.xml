@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="com.bytecoders.iptvservicecommunicator.IPTVServiceClient.ServiceStatus" />
 
         <variable
             name="viewmodel"
@@ -102,6 +103,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/button_margin"
                             android:layout_weight="1"
+                            android:enabled="@{viewmodel.serviceStatus == ServiceStatus.READY}"
                             android:onClick="@{() -> viewmodel.sendList()}"
                             android:text="@string/send" />
                     </LinearLayout>
@@ -182,5 +184,15 @@
             android:importantForAutofill="no"
             app:service_status="@{viewmodel.serviceStatus}"
             tools:text="Connected to TV" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_small"
+            android:enabled="@{!viewmodel.wifiConnection}"
+            android:src="@{viewmodel.wifiConnection ? @drawable/ic_signal_wifi_4_bar_24px : @drawable/ic_signal_wifi_off_24px}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:src="@drawable/ic_signal_wifi_4_bar_24px"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
