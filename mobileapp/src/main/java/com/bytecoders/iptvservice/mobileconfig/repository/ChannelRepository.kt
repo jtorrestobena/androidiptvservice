@@ -88,7 +88,7 @@ class ChannelRepository(private val application: Application) {
                     override fun onNewChannel() = channelProgramCount.increment()
                     override fun onNewProgram() = programCount.increment()
                 }))
-                eventLogDatabase.insertEvents(EventLog(EventType.type_information, "Playlist download",
+                eventLogDatabase.insertEvents(EventLog(EventType.type_information, "EPG list download",
                         "Downloaded program list from $url in ${System.currentTimeMillis() - start} ms." +
                                 " Containing $programCount programs for $channelProgramCount channels."))
             } catch (e: IOException) {

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bytecoders.iptvservice.mobileconfig.bindingadapter.RecyclerViewBindingAdapters.getDragListener
 import com.bytecoders.iptvservice.mobileconfig.bindingadapter.RecyclerViewBindingAdapters.touchHelper
+import com.bytecoders.iptvservice.mobileconfig.database.EventLog
 import com.bytecoders.m3u8parser.data.Playlist
 import com.google.android.media.tv.companionlibrary.model.Program
 import com.google.android.media.tv.companionlibrary.xmltv.XmlTvParser
@@ -62,5 +63,14 @@ fun RecyclerView.bindEpgPrograms(nullableList: List<Program>?, scrollToProgram: 
                 (layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(position, 0)
             }
         }
+    }
+}
+
+@BindingAdapter("event_list")
+fun RecyclerView.bindEvents(nullableList: List<EventLog>?) {
+    nullableList?.let {
+        addItemDecoration(DividerItemDecoration(context,
+                DividerItemDecoration.VERTICAL))
+        adapter = EventLogAdapter(it)
     }
 }
