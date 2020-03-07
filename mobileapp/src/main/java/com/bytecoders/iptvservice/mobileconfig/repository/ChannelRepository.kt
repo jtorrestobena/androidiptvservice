@@ -1,8 +1,12 @@
 package com.bytecoders.iptvservice.mobileconfig.repository
 
-import android.content.SharedPreferences
+import android.app.Application
+import android.preference.PreferenceManager
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.bytecoders.iptvservice.mobileconfig.database.EventLog
+import com.bytecoders.iptvservice.mobileconfig.database.EventType
+import com.bytecoders.iptvservice.mobileconfig.database.getAppDatabase
 import com.bytecoders.iptvservice.mobileconfig.livedata.LiveDataCounter
 import com.bytecoders.iptvservice.mobileconfig.livedata.SingleLiveEvent
 import com.bytecoders.iptvservice.mobileconfig.livedata.StringSettings
@@ -24,7 +28,8 @@ private const val M3U_URL_PREFS = "M3U_URL_PREFS"
 private const val EPG_URL_PREFS = "EPG_URL_PREFS"
 private const val POSITION_PREFS = "POSITION_PREFS"
 
-class ChannelRepository(private val sharedPreferences: SharedPreferences) {
+class ChannelRepository(private val application: Application) {
+    private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
     val m3uURL = StringSettings(sharedPreferences, M3U_URL_PREFS)
     val epgURL = StringSettings(sharedPreferences, EPG_URL_PREFS)
     val newURLEvent = SingleLiveEvent<String>()
@@ -47,7 +52,12 @@ class ChannelRepository(private val sharedPreferences: SharedPreferences) {
         private set(value) =
             sharedPreferences.edit().putString(POSITION_PREFS, messageParser.serializeMessage(MessagePlayListCustomConfig(value))).apply()
 
+    private val eventLogDatabase by lazy {
+        getAppDatabase(application).eventLogDao()
+    }
+
     fun loadChannels(url: String) = executor.submit {
+        val start = System.currentTimeMillis()
         percentage.postValue(0)
         val inputStreamWithLength = inputStreamAndLength(url)
         Log.d(TAG, "Configuration for positions $positions")
@@ -62,9 +72,14 @@ class ChannelRepository(private val sharedPreferences: SharedPreferences) {
             }
         })
         percentage.postValue(100)
+        eventLogDatabase.insertEvents(EventLog(EventType.type_information, "Playlist download",
+                "Downloaded playlist from $url in ${System.currentTimeMillis() - start} ms." +
+                        " Containing ${playlist.value?.playListEntries?.size ?: 0} channels." +
+                        "EPG URL: ${playlist.value?.epgURL}"))
     }
 
     fun loadPlayListListings(url: String) = executor.submit {
+        val start = System.currentTimeMillis()
         Network.inputStreamforURL(url).use {
             try {
                 channelProgramCount.reset()
@@ -73,11 +88,15 @@ class ChannelRepository(private val sharedPreferences: SharedPreferences) {
                     override fun onNewChannel() = channelProgramCount.increment()
                     override fun onNewProgram() = programCount.increment()
                 }))
+                eventLogDatabase.insertEvents(EventLog(EventType.type_information, "Playlist download",
+                        "Downloaded program list from $url in ${System.currentTimeMillis() - start} ms." +
+                                " Containing $programCount programs for $channelProgramCount channels."))
             } catch (e: IOException) {
                 Log.e(TAG, "Error in fetching $url", e)
+                eventLogDatabase.insertEvents(EventLog(EventType.type_error, "Error in fetching $url", e.message ?: ""))
             } catch (e: XmlTvParser.XmlTvParseException) {
                 Log.e(TAG, "Error in parsing $url", e)
-
+                eventLogDatabase.insertEvents(EventLog(EventType.type_error, "Error in parsing $url", e.message ?: ""))
             }
         }
     }
