@@ -39,6 +39,9 @@ interface EventLogDao {
     @Query("SELECT * FROM EventLog")
     fun getAllEvents(): List<EventLog>
 
+    @Query("SELECT * FROM EventLog ORDER BY CASE WHEN :asc = 1 THEN event_timestamp END ASC, CASE WHEN :asc = 0 THEN event_timestamp END DESC")
+    fun getEventsByTimestamp(asc: Boolean): List<EventLog>
+
     @Query("SELECT * FROM EventLog WHERE event_timestamp BETWEEN :dateFrom AND :dateTo")
     fun loadEventsForDate(dateFrom: Long, dateTo: Long): List<EventLog>
 

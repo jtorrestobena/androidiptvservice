@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.bytecoders.iptvservice.mobileconfig.MainActivityViewModel
-import com.bytecoders.iptvservice.mobileconfig.database.AppDatabase
 import com.bytecoders.iptvservice.mobileconfig.database.EventLog
 import com.bytecoders.iptvservice.mobileconfig.database.getAppDatabase
 import com.bytecoders.iptvservice.mobileconfig.ui.BaseFragmentViewModel
@@ -16,7 +15,7 @@ class NotificationsViewModel(sharedViewModel: MainActivityViewModel)
     private val db = getAppDatabase(sharedViewModel.application).eventLogDao()
     private val eventsInternal = MutableLiveData<List<EventLog>>().apply {
         executor.submit {
-            postValue(db.getAllEvents())
+            postValue(db.getEventsByTimestamp(false))
         }
     }
     val events: LiveData<List<EventLog>> = Transformations.map(eventsInternal) { i -> i }
