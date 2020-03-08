@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="com.bytecoders.iptvservicecommunicator.IPTVServiceClient.ServiceStatus" />
 
         <variable
@@ -11,28 +12,19 @@
             type="com.bytecoders.iptvservice.mobileconfig.ui.home.HomeViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ScrollView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/connection_status">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/main_layout">
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/playlist_cardview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_small"
-                android:elevation="@dimen/cardview_elevation"
+            <ScrollView
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -40,159 +32,207 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="@dimen/padding_small">
-
-                    <TextView
-                        android:id="@+id/iptv_url_tv"
-                        style="@style/AppTheme.LabelText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:importantForAutofill="no"
-                        android:text="@string/iptv_url" />
-
-                    <EditText
-                        android:id="@+id/iptv_url"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:importantForAutofill="no"
-                        android:text="@={viewmodel.m3uURL}" />
-
-                    <TextView
-                        android:id="@+id/epg_url_tv"
-                        style="@style/AppTheme.LabelText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:importantForAutofill="no"
-                        android:text="@string/epg_url" />
-
-                    <EditText
-                        android:id="@+id/epg_url"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:importantForAutofill="no"
-                        android:text="@={viewmodel.epgURL}" />
-
-                    <ProgressBar
-                        android:id="@+id/progressbarPredict"
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:progress="@{viewmodel.downloadProgress}"
-                        tools:progress="50" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:weightSum="2">
-
-                        <Button
-                            android:id="@+id/download_list"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/button_margin"
-                            android:layout_weight="1"
-                            android:onClick="@{() -> viewmodel.downloadList()}"
-                            android:text="@string/download" />
-
-                        <Button
-                            android:id="@+id/send_list"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/button_margin"
-                            android:layout_weight="1"
-                            android:enabled="@{viewmodel.serviceStatus == ServiceStatus.READY}"
-                            android:onClick="@{() -> viewmodel.sendList()}"
-                            android:text="@string/send" />
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_small"
-                android:elevation="@dimen/cardview_elevation"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/playlist_cardview">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/padding_small"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/channels"
-                        style="@style/AppTheme.LabelText"
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/playlist_cardview"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/margin_small"
-                        android:gravity="center"
-                        android:importantForAutofill="no"
-                        android:text="@{viewmodel.channelsText}"
-                        tools:text="300 channels" />
+                        android:elevation="@dimen/cardview_elevation"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
 
-                    <TextView
-                        android:id="@+id/errors"
-                        style="@style/AppTheme.LabelText"
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="@dimen/padding_small">
+
+                            <TextView
+                                android:id="@+id/iptv_url_tv"
+                                style="@style/AppTheme.LabelText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:importantForAutofill="no"
+                                android:text="@string/iptv_url" />
+
+                            <EditText
+                                android:id="@+id/iptv_url"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:importantForAutofill="no"
+                                android:text="@={viewmodel.m3uURL}" />
+
+                            <TextView
+                                android:id="@+id/epg_url_tv"
+                                style="@style/AppTheme.LabelText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:importantForAutofill="no"
+                                android:text="@string/epg_url" />
+
+                            <EditText
+                                android:id="@+id/epg_url"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:importantForAutofill="no"
+                                android:text="@={viewmodel.epgURL}" />
+
+                            <ProgressBar
+                                android:id="@+id/progressbarPredict"
+                                style="?android:attr/progressBarStyleHorizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"
+                                android:progress="@{viewmodel.downloadProgress}"
+                                tools:progress="50" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:weightSum="2">
+
+                                <Button
+                                    android:id="@+id/download_list"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="@dimen/button_margin"
+                                    android:layout_weight="1"
+                                    android:onClick="@{() -> viewmodel.downloadList()}"
+                                    android:text="@string/download" />
+
+                                <Button
+                                    android:id="@+id/send_list"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/button_margin"
+                                    android:layout_weight="1"
+                                    android:enabled="@{viewmodel.serviceStatus == ServiceStatus.READY}"
+                                    android:onClick="@{() -> viewmodel.sendList()}"
+                                    android:text="@string/send" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/margin_small"
-                        android:gravity="center"
-                        android:importantForAutofill="no"
-                        android:text="@{viewmodel.errorText}"
-                        tools:text="3 errors" />
-                    <TextView
-                        android:id="@+id/channel_epg"
-                        style="@style/AppTheme.LabelText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_small"
-                        android:gravity="center"
-                        android:importantForAutofill="no"
-                        android:text="@{viewmodel.channelEpg}"
-                        tools:text="3 channel with EPG" />
-                    <TextView
-                        android:id="@+id/channel_program"
-                        style="@style/AppTheme.LabelText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_small"
-                        android:gravity="center"
-                        android:importantForAutofill="no"
-                        android:text="@{viewmodel.programCount}"
-                        tools:text="3 programs found" />
+                        android:elevation="@dimen/cardview_elevation"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/playlist_cardview">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/padding_small"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/channels"
+                                style="@style/AppTheme.LabelText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="@dimen/margin_small"
+                                android:gravity="center"
+                                android:importantForAutofill="no"
+                                android:text="@{viewmodel.channelsText}"
+                                tools:text="300 channels" />
+
+                            <TextView
+                                android:id="@+id/errors"
+                                style="@style/AppTheme.LabelText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="@dimen/margin_small"
+                                android:gravity="center"
+                                android:importantForAutofill="no"
+                                android:text="@{viewmodel.errorText}"
+                                tools:text="3 errors" />
+
+                            <TextView
+                                android:id="@+id/channel_epg"
+                                style="@style/AppTheme.LabelText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="@dimen/margin_small"
+                                android:gravity="center"
+                                android:importantForAutofill="no"
+                                android:text="@{viewmodel.channelEpg}"
+                                tools:text="3 channel with EPG" />
+
+                            <TextView
+                                android:id="@+id/channel_program"
+                                style="@style/AppTheme.LabelText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="@dimen/margin_small"
+                                android:gravity="center"
+                                android:importantForAutofill="no"
+                                android:text="@{viewmodel.programCount}"
+                                tools:text="3 programs found" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
-        </ScrollView>
+            </ScrollView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
-            android:id="@+id/connection_status"
-            style="@style/AppTheme.LabelText"
-            android:layout_width="0dp"
+        <com.google.android.material.circularreveal.CircularRevealLinearLayout
+            android:id="@+id/info_bottom_sheet"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_small"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:gravity="center"
-            android:importantForAutofill="no"
-            app:service_status="@{viewmodel.serviceStatus}"
-            tools:text="Connected to TV" />
+            android:layout_width="match_parent"
+            android:layout_gravity="bottom|center_horizontal"
+            android:visibility="invisible"
+            android:background="@color/lightBlue"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            app:layout_behavior="com.google.android.material.transformation.FabTransformationSheetBehavior">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/close_bottom_sheet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_small"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/ic_close_24px"
+                android:layout_gravity="top|end"/>
+            <TextView
+                android:id="@+id/connection_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/margin_small"
+                android:layout_margin="@dimen/margin_small"
+                android:importantForAutofill="no"
+                app:service_status="@{viewmodel.serviceStatus}"
+                tools:drawableLeft="@drawable/ic_important_devices_24px"
+                tools:text="@string/ServiceStatus_READY" />
+            <TextView
+                android:id="@+id/wifi_connection_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/margin_small"
+                android:layout_margin="@dimen/margin_small"
+                android:importantForAutofill="no"
+                app:wifi_status="@{viewmodel.wifiConnection}"
+                tools:drawableLeft="@drawable/ic_signal_wifi_4_bar_24px"
+                tools:text="@string/wifi_connected" />
+        </com.google.android.material.circularreveal.CircularRevealLinearLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/home_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            app:borderWidth="0dp"
+            app:elevation="6dp"
+            app:backgroundTint="@color/lightBlue"
             android:layout_margin="@dimen/margin_small"
-            android:enabled="@{!viewmodel.wifiConnection}"
             android:src="@{viewmodel.wifiConnection ? @drawable/ic_signal_wifi_4_bar_24px : @drawable/ic_signal_wifi_off_24px}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            tools:src="@drawable/ic_signal_wifi_4_bar_24px"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            tools:src="@drawable/ic_signal_wifi_4_bar_24px" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

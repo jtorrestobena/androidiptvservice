@@ -16,6 +16,14 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
         viewModel.newURLEvent.observe(viewLifecycleOwner, Observer {
             showNewEPGDialog(it)
         })
+        with(viewBinding.homeFab) {
+            setOnClickListener {
+                isExpanded = !isExpanded
+            }
+        }
+        viewBinding.closeBottomSheet.setOnClickListener {
+            viewBinding.homeFab.isExpanded = false
+        }
     }
 
     private fun showNewEPGDialog(epgURL: String) {

@@ -13,4 +13,11 @@
     <string name="cancel">Cancel</string>
     <string name="edit_on">Edit channels</string>
     <string name="edit_off">View channels</string>
+    <string name="wifi_connected">You are now connected to a Wi-Fi network, please make sure you are connected to the same network as your TV</string>
+    <string name="wifi_not_connected">You are NOT connected to a Wi-Fi network, to apply settings to the TV you must be connected to the same network. You might want to enable Wi-Fi</string>
+    <string name="ServiceStatus_UNREGISTERED">It was not possible to detect or connect to any TV service on this network. Please try connecting to another network or restarting this process</string>
+    <string name="ServiceStatus_REGISTERED">You are now registered with the TV, the communication between your Android device and your Android TV has been established</string>
+    <string name="ServiceStatus_REGISTERING">Discovered a TV service, trying to connect now. Please do not close settings on the TV app</string>
+    <string name="ServiceStatus_DISCOVERY">Searching for TVs on the connected network. Make sure to open app settings on your TV</string>
+    <string name="ServiceStatus_READY">You are now connected to a TV. Once you are done editing your playlist press SEND button to update channels on your TV</string>
 </resources>
