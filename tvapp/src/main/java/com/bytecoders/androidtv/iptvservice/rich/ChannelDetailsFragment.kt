@@ -4,16 +4,19 @@ import android.os.Bundle
 import android.util.Log
 import androidx.leanback.app.DetailsSupportFragment
 import androidx.leanback.widget.*
-import com.bytecoders.androidtv.iptvservice.R
+import com.bumptech.glide.Glide
 import com.bytecoders.androidtv.iptvservice.presenter.ChannelDetailsPresenter
 import com.bytecoders.androidtv.iptvservice.presenter.StringPresenter
 import com.bytecoders.m3u8parser.data.Track
+import java.util.concurrent.Executors
 
 private const val TAG = "ChannelDetailsFragment"
 
 class ChannelDetailsFragment: DetailsSupportFragment() {
     private lateinit var rowsAdapter: ArrayObjectAdapter
     private lateinit var track: Track
+
+    private val backgroundExecutor = Executors.newSingleThreadExecutor()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,16 +36,26 @@ class ChannelDetailsFragment: DetailsSupportFragment() {
         }
         rowsAdapter = ArrayObjectAdapter(selector)
 
-        val detailsOverview = DetailsOverviewRow("Media Item Details").apply {
+        val detailsOverview = DetailsOverviewRow(track).apply {
 
             // Add images and action buttons to the details view
-            imageDrawable = resources.getDrawable(R.drawable.ic_settings_24px, null)
-            addAction(Action(1, "Buy $9.99"))
-            addAction(Action(2, "Rent $2.99"))
+            track.extInfo?.tvgLogoUrl?.let {
+                backgroundExecutor.submit {
+                    Glide.with(requireContext())
+                            .asBitmap()
+                            .load(it)
+                            .submit()
+                            .get().let {
+                                setImageBitmap(requireContext(), it)
+                            }
+                }
+            }
+            addAction(Action(1, "Play"))
+            addAction(Action(2, "Enable parental control"))
         }
         rowsAdapter.add(detailsOverview)
 
-        // Add a Related items row
+        // Add EPG Guide
         val listRowAdapter = ArrayObjectAdapter(StringPresenter()).apply {
             add("Media Item 1")
             add("Media Item 2")
