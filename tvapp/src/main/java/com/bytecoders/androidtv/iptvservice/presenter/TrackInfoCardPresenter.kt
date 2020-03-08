@@ -1,7 +1,6 @@
 package com.bytecoders.androidtv.iptvservice.presenter
 
 import android.graphics.drawable.Drawable
-import android.text.TextUtils
 import android.view.ViewGroup
 import androidx.leanback.widget.ImageCardView
 import androidx.leanback.widget.Presenter
@@ -29,12 +28,11 @@ class TrackInfoCardPresenter : Presenter() {
         val cardView = viewHolder.view as ImageCardView
         cardView.titleText = track.extInfo!!.title
         cardView.contentText = cardView.context.getString(
-                if (TextUtils.isEmpty(track.extInfo!!.tvgId)) R.string.no_epg else R.string.epg_avail
+                if (track.extInfo?.tvgId.isNullOrEmpty()) R.string.no_epg else R.string.epg_avail
         )
-        // Set card size from dimension resources.
         val res = cardView.resources
-        val width = res.getDimensionPixelSize(R.dimen.card_width)
-        val height = res.getDimensionPixelSize(R.dimen.card_height)
+        val width = res.getDimensionPixelSize(R.dimen.tv_logo_size)
+        val height = res.getDimensionPixelSize(R.dimen.tv_logo_size)
         cardView.setMainImageDimensions(width, height)
         cardView.mainImage = defaultCardImage
         track.extInfo?.tvgLogoUrl?.let {

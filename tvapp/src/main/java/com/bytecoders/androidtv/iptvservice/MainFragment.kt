@@ -26,8 +26,6 @@ class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<Map<
     private lateinit var defaultBackground: Drawable
     private lateinit var backgroundManager: BackgroundManager
     private lateinit var rowsAdapter: ArrayObjectAdapter
-    private var hasChannels = false
-
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -64,7 +62,27 @@ class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<Map<
             }
         }
 
+        addSettingsSection()
+
         adapter = rowsAdapter
+    }
+
+    private fun addSettingsSection() {
+        val settingsSection = mapOf(
+                getString(R.string.empty_section_settings) to
+                        listOf(ApplicationItem(R.string.empty_section_settings, R.string.configure_application, R.drawable.ic_settings_24px) {
+                            Intent(activity, SettingsActivity::class.java).also { intent ->
+                                startActivity(intent)
+                            }
+                        }))
+        for ((section, sectionItemsList) in settingsSection) {
+            val listRowAdapter = ArrayObjectAdapter(ApplicationItemPresenter()).apply {
+                sectionItemsList.forEach(this::add)
+            }
+            HeaderItem(section).also { header ->
+                rowsAdapter.add(ListRow(header, listRowAdapter))
+            }
+        }
     }
 
     private fun buildEmptyAdapter() {
@@ -72,14 +90,8 @@ class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<Map<
                 getString(R.string.empty_section_start) to
                         listOf(ApplicationItem(R.string.empty_section_start, R.string.first_steps, R.drawable.baseline_live_tv_white_48) {
                             Log.d("WIP", "Click getting started section")
-                        }),
-                getString(R.string.empty_section_settings) to
-                        listOf(ApplicationItem(R.string.empty_section_settings, R.string.configure_application, R.drawable.ic_settings_24px) {
-                            Intent(activity, SettingsActivity::class.java).also { intent ->
-                                startActivity(intent)
-                            }
-                        })
-        )
+                        }))
+
         rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
 
         for ((section, sectionItemsList) in emptySections) {
@@ -90,6 +102,8 @@ class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<Map<
                 rowsAdapter.add(ListRow(header, listRowAdapter))
             }
         }
+
+        addSettingsSection()
 
         adapter = rowsAdapter
     }
@@ -103,10 +117,8 @@ class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<Map<
         }
 
         onItemViewClickedListener = OnItemViewClickedListener { itemViewHolder, item, rowViewHolder, row ->
-            if (hasChannels) {
+            (item as? ApplicationItem)?.clickAction?.invoke() ?: run {
                 Log.d("ITEM", "track $item selected $itemViewHolder")
-            } else {
-                (item as? ApplicationItem)?.clickAction?.invoke()
             }
         }
         onItemViewSelectedListener = OnItemViewSelectedListener { itemViewHolder, item, rowViewHolder, row -> Log.d("ITEM", "item selected $itemViewHolder") }
@@ -116,7 +128,6 @@ class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<Map<
 
     override fun onLoadFinished(loader: Loader<Map<String?, List<Track>>>, data: Map<String?, List<Track>>?) {
         Log.d(TAG, "finished loading channels")
-        hasChannels = !data.isNullOrEmpty()
         if (data.isNullOrEmpty()) {
             buildEmptyAdapter()
             Intent(activity, SetupWizard::class.java).also { intent ->

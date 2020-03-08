@@ -23,12 +23,9 @@ class ApplicationItemPresenter: Presenter() {
             val cardView = viewHolder.view as ImageCardView
             cardView.titleText = cardView.context.getString(applicationItem.title)
             cardView.contentText = cardView.context.getString(applicationItem.message)
-
-            // Set card size from dimension resources.
-            // Set card size from dimension resources.
             val res = cardView.resources
-            val width = res.getDimensionPixelSize(R.dimen.card_width)
-            val height = res.getDimensionPixelSize(R.dimen.card_width)
+            val width = res.getDimensionPixelSize(R.dimen.application_item_size)
+            val height = res.getDimensionPixelSize(R.dimen.application_item_size)
             cardView.setMainImageDimensions(width, height)
             cardView.mainImage = res.getDrawable(applicationItem.drawableRes, null)
         }

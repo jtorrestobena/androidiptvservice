@@ -25,6 +25,6 @@
     <dimen name="side_panel_item_text_size">16sp</dimen>
     <dimen name="side_panel_item_padding_top">11dp</dimen>
     <dimen name="side_panel_item_padding_bottom">12.5dp</dimen>
-    <dimen name="card_width">156dp</dimen>
-    <dimen name="card_height">88dp</dimen>
+    <dimen name="application_item_size">156dp</dimen>
+    <dimen name="tv_logo_size">160dp</dimen>
 </resources>
