@@ -107,6 +107,9 @@
             </intent-filter>
         </activity>
 
+        <activity android:name="com.bytecoders.androidtv.iptvservice.rich.ChannelDetailsActivity"
+            android:theme="@style/Theme.Leanback"/>
+
         <!-- TV input which provides channels based on the streaming contents.
         Requires "android.permission.BIND_TV_INPUT" to ensure that only system services can bind.
         This provides the full implementation of TvInputService including EPG, subtitles,

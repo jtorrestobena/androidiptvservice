@@ -14,6 +14,8 @@ import com.bytecoders.androidtv.iptvservice.loader.SectionChannelsLoader
 import com.bytecoders.androidtv.iptvservice.model.ApplicationItem
 import com.bytecoders.androidtv.iptvservice.presenter.ApplicationItemPresenter
 import com.bytecoders.androidtv.iptvservice.presenter.TrackInfoCardPresenter
+import com.bytecoders.androidtv.iptvservice.rich.ChannelDetailsActivity
+import com.bytecoders.androidtv.iptvservice.rich.TRACK_EXTRA
 import com.bytecoders.androidtv.iptvservice.rich.search.SearchActivity
 import com.bytecoders.androidtv.iptvservice.rich.settings.SettingsActivity
 import com.bytecoders.androidtv.iptvservice.rich.settings.SetupWizard
@@ -119,6 +121,12 @@ class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<Map<
         onItemViewClickedListener = OnItemViewClickedListener { itemViewHolder, item, rowViewHolder, row ->
             (item as? ApplicationItem)?.clickAction?.invoke() ?: run {
                 Log.d("ITEM", "track $item selected $itemViewHolder")
+                (item as? Track)?.let {
+                    val intent = Intent(activity, ChannelDetailsActivity::class.java).apply {
+                        putExtra(TRACK_EXTRA, it)
+                    }
+                    startActivity(intent)
+                }
             }
         }
         onItemViewSelectedListener = OnItemViewSelectedListener { itemViewHolder, item, rowViewHolder, row -> Log.d("ITEM", "item selected $itemViewHolder") }
