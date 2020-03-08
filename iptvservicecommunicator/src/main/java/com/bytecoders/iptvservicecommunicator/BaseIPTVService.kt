@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.bytecoders.iptvservicecommunicator.protocol.MessageParser
 import com.bytecoders.iptvservicecommunicator.protocol.api.Message
+import com.bytecoders.iptvservicecommunicator.protocol.api.MessageEndpointInformation
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
@@ -14,6 +15,11 @@ abstract class BaseIPTVService {
     protected val messageParser = MessageParser()
     private val outputExecutor: Executor = Executors.newSingleThreadExecutor()
     val messagesLiveData: LiveData<Message> by lazy { Transformations.map(messageParser.incomingMessages) { i -> processIncomingMessage(i) } }
+    val tvName: LiveData<String?> by lazy {
+        Transformations.map(messagesLiveData) {
+            (it as? MessageEndpointInformation)?.name
+        }
+    }
 
     private fun processIncomingMessage(message: Message): Message = message.also{
         outputExecutor.execute { onMessageReceived(it) }

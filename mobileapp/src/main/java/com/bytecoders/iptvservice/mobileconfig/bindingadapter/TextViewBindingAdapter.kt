@@ -47,6 +47,14 @@ fun TextView.bindWifiStatus(wifiConnected: Boolean) {
     }
 }
 
+@BindingAdapter("tv_name")
+fun TextView.bindTvName(tvName: String?) {
+    tvName?.let {
+        text = context.getString(R.string.tvconnection_name, it)
+        setGravityDrawableLeft(R.drawable.ic_tv_24px)
+    }
+}
+
 fun TextView.setGravityDrawableLeft(@DrawableRes drawableResource: Int) =
         setCompoundDrawablesWithIntrinsicBounds(drawableResource, 0, 0, 0)
 

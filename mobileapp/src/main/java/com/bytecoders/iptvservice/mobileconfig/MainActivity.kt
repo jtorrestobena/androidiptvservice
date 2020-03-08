@@ -1,9 +1,7 @@
 package com.bytecoders.iptvservice.mobileconfig
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -22,10 +20,6 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
         viewModel = ViewModelProvider(this, MainActivityViewModelFactory(application))
                 .get(MainActivityViewModel::class.java)
-
-        viewModel.iptvClient.messagesLiveData.observe(this, Observer {
-            Toast.makeText(applicationContext, "Message: $it", Toast.LENGTH_SHORT).show()
-        })
     }
 
 }

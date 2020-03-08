@@ -219,6 +219,7 @@
                 android:layout_margin="@dimen/margin_small"
                 android:importantForAutofill="no"
                 app:wifi_status="@{viewmodel.wifiConnection}"
+                app:tv_name="@{viewmodel.tvName}"
                 tools:drawableLeft="@drawable/ic_signal_wifi_4_bar_24px"
                 tools:text="@string/wifi_connected" />
         </com.google.android.material.circularreveal.CircularRevealLinearLayout>
