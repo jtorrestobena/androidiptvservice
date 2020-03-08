@@ -47,6 +47,11 @@
     <string name="channels_available">%d channels available</string>
     <string name="invalid_url">"Invalid url %s"</string>
 
+    <string name="empty_section_start">Getting started</string>
+    <string name="empty_section_settings">Settings</string>
+    <string name="configure_application">Configure application</string>
+    <string name="first_steps">First steps</string>
+
     <string-array name="entries">
         <item>item1</item>
         <item>item2</item>

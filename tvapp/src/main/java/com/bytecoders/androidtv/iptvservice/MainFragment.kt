@@ -11,18 +11,22 @@ import androidx.leanback.widget.*
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import com.bytecoders.androidtv.iptvservice.loader.SectionChannelsLoader
-import com.bytecoders.androidtv.iptvservice.presenter.SectionRowPresenter
+import com.bytecoders.androidtv.iptvservice.model.ApplicationItem
+import com.bytecoders.androidtv.iptvservice.presenter.ApplicationItemPresenter
 import com.bytecoders.androidtv.iptvservice.presenter.TrackInfoCardPresenter
 import com.bytecoders.androidtv.iptvservice.rich.search.SearchActivity
+import com.bytecoders.androidtv.iptvservice.rich.settings.SettingsActivity
 import com.bytecoders.androidtv.iptvservice.rich.settings.SetupWizard
+import com.bytecoders.m3u8parser.data.Track
 
 
 private const val TAG = "MainFragment"
 
-class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<Map<String?, List<com.bytecoders.m3u8parser.data.Track>>> {
+class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<Map<String?, List<Track>>> {
     private lateinit var defaultBackground: Drawable
     private lateinit var backgroundManager: BackgroundManager
     private lateinit var rowsAdapter: ArrayObjectAdapter
+    private var hasChannels = false
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -48,7 +52,7 @@ class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<Map<
         loaderManager.initLoader(0, null, this).forceLoad()
     }
 
-    private fun buildRowsAdapter(sectionedChannels: Map<String?, List<com.bytecoders.m3u8parser.data.Track>>) {
+    private fun buildRowsAdapter(sectionedChannels: Map<String?, List<Track>>) {
         rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
 
         for ((genre, trackInfoList) in sectionedChannels) {
@@ -64,18 +68,25 @@ class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<Map<
     }
 
     private fun buildEmptyAdapter() {
-        // Todo create cards for items
-        val emptySections: Map<String, List<String>> = mapOf(
-                "getting started" to listOf("started1", "started2"),
-                "getting fml" to listOf("fml", "fml again")
+        val emptySections: Map<String, List<ApplicationItem>> = mapOf(
+                getString(R.string.empty_section_start) to
+                        listOf(ApplicationItem(R.string.empty_section_start, R.string.first_steps, R.drawable.baseline_live_tv_white_48) {
+                            Log.d("WIP", "Click getting started section")
+                        }),
+                getString(R.string.empty_section_settings) to
+                        listOf(ApplicationItem(R.string.empty_section_settings, R.string.configure_application, R.drawable.ic_settings_24px) {
+                            Intent(activity, SettingsActivity::class.java).also { intent ->
+                                startActivity(intent)
+                            }
+                        })
         )
         rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
 
-        for ((genre, trackInfoList) in emptySections) {
-            val listRowAdapter = ArrayObjectAdapter(SectionRowPresenter()).apply {
-                trackInfoList.forEach(this::add)
+        for ((section, sectionItemsList) in emptySections) {
+            val listRowAdapter = ArrayObjectAdapter(ApplicationItemPresenter()).apply {
+                sectionItemsList.forEach(this::add)
             }
-            HeaderItem(genre).also { header ->
+            HeaderItem(section).also { header ->
                 rowsAdapter.add(ListRow(header, listRowAdapter))
             }
         }
@@ -91,14 +102,21 @@ class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<Map<
             }
         }
 
-        onItemViewClickedListener = OnItemViewClickedListener { itemViewHolder, item, rowViewHolder, row -> Log.d("ITEM", "item clicked $itemViewHolder") }
+        onItemViewClickedListener = OnItemViewClickedListener { itemViewHolder, item, rowViewHolder, row ->
+            if (hasChannels) {
+                Log.d("ITEM", "track $item selected $itemViewHolder")
+            } else {
+                (item as? ApplicationItem)?.clickAction?.invoke()
+            }
+        }
         onItemViewSelectedListener = OnItemViewSelectedListener { itemViewHolder, item, rowViewHolder, row -> Log.d("ITEM", "item selected $itemViewHolder") }
     }
 
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Map<String?, List<com.bytecoders.m3u8parser.data.Track>>> = SectionChannelsLoader(requireContext())
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Map<String?, List<Track>>> = SectionChannelsLoader(requireContext())
 
-    override fun onLoadFinished(loader: Loader<Map<String?, List<com.bytecoders.m3u8parser.data.Track>>>, data: Map<String?, List<com.bytecoders.m3u8parser.data.Track>>?) {
+    override fun onLoadFinished(loader: Loader<Map<String?, List<Track>>>, data: Map<String?, List<Track>>?) {
         Log.d(TAG, "finished loading channels")
+        hasChannels = !data.isNullOrEmpty()
         if (data.isNullOrEmpty()) {
             buildEmptyAdapter()
             Intent(activity, SetupWizard::class.java).also { intent ->
@@ -109,7 +127,7 @@ class MainFragment : BrowseSupportFragment(), LoaderManager.LoaderCallbacks<Map<
         }
     }
 
-    override fun onLoaderReset(loader: Loader<Map<String?, List<com.bytecoders.m3u8parser.data.Track>>>) {
+    override fun onLoaderReset(loader: Loader<Map<String?, List<Track>>>) {
         Log.d(TAG, "onLoaderReset")
     }
 }
