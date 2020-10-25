@@ -17,13 +17,22 @@ package com.bytecoders.m3u8parser.data
 
 import java.io.Serializable
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 /**
  * Created by Emanuele on 31/08/2016.
  */
-class Track(var extInfo: ExtInfo? = null,
-            var url: String? = null) : Comparable<Track>, Serializable {
+class Track(var extInfo: ExtInfo? = null) : Comparable<Track>, Serializable {
+    var preferredUrl = 0
+    val alternativeURLs = ArrayList<String>()
+    var url: String? get() = alternativeURLs.getOrNull(preferredUrl)
+        set(value) {
+            value?.let(alternativeURLs::add)
+        }
+
+    val hasAlternatives: Boolean get() = alternativeURLs.size > 1
+
     /**
      * Check if there´s a TV guide identifier, if not create a UUID from
      * fields title, logo and name

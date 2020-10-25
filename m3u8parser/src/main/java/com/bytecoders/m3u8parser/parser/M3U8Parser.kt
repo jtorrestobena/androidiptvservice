@@ -69,6 +69,13 @@ class M3U8Parser(inputStream: InputStream?, protected val encoding: M3U8ItemScan
                 it.invoke(charsRead, channelsRead)
             }
         }
+        val groupedList = trackList.groupBy {
+            it.identifier
+        }
+        trackList.clear()
+        groupedList.forEach {
+            trackList.add(mergeTrack(it.value))
+        }
         val trackSetMap: Map<String, Set<Track>> = trackList.groupBy{
             it.extInfo?.groupTitle ?: ""
         }.mapValues {
@@ -86,6 +93,19 @@ class M3U8Parser(inputStream: InputStream?, protected val encoding: M3U8ItemScan
 
     private fun getTrackUrl(m3uItemStringArray: Array<String>): String {
         return m3uItemStringArray[1]
+    }
+
+    private fun mergeTrack(tracks: List<Track>): Track {
+        if (tracks.size == 1) { // Nothing to merge
+            return tracks.first()
+        }
+
+        val mergedTrack = Track(tracks.firstOrNull()?.extInfo)
+        tracks.forEach{
+            it.url?.let(mergedTrack.alternativeURLs::add)
+        }
+
+        return mergedTrack
     }
 
 }

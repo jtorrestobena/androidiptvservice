@@ -42,7 +42,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="start"
-            android:text="@{track.extInfo.title}"
+            android:text="@{track.extInfo.tvgName}"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toStartOf="@id/handle_drag"
             app:layout_constraintStart_toEndOf="@id/foto_guideline"
