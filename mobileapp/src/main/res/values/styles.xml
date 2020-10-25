@@ -6,10 +6,17 @@
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
         <item name="colorAccent">@color/secondaryColor</item>
+        <item name="mediaRouteTheme">@style/CustomMediaRouterTheme</item>
     </style>
 
     <style name="AppTheme.LabelText" parent="TextAppearance.AppCompat">
         <item name="android:textSize">20sp</item>
+    </style>
+
+    <!-- The Theme used in the app differs from the one used in
+            VideoDialogFragment (Theme_Black_NoTitleBar_Fullscreen) -->
+    <style name="CustomMediaRouterTheme" parent="Theme.MediaRouter">
+        <item name="mediaRouteButtonStyle">@style/Widget.MediaRouter.MediaRouteButton</item>
     </style>
 
 </resources>

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <import type="android.view.View" />
         <variable
             name="viewmodel"
             type="com.bytecoders.iptvservice.mobileconfig.ui.dashboard.DashboardViewModel" />
@@ -20,11 +20,11 @@
             android:id="@+id/channels_recyclerview"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:visibility="@{viewmodel.playlist == null ? View.GONE : View.VISIBLE}"
             app:playlist="@{viewmodel.playlist}"
             app:program_listings="@{viewmodel.listings}"
             app:edit_mode="@{viewmodel.editMode}"
             app:click_listener="@{viewmodel.itemListener}"
-            app:layoutManager="LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toolbar_image"

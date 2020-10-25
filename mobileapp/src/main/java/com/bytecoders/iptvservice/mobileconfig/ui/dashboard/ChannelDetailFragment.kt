@@ -6,11 +6,14 @@ import android.transition.TransitionInflater
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
+import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.navArgs
 import com.bytecoders.iptvservice.mobileconfig.MainActivityViewModel
 import com.bytecoders.iptvservice.mobileconfig.R
 import com.bytecoders.iptvservice.mobileconfig.databinding.ChannelDetailFragmentBinding
 import com.bytecoders.iptvservice.mobileconfig.ui.BaseFragment
+import com.bytecoders.iptvservice.mobileconfig.ui.videoplayer.VideoDialogFragment
+import kotlin.concurrent.fixedRateTimer
 
 
 class ChannelDetailFragment : BaseFragment<ChannelDetailViewModel, ChannelDetailFragmentBinding>() {
@@ -35,7 +38,7 @@ class ChannelDetailFragment : BaseFragment<ChannelDetailViewModel, ChannelDetail
                         val arrayAdapter = ArrayAdapter<String>(requireContext(), android.R.layout.select_dialog_singlechoice, it.alternativeURLs)
                         setNegativeButton("cancel", null)
                         setAdapter(arrayAdapter) { _, which ->
-                            Log.d("FML", "Playing option $which")
+                            Log.d("ChannelDetailFragment", "Playing option $which")
                             playURL(it.alternativeURLs[which])
                         }
                     }.show()
@@ -47,7 +50,9 @@ class ChannelDetailFragment : BaseFragment<ChannelDetailViewModel, ChannelDetail
     }
 
     private fun playURL(url: String) {
-        Log.d("FML", "Playing url $url")
+        Log.d("ChannelDetailFragment", "Playing url $url")
+        val videoFragment: DialogFragment = VideoDialogFragment.newInstance(url, "chanelname")
+        videoFragment.show(parentFragmentManager, "VideoDialog")
     }
 
     override fun getLayoutId(): Int = R.layout.channel_detail_fragment

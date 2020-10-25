@@ -1,5 +1,6 @@
 package com.bytecoders.iptvservice.mobileconfig.bindingadapter
 
+import android.widget.LinearLayout
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -26,11 +27,12 @@ object RecyclerViewBindingAdapters {
     } else null
 }
 
-@BindingAdapter("playlist", "program_listings", "edit_mode", "click_listener", requireAll = false)
+@BindingAdapter("playlist", "program_listings", "edit_mode", "click_listener", requireAll = true)
 fun RecyclerView.bindPlaylist(playlist: Playlist?, listings: XmlTvParser.TvListing?, editMode: Boolean?,
                               viewHolderClickListener: ViewHolderClickListener?) {
     touchHelper?.attachToRecyclerView(null)
     touchHelper = null
+    layoutManager = LinearLayoutManager(context)
     playlist?.let { list ->
         addItemDecoration(DividerItemDecoration(context,
                 DividerItemDecoration.VERTICAL))
@@ -39,6 +41,7 @@ fun RecyclerView.bindPlaylist(playlist: Playlist?, listings: XmlTvParser.TvListi
                     adapter = this
                 }
         channelsAdapter.listings = listings
+        channelsAdapter.notifyDataSetChanged()
         editMode?.let {
             channelsAdapter.setEditMode(it, getDragListener(it))
         }
