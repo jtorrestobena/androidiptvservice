@@ -10,7 +10,7 @@ import com.google.android.media.tv.companionlibrary.xmltv.XmlTvParser
 class ChannelProgramMediator: MediatorLiveData<List<Program>>() {
     var epgId: String? = null
     var tvListing: XmlTvParser.TvListing? = null
-    fun addTackSource(track: LiveData<Track>) {
+    fun addTrackSource(track: LiveData<Track>) {
         addSource(track) {
             epgId = it.extInfo?.tvgId
             epgId?.let { id ->

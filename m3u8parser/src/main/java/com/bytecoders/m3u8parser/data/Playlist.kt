@@ -26,12 +26,14 @@ data class Playlist (var trackSetMap: Map<String, Set<Track>>? = null,
                      val unknownEntries: ArrayList<String> = ArrayList(),
                      var epgURL: String? = null) {
 
-    fun applyPositions(positions: List<Int>) {
+    fun applyPositions(positions: List<String>) {
         if (positions.isNotEmpty()) {
             val filteredList = ArrayList<Track>(positions.size)
             with(playListEntries) {
-                positions.forEach {
-                    filteredList.add(this[it])
+                positions.forEach { identifier ->
+                    filteredList.addAll(filter {
+                        it.identifier == identifier
+                    })
                 }
                 clear()
                 addAll(filteredList)

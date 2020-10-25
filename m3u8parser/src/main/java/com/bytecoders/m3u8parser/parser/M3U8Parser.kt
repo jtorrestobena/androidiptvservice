@@ -57,7 +57,6 @@ class M3U8Parser(inputStream: InputStream?, protected val encoding: M3U8ItemScan
                     extInfo = extInfoParser.parse(getExtInfLine(m3U8ItemStringArray))
                     track.extInfo = extInfo
                     track.url = getTrackUrl(m3U8ItemStringArray)
-                    track.position = channelsRead
                     trackList.add(track)
                     channelsRead++
                 }

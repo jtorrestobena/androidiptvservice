@@ -459,7 +459,11 @@ public class XmlTvParser {
                 break;
             }
         }
-        if (TextUtils.isEmpty(system) || TextUtils.isEmpty(value)) {
+        if (TextUtils.isEmpty(system)) {
+            system = "MPAA";
+        }
+
+        if (TextUtils.isEmpty(value)) {
             throw new IllegalArgumentException("system and value cannot be null.");
         }
         return new XmlTvRating(system, value);

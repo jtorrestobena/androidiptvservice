@@ -16,14 +16,21 @@
 package com.bytecoders.m3u8parser.data
 
 import java.io.Serializable
+import java.util.*
 
 
 /**
  * Created by Emanuele on 31/08/2016.
  */
 class Track(var extInfo: ExtInfo? = null,
-            var url: String? = null,
-            var position: Int = 0) : Comparable<Track>, Serializable {
+            var url: String? = null) : Comparable<Track>, Serializable {
+    /**
+     * Check if there´s a TV guide identifier, if not create a UUID from
+     * fields title, logo and name
+     */
+    val identifier: String get() = extInfo?.let {
+        if (it.tvgId.isNullOrEmpty()) UUID.nameUUIDFromBytes("${it.title}:${it.tvgLogoUrl}:${it.tvgName}".toByteArray()).toString() else it.tvgId
+    } ?: "Unknown"
     override fun compareTo(other: Track): Int {
         return extInfo!!.title!!.compareTo(other.extInfo!!.title!!)
     }

@@ -14,14 +14,14 @@ private const val TAG = "ChannelDetailsFragment"
 
 class ChannelDetailsFragment: DetailsSupportFragment() {
     private lateinit var rowsAdapter: ArrayObjectAdapter
-    private lateinit var track: Track
+    private var track: Track? = null
 
     private val backgroundExecutor = Executors.newSingleThreadExecutor()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        track = activity?.intent?.getSerializableExtra(TRACK_EXTRA) as Track
-        Log.i(TAG, "onCreate ${track.extInfo?.title}")
+        track = (activity as? ChannelDetailsActivity)?.track
+        Log.i(TAG, "onCreate ${track?.extInfo?.title}")
 
         buildDetails()
     }
@@ -39,7 +39,7 @@ class ChannelDetailsFragment: DetailsSupportFragment() {
         val detailsOverview = DetailsOverviewRow(track).apply {
 
             // Add images and action buttons to the details view
-            track.extInfo?.tvgLogoUrl?.let {
+            track?.extInfo?.tvgLogoUrl?.let {
                 backgroundExecutor.submit {
                     Glide.with(requireContext())
                             .asBitmap()

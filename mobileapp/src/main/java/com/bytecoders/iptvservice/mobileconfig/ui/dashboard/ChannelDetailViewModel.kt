@@ -15,7 +15,7 @@ import com.google.android.media.tv.companionlibrary.model.Program
 class ChannelDetailViewModel(sharedViewModel: MainActivityViewModel) : BaseFragmentViewModel(sharedViewModel) {
     val track = MutableLiveData<Track>()
     private val programChannelsMediator = ChannelProgramMediator().apply {
-        addTackSource(track)
+        addTrackSource(track)
         addListingSource(channelRepository.listing)
     }
 

@@ -18,7 +18,6 @@ import com.bytecoders.m3u8parser.data.Playlist
 import com.bytecoders.m3u8parser.parser.M3U8Parser
 import com.bytecoders.m3u8parser.scanner.M3U8ItemScanner
 import com.google.android.media.tv.companionlibrary.xmltv.XmlTvParser
-import java.io.IOException
 import java.util.concurrent.Executors
 import kotlin.math.roundToInt
 
@@ -35,16 +34,14 @@ class ChannelRepository(private val application: Application) {
     val newURLEvent = SingleLiveEvent<String>()
     val playlist = MutableLiveData<Playlist>()
     var listing = MutableLiveData<XmlTvParser.TvListing?>()
-    var positions = ArrayList<Int>()
-    val percentage = MutableLiveData<Int>().apply {
-        postValue(0)
-    }
+    var positions = ArrayList<String>()
+    val percentage = MutableLiveData<Int>(0)
     val executor = Executors.newFixedThreadPool(2)
     val channelsAvailable = MutableLiveData<Int>(0)
     val channelProgramCount = LiveDataCounter()
     val programCount = LiveDataCounter()
     private val messageParser = MessageParser()
-    var savedPositions: List<Int>
+    var savedPositions: List<String>
         get() = sharedPreferences.getString(POSITION_PREFS, null)?.let {
                 return@let (messageParser.parseMessage(it) as? MessagePlayListCustomConfig)?.channelSelection ?: emptyList()
             } ?: emptyList()
@@ -91,12 +88,9 @@ class ChannelRepository(private val application: Application) {
                 eventLogDatabase.insertEvents(EventLog(EventType.type_information, "EPG list download",
                         "Downloaded program list from $url in ${System.currentTimeMillis() - start} ms." +
                                 " Containing ${programCount.value} programs for ${channelProgramCount.value} channels."))
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 Log.e(TAG, "Error in fetching $url", e)
                 eventLogDatabase.insertEvents(EventLog(EventType.type_error, "Error in fetching $url", e.message ?: ""))
-            } catch (e: XmlTvParser.XmlTvParseException) {
-                Log.e(TAG, "Error in parsing $url", e)
-                eventLogDatabase.insertEvents(EventLog(EventType.type_error, "Error in parsing $url", e.message ?: ""))
             }
         }
     }
@@ -104,7 +98,7 @@ class ChannelRepository(private val application: Application) {
     fun savePositionOrder() {
         positions.clear()
         playlist.value?.playListEntries?.forEach {
-            positions.add(it.position)
+            positions.add(it.identifier)
         }
         savedPositions = positions
     }

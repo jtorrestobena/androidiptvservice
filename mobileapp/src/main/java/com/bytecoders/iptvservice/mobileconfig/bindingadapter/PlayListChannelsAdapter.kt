@@ -93,7 +93,7 @@ class PlayListChannelsAdapter(private val playlist: Playlist,
     private fun update() = DiffUtil.calculateDiff(EditModeDiff(playlist.playListEntries)).dispatchUpdatesTo(this)
 
     class EditModeDiff(private val track: List<Track>): DiffUtil.Callback() {
-        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean = track[oldItemPosition].position == track[newItemPosition].position
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean = track[oldItemPosition].identifier == track[newItemPosition].identifier
 
         override fun getOldListSize(): Int = track.size
 

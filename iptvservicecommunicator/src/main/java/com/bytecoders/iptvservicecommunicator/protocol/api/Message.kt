@@ -18,4 +18,4 @@ data class MessagePlayListConfig(val playlistURL: String, val epgURL: String?): 
 
 @Serializable
 @SerialName("PlayListCustomConfig")
-data class MessagePlayListCustomConfig(val channelSelection: List<Int>): Message()
+data class MessagePlayListCustomConfig(val channelSelection: List<String>): Message()

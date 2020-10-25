@@ -14,7 +14,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.newURLEvent.observe(viewLifecycleOwner, Observer {
-            showNewEPGDialog(it)
+            it?.let(::showNewEPGDialog)
         })
         with(viewBinding.homeFab) {
             setOnClickListener {
