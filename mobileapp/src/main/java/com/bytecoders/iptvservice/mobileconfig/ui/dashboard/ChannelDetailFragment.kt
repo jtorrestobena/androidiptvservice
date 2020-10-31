@@ -13,7 +13,7 @@ import com.bytecoders.iptvservice.mobileconfig.R
 import com.bytecoders.iptvservice.mobileconfig.databinding.ChannelDetailFragmentBinding
 import com.bytecoders.iptvservice.mobileconfig.ui.BaseFragment
 import com.bytecoders.iptvservice.mobileconfig.ui.videoplayer.VideoDialogFragment
-import kotlin.concurrent.fixedRateTimer
+import com.bytecoders.m3u8parser.data.AlternativeURL
 
 
 class ChannelDetailFragment : BaseFragment<ChannelDetailViewModel, ChannelDetailFragmentBinding>() {
@@ -35,11 +35,11 @@ class ChannelDetailFragment : BaseFragment<ChannelDetailViewModel, ChannelDetail
                     AlertDialog.Builder(requireContext()).apply {
                         setIcon(R.drawable.ic_play_circle_outline_black_24dp)
                         setTitle("Select One Alternative")
-                        val arrayAdapter = ArrayAdapter<String>(requireContext(), android.R.layout.select_dialog_singlechoice, it.alternativeURLs)
+                        val arrayAdapter = ArrayAdapter<AlternativeURL>(requireContext(), android.R.layout.select_dialog_singlechoice, it.alternativeURLs)
                         setNegativeButton("cancel", null)
                         setAdapter(arrayAdapter) { _, which ->
                             Log.d("ChannelDetailFragment", "Playing option $which")
-                            playURL(it.alternativeURLs[which])
+                            it.alternativeURLs[which].url?.let(this@ChannelDetailFragment::playURL)
                         }
                     }.show()
                 } else {

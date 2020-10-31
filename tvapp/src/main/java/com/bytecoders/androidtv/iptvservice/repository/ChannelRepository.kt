@@ -57,7 +57,7 @@ class ChannelRepository(application: Application) {
     }
 
     private val messageParser = MessageParser()
-    var savedPositions: List<Int>
+    var savedPositions: List<String>
         get() = channelRepositoryPreferences.getString(POSITION_PREFS, null)?.let {
             return@let (messageParser.parseMessage(it) as? MessagePlayListCustomConfig)?.channelSelection ?: emptyList()
         } ?: emptyList()

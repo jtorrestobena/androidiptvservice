@@ -21,10 +21,10 @@ package com.bytecoders.m3u8parser.data
  * Set contains all channels by groups
  * All entries that could not be parsed should be added to unknownEntries
  */
-data class Playlist (var trackSetMap: Map<String, Set<Track>>? = null,
-                     val playListEntries: ArrayList<Track> = ArrayList(),
-                     val unknownEntries: ArrayList<String> = ArrayList(),
-                     var epgURL: String? = null) {
+data class Playlist(var trackSetMap: Map<String, Set<Track>>? = null,
+                    val playListEntries: ArrayList<Track> = ArrayList(),
+                    val unknownEntries: ArrayList<String> = ArrayList(),
+                    var epgURL: String? = null) {
 
     fun applyPositions(positions: List<String>) {
         if (positions.isNotEmpty()) {

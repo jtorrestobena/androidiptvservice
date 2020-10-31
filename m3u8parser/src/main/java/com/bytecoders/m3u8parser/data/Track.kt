@@ -19,17 +19,15 @@ import java.io.Serializable
 import java.util.*
 import kotlin.collections.ArrayList
 
-
+data class AlternativeURL(val title: String?, val url: String?) {
+    override fun toString(): String = title ?: super.toString()
+}
 /**
  * Created by Emanuele on 31/08/2016.
  */
-class Track(var extInfo: ExtInfo? = null) : Comparable<Track>, Serializable {
+class Track(var extInfo: ExtInfo? = null, var url: String? = null) : Comparable<Track>, Serializable {
     var preferredUrl = 0
-    val alternativeURLs = ArrayList<String>()
-    var url: String? get() = alternativeURLs.getOrNull(preferredUrl)
-        set(value) {
-            value?.let(alternativeURLs::add)
-        }
+    val alternativeURLs = ArrayList<AlternativeURL>()
 
     val hasAlternatives: Boolean get() = alternativeURLs.size > 1
 

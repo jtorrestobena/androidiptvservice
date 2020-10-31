@@ -1,9 +1,6 @@
 package com.bytecoders.m3u8parser.parser
 
-import com.bytecoders.m3u8parser.data.ExtInfo
-import com.bytecoders.m3u8parser.data.ItemType
-import com.bytecoders.m3u8parser.data.Playlist
-import com.bytecoders.m3u8parser.data.Track
+import com.bytecoders.m3u8parser.data.*
 import com.bytecoders.m3u8parser.exception.PlaylistParseException
 import com.bytecoders.m3u8parser.scanner.M3U8ItemScanner
 import com.bytecoders.m3u8parser.util.Constants
@@ -102,7 +99,7 @@ class M3U8Parser(inputStream: InputStream?, protected val encoding: M3U8ItemScan
 
         val mergedTrack = Track(tracks.firstOrNull()?.extInfo)
         tracks.forEach{
-            it.url?.let(mergedTrack.alternativeURLs::add)
+            mergedTrack.alternativeURLs.add(AlternativeURL(it.extInfo?.title, it.url))
         }
 
         return mergedTrack
