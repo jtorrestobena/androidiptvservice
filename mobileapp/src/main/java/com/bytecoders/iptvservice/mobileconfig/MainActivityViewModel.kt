@@ -4,10 +4,13 @@ import android.app.Application
 import android.content.SharedPreferences
 import android.os.Parcelable
 import android.preference.PreferenceManager
+import android.util.Log
+import android.webkit.URLUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.bytecoders.iptvservice.mobileconfig.livedata.SingleLiveEvent
 import com.bytecoders.iptvservice.mobileconfig.repository.ChannelRepository
 import com.bytecoders.iptvservicecommunicator.IPTVServiceClient
 import com.bytecoders.m3u8parser.data.Playlist
@@ -24,9 +27,16 @@ class MainActivityViewModel(val application: Application): ViewModel() {
     val channelRepository by lazy { ChannelRepository(application) }
     val playlist: LiveData<Playlist> = Transformations.map(channelRepository.playlist) { i -> i }
     val listings: LiveData<XmlTvParser.TvListing?> = Transformations.map(channelRepository.listing) { i -> i }
+    val newPlaylistEvent = SingleLiveEvent<String>()
 
     fun savePositionOrder() {
         channelRepository.savePositionOrder()
+    }
+
+    fun validateURL(urlToValidate: String) {
+        if (channelRepository.isPlayListURL(urlToValidate)) {
+            newPlaylistEvent.value = urlToValidate
+        }
     }
 }
 

@@ -24,6 +24,10 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
         viewBinding.closeBottomSheet.setOnClickListener {
             viewBinding.homeFab.isExpanded = false
         }
+
+        newPlaylistEvent.observe(viewLifecycleOwner, Observer {
+            viewBinding.iptvUrl.setText(it)
+        })
     }
 
     private fun showNewEPGDialog(epgURL: String) {

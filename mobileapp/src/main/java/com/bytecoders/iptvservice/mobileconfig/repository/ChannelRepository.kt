@@ -3,6 +3,7 @@ package com.bytecoders.iptvservice.mobileconfig.repository
 import android.app.Application
 import android.preference.PreferenceManager
 import android.util.Log
+import android.webkit.URLUtil
 import androidx.lifecycle.MutableLiveData
 import com.bytecoders.iptvservice.mobileconfig.database.EventLog
 import com.bytecoders.iptvservice.mobileconfig.database.EventType
@@ -102,4 +103,6 @@ class ChannelRepository(private val application: Application) {
         }
         savedPositions = positions
     }
+
+    fun isPlayListURL(urlToValidate: String): Boolean = urlToValidate.matches("https?:\\/\\/.*\\.(m3u|m3u8)\$".toRegex())
 }
