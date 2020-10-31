@@ -39,6 +39,8 @@ class HomeViewModel(sharedViewModel: MainActivityViewModel)
         epgURL.value?.let (channelRepository::loadPlayListListings)
     }
 
+    fun downloadNewEPG(newEPGUrl: String) = channelRepository.loadPlayListListings(newEPGUrl)
+
     fun sendList() {
         sharedViewModel.channelRepository.savedPositions.let {
             if (it.isNotEmpty()) {

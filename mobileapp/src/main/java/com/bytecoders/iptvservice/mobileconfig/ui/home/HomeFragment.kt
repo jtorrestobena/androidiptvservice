@@ -34,7 +34,10 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
         AlertDialog.Builder(requireContext())
                 .setTitle(getString(R.string.new_epg_url))
                 .setMessage(getString(R.string.update_program_guide))
-                .setPositiveButton(getString(R.string.ok)) { _, _ -> viewModel.epgURL.postValue(epgURL) }
+                .setPositiveButton(getString(R.string.ok)) { _, _ ->
+                    viewModel.epgURL.postValue(epgURL)
+                    viewModel.downloadNewEPG(epgURL)
+                }
                 .setNegativeButton(getString(R.string.cancel), null)
                 .create().show()
 

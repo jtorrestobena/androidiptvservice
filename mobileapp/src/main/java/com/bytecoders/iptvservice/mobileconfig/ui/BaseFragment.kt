@@ -17,7 +17,7 @@ import com.bytecoders.iptvservice.mobileconfig.livedata.SingleLiveEvent
 abstract class BaseFragment<VM : BaseFragmentViewModel, VB : ViewDataBinding>: Fragment() {
     protected lateinit var viewModel: VM
     protected lateinit var viewBinding: VB
-    protected lateinit var newPlaylistEvent: SingleLiveEvent<String>
+    protected val newPlaylistEvent: SingleLiveEvent<String> by lazy { viewModel.newPlaylistEvent }
 
     // Obtains ViewModel and inflates the view
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -25,9 +25,6 @@ abstract class BaseFragment<VM : BaseFragmentViewModel, VB : ViewDataBinding>: F
         viewBinding = DataBindingUtil.inflate(inflater, getLayoutId(), container, false)
         viewBinding.setVariable(BR.viewmodel, viewModel)
         viewBinding.lifecycleOwner = this
-
-        newPlaylistEvent = viewModel.newPlaylistEvent
-
         return viewBinding.root
     }
 
