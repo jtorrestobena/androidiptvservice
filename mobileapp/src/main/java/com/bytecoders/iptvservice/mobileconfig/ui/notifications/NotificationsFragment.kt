@@ -1,14 +1,12 @@
 package com.bytecoders.iptvservice.mobileconfig.ui.notifications
 
-import com.bytecoders.iptvservice.mobileconfig.MainActivityViewModel
+import androidx.fragment.app.viewModels
 import com.bytecoders.iptvservice.mobileconfig.R
 import com.bytecoders.iptvservice.mobileconfig.databinding.FragmentNotificationsBinding
 import com.bytecoders.iptvservice.mobileconfig.ui.BaseFragment
 
 class NotificationsFragment : BaseFragment<NotificationsViewModel, FragmentNotificationsBinding>() {
 
-    override fun getLayoutId(): Int = R.layout.fragment_notifications
-
-    override fun createViewModel(sharedViewModel: MainActivityViewModel): NotificationsViewModel =
-            getDefaultProvider(sharedViewModel).get(NotificationsViewModel::class.java)
+    override val layoutId = R.layout.fragment_notifications
+    override val viewModel: NotificationsViewModel by viewModels { getDefaultProvider() }
 }

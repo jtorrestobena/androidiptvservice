@@ -2,11 +2,11 @@ package com.bytecoders.iptvservice.mobileconfig.ui.dashboard
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.RecyclerView
-import com.bytecoders.iptvservice.mobileconfig.MainActivityViewModel
 import com.bytecoders.iptvservice.mobileconfig.R
 import com.bytecoders.iptvservice.mobileconfig.databinding.FragmentChannelListBinding
 import com.bytecoders.iptvservice.mobileconfig.model.LayoutState
@@ -15,6 +15,8 @@ import com.bytecoders.m3u8parser.data.Track
 import kotlinx.android.synthetic.main.fragment_channel_list.*
 
 class ChannelListFragment : BaseFragment<ChannelListViewModel, FragmentChannelListBinding>() {
+    override val viewModel: ChannelListViewModel by viewModels { getDefaultProvider() }
+    override val layoutId: Int = R.layout.fragment_channel_list
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -55,9 +57,4 @@ class ChannelListFragment : BaseFragment<ChannelListViewModel, FragmentChannelLi
         super.onPause()
         viewModel.layoutState = LayoutState(requireViewBinding().dashboardMotionLayout.progress)
     }
-
-    override fun getLayoutId(): Int = R.layout.fragment_channel_list
-
-    override fun createViewModel(sharedViewModel: MainActivityViewModel): ChannelListViewModel =
-            getDefaultProvider(sharedViewModel).get(ChannelListViewModel::class.java)
 }

@@ -3,8 +3,8 @@ package com.bytecoders.iptvservice.mobileconfig
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -12,7 +12,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 private const val TAG = "MainActivity"
 class MainActivity : AppCompatActivity() {
 
-    lateinit var viewModel: MainActivityViewModel
+    val viewModel: MainActivityViewModel by viewModels { MainActivityViewModelFactory(application) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,8 +21,6 @@ class MainActivity : AppCompatActivity() {
 
         val navController = findNavController(R.id.nav_host_fragment)
         navView.setupWithNavController(navController)
-        viewModel = ViewModelProvider(this, MainActivityViewModelFactory(application))
-                .get(MainActivityViewModel::class.java)
 
         when(intent?.action) {
             Intent.ACTION_SEND -> {

@@ -3,13 +3,16 @@ package com.bytecoders.iptvservice.mobileconfig.ui.home
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import com.bytecoders.iptvservice.mobileconfig.MainActivityViewModel
 import com.bytecoders.iptvservice.mobileconfig.R
 import com.bytecoders.iptvservice.mobileconfig.databinding.FragmentHomeBinding
 import com.bytecoders.iptvservice.mobileconfig.ui.BaseFragment
 
 class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
+
+    override val viewModel: HomeViewModel by viewModels { getDefaultProvider() }
+    override val layoutId = R.layout.fragment_home
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -44,9 +47,4 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
                 .create().show()
 
     }
-
-    override fun getLayoutId(): Int = R.layout.fragment_home
-
-    override fun createViewModel(sharedViewModel: MainActivityViewModel): HomeViewModel = getDefaultProvider(sharedViewModel)
-            .get(HomeViewModel::class.java)
 }
