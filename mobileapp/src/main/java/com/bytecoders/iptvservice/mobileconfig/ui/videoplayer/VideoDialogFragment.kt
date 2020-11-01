@@ -115,7 +115,7 @@ class VideoDialogFragment : DialogFragment(), Player.EventListener {
 
     override fun onStop() {
         super.onStop()
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         player?.removeListener(this)
         player?.release()
         castPlayer?.setSessionAvailabilityListener(null)

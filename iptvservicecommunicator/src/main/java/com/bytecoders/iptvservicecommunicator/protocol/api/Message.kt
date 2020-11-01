@@ -1,12 +1,10 @@
 package com.bytecoders.iptvservicecommunicator.protocol.api
 
-import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-@Polymorphic
 @Serializable
-abstract class Message
+sealed class Message
 
 @Serializable
 @SerialName("Endpoint")

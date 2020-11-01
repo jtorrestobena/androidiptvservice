@@ -22,11 +22,6 @@ class ChannelListViewModel(sharedViewModel: MainActivityViewModel) : BaseFragmen
         }
     val editMode = BooleanSettings(sharedViewModel.defaultPrefs, LIST_EDIT_MODE, false)
     val clickEvent = SingleLiveEvent<Pair<View, Track>>()
-    var recyclerviewState: Parcelable?
-        get() = getStateMap(CHANNEL_RECYCLERVIEW_STATE)
-        set(value) {
-            value?.let { putStateMap(CHANNEL_RECYCLERVIEW_STATE, it) }
-        }
     val itemListener = object : ViewHolderClickListener {
         override fun onViewClicked(view: View, track: Track) {
             clickEvent.postValue(Pair(view, track))

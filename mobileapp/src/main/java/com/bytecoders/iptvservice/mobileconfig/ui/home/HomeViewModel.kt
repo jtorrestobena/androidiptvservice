@@ -1,6 +1,5 @@
 package com.bytecoders.iptvservice.mobileconfig.ui.home
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.bytecoders.iptvservice.mobileconfig.MainActivityViewModel

@@ -1,6 +1,6 @@
 package com.bytecoders.iptvservice.mobileconfig.bindingadapter
 
-import android.widget.LinearLayout
+import android.util.Log
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -32,15 +32,18 @@ fun RecyclerView.bindPlaylist(playlist: Playlist?, listings: XmlTvParser.TvListi
                               viewHolderClickListener: ViewHolderClickListener?) {
     touchHelper?.attachToRecyclerView(null)
     touchHelper = null
-    layoutManager = LinearLayoutManager(context)
+    Log.d("FML", "$this playlist ${playlist == null} and listings ${listings == null}")
     playlist?.let { list ->
+        layoutManager = LinearLayoutManager(context)
         addItemDecoration(DividerItemDecoration(context,
                 DividerItemDecoration.VERTICAL))
+        Log.d("FML", "now $adapter adapter ${adapter as? PlayListChannelsAdapter}")
         val channelsAdapter: PlayListChannelsAdapter = adapter as? PlayListChannelsAdapter
-                ?: PlayListChannelsAdapter(list, viewHolderClickListener).apply {
-                    adapter = this
-                }
+                ?: PlayListChannelsAdapter(list, viewHolderClickListener)
+        adapter = channelsAdapter
+        Log.d("FML", " adapter after check $channelsAdapter")
         channelsAdapter.listings = listings
+        channelsAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         channelsAdapter.notifyDataSetChanged()
         editMode?.let {
             channelsAdapter.setEditMode(it, getDragListener(it))

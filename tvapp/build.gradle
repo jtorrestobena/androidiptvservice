@@ -37,6 +37,10 @@ android {
         abortOnError false
     }
 
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
     compileOptions {
         sourceCompatibility 1.8
         targetCompatibility 1.8
@@ -53,12 +57,12 @@ dependencies {
     implementation project(':companionlibrary')
     implementation project(':iptvservicecommunicator')
     implementation project(':m3u8parser')
-    implementation "androidx.recyclerview:recyclerview:$rootProject.ext.appCompatVersion"
+    implementation "androidx.recyclerview:recyclerview:$rootProject.ext.appCompatVersion-alpha06"
     implementation "androidx.leanback:leanback:$rootProject.ext.leanbackVersion"
     implementation "androidx.leanback:leanback-preference:$rootProject.ext.leanbackVersion"
     implementation "androidx.appcompat:appcompat:$rootProject.ext.appCompatVersion"
     implementation "com.google.android.exoplayer:exoplayer:$rootProject.ext.exoPlayerVersion"
-    implementation "androidx.core:core-ktx:$rootProject.ext.appCompatVersion"
+    implementation "androidx.core:core-ktx:1.3.2"
     implementation "com.google.android.gms:play-services-ads:$rootProject.ext.playServicesVersion"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$rootProject.ext.kotlin_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0"
@@ -66,7 +70,7 @@ dependencies {
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'net.sf.kxml:kxml2:2.3.0'
-    testImplementation 'org.json:json:20140107'
+    testImplementation 'org.json:json:20180813'
 }
 repositories {
     mavenCentral()
