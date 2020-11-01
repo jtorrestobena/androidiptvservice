@@ -27,9 +27,9 @@ class ChannelDetailFragment : BaseFragment<ChannelDetailViewModel, ChannelDetail
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewBinding.tvlogoIvDetail.transitionName = args.transitionName
+        requireViewBinding().tvlogoIvDetail.transitionName = args.transitionName
         viewModel.track.value = args.track
-        viewBinding.playFab.setOnClickListener {
+        requireViewBinding().playFab.setOnClickListener {
             viewModel.track.value?.let {
                 if (it.hasAlternatives) {
                     AlertDialog.Builder(requireContext()).apply {

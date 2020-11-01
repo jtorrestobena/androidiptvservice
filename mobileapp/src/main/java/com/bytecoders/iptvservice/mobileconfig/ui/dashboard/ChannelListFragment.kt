@@ -47,17 +47,17 @@ class ChannelListFragment : BaseFragment<ChannelListViewModel, FragmentChannelLi
     override fun onResume() {
         super.onResume()
         viewModel.layoutState?.let {
-            viewBinding.dashboardMotionLayout.progress = (it as LayoutState).progress
+            requireViewBinding().dashboardMotionLayout.progress = (it as LayoutState).progress
         }
         viewModel.recyclerviewState?.let {
-            viewBinding.channelsRecyclerview.layoutManager?.onRestoreInstanceState(it)
+            requireViewBinding().channelsRecyclerview.layoutManager?.onRestoreInstanceState(it)
         }
     }
 
     override fun onPause() {
         super.onPause()
-        viewModel.layoutState = LayoutState(viewBinding.dashboardMotionLayout.progress)
-        viewModel.recyclerviewState = viewBinding.channelsRecyclerview.layoutManager?.onSaveInstanceState()
+        viewModel.layoutState = LayoutState(requireViewBinding().dashboardMotionLayout.progress)
+        viewModel.recyclerviewState = requireViewBinding().channelsRecyclerview.layoutManager?.onSaveInstanceState()
     }
 
     override fun getLayoutId(): Int = R.layout.fragment_channel_list

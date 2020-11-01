@@ -16,17 +16,17 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
         viewModel.newURLEvent.observe(viewLifecycleOwner, Observer {
             it?.let(::showNewEPGDialog)
         })
-        with(viewBinding.homeFab) {
+        with(requireViewBinding().homeFab) {
             setOnClickListener {
                 isExpanded = !isExpanded
             }
         }
-        viewBinding.closeBottomSheet.setOnClickListener {
-            viewBinding.homeFab.isExpanded = false
+        requireViewBinding().closeBottomSheet.setOnClickListener {
+            requireViewBinding().homeFab.isExpanded = false
         }
 
         newPlaylistEvent.observe(viewLifecycleOwner, Observer {
-            viewBinding.iptvUrl.setText(it)
+            requireViewBinding().iptvUrl.setText(it)
         })
 
         viewModel.downloadListIfNeeded()

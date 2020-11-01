@@ -42,8 +42,8 @@ class ChannelRepository(private val application: Application) {
     val channelProgramCount = LiveDataCounter()
     val programCount = LiveDataCounter()
     private val messageParser = MessageParser()
-    var channelsLoaded: Boolean = false
-        private set(value) { field == value }
+    private var channelsLoaded: Boolean = false
+    val isDataLoaded get() = channelsLoaded
 
     var savedPositions: List<String>
         get() = sharedPreferences.getString(POSITION_PREFS, null)?.let {
@@ -73,6 +73,7 @@ class ChannelRepository(private val application: Application) {
             }
         })
         percentage.postValue(100)
+        channelsLoaded = true
         eventLogDatabase.insertEvents(EventLog(EventType.type_information, "Playlist download",
                 "Downloaded playlist from $url in ${System.currentTimeMillis() - start} ms." +
                         " Containing ${playlist.value?.playListEntries?.size ?: 0} channels." +
@@ -89,10 +90,10 @@ class ChannelRepository(private val application: Application) {
                     override fun onNewChannel() = channelProgramCount.increment()
                     override fun onNewProgram() = programCount.increment()
                 }))
+                channelsLoaded = true
                 eventLogDatabase.insertEvents(EventLog(EventType.type_information, "EPG list download",
                         "Downloaded program list from $url in ${System.currentTimeMillis() - start} ms." +
                                 " Containing ${programCount.value} programs for ${channelProgramCount.value} channels."))
-                channelsLoaded = true
             } catch (e: Exception) {
                 Log.e(TAG, "Error in fetching $url", e)
                 eventLogDatabase.insertEvents(EventLog(EventType.type_error, "Error in fetching $url", e.message ?: ""))

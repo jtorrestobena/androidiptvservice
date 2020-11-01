@@ -1,5 +1,6 @@
 package com.bytecoders.iptvservice.mobileconfig.ui.home
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.bytecoders.iptvservice.mobileconfig.MainActivityViewModel
@@ -53,7 +54,7 @@ class HomeViewModel(sharedViewModel: MainActivityViewModel)
     }
 
     fun downloadListIfNeeded() {
-        if (!channelRepository.channelsLoaded) {
+        if (!channelRepository.isDataLoaded) {
             m3uURL.cachedValue?.let (channelRepository::loadChannels)
             epgURL.cachedValue?.let (channelRepository::loadPlayListListings)
         }
