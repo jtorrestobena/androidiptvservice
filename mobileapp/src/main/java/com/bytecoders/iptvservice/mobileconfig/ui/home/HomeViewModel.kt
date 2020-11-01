@@ -51,4 +51,11 @@ class HomeViewModel(sharedViewModel: MainActivityViewModel)
             sharedViewModel.iptvClient.sendMessage(MessagePlayListConfig(it, epgURL.value))
         }
     }
+
+    fun downloadListIfNeeded() {
+        if (!channelRepository.channelsLoaded) {
+            m3uURL.cachedValue?.let (channelRepository::loadChannels)
+            epgURL.cachedValue?.let (channelRepository::loadPlayListListings)
+        }
+    }
 }

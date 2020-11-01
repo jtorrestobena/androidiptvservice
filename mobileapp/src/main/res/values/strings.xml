@@ -22,4 +22,5 @@
     <string name="ServiceStatus_READY">You are now connected to a TV. Once you are done editing your playlist press SEND button to update channels on your TV</string>
     <string name="tvconnection_name">You are now connected to your %s TV. When updating the TV all changes will be applied on that device.</string>
     <string name="content_playing_external_device">Content is playing in external device</string>
+    <string name="play_all">Play all</string>
 </resources>

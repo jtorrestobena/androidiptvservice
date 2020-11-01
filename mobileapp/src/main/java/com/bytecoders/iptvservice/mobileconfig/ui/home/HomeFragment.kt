@@ -28,6 +28,8 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
         newPlaylistEvent.observe(viewLifecycleOwner, Observer {
             viewBinding.iptvUrl.setText(it)
         })
+
+        viewModel.downloadListIfNeeded()
     }
 
     private fun showNewEPGDialog(epgURL: String) {

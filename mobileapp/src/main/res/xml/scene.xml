@@ -8,7 +8,7 @@
 
         <OnSwipe
             app:dragDirection="dragUp"
-            app:touchAnchorId="@id/channels_recyclerview"
+            app:touchAnchorId="@id/channelsRecyclerview"
             app:touchAnchorSide="top" />
 
     </Transition>
@@ -34,6 +34,23 @@
             android:scaleY="1.0"
             app:layout_constraintBottom_toBottomOf="@id/toolbar_image"
             app:layout_constraintStart_toStartOf="parent" />
+        <Constraint
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar_image"
+            app:layout_constraintStart_toStartOf="parent" />
+        <Constraint
+            app:layout_constraintVertical_bias="0.0"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="0dp"
+            app:layout_constraintTop_toBottomOf="@id/toolbar_image"
+            android:id="@+id/channelsRecyclerview" />
     </ConstraintSet>
 
     <ConstraintSet android:id="@+id/collapsed">

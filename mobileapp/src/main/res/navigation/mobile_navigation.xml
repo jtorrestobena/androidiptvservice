@@ -13,9 +13,9 @@
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.bytecoders.iptvservice.mobileconfig.ui.dashboard.DashboardFragment"
+        android:name="com.bytecoders.iptvservice.mobileconfig.ui.dashboard.ChannelListFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" >
+        tools:layout="@layout/fragment_channel_list" >
         <action
             android:id="@+id/action_navigation_dashboard_to_navigation_channel_detail"
             app:destination="@id/navigation_channel_detail" />

@@ -42,6 +42,9 @@ class ChannelRepository(private val application: Application) {
     val channelProgramCount = LiveDataCounter()
     val programCount = LiveDataCounter()
     private val messageParser = MessageParser()
+    var channelsLoaded: Boolean = false
+        private set(value) { field == value }
+
     var savedPositions: List<String>
         get() = sharedPreferences.getString(POSITION_PREFS, null)?.let {
                 return@let (messageParser.parseMessage(it) as? MessagePlayListCustomConfig)?.channelSelection ?: emptyList()
@@ -89,6 +92,7 @@ class ChannelRepository(private val application: Application) {
                 eventLogDatabase.insertEvents(EventLog(EventType.type_information, "EPG list download",
                         "Downloaded program list from $url in ${System.currentTimeMillis() - start} ms." +
                                 " Containing ${programCount.value} programs for ${channelProgramCount.value} channels."))
+                channelsLoaded = true
             } catch (e: Exception) {
                 Log.e(TAG, "Error in fetching $url", e)
                 eventLogDatabase.insertEvents(EventLog(EventType.type_error, "Error in fetching $url", e.message ?: ""))

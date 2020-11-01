@@ -5,19 +5,21 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.NavHostFragment
+import androidx.recyclerview.widget.RecyclerView
 import com.bytecoders.iptvservice.mobileconfig.MainActivityViewModel
 import com.bytecoders.iptvservice.mobileconfig.R
-import com.bytecoders.iptvservice.mobileconfig.databinding.FragmentDashboardBinding
+import com.bytecoders.iptvservice.mobileconfig.databinding.FragmentChannelListBinding
 import com.bytecoders.iptvservice.mobileconfig.model.LayoutState
 import com.bytecoders.iptvservice.mobileconfig.ui.BaseFragment
 import com.bytecoders.m3u8parser.data.Track
+import kotlinx.android.synthetic.main.fragment_channel_list.*
 
-class DashboardFragment : BaseFragment<DashboardViewModel, FragmentDashboardBinding>() {
+class ChannelListFragment : BaseFragment<ChannelListViewModel, FragmentChannelListBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.editMode.observe(viewLifecycleOwner, Observer {
-            if (!it) {
+        viewModel.editMode.observe(viewLifecycleOwner, Observer { isEditing ->
+            if (!isEditing) {
                 viewModel.saveItemOrder()
             }
         })
@@ -29,9 +31,16 @@ class DashboardFragment : BaseFragment<DashboardViewModel, FragmentDashboardBind
             val extras = FragmentNavigatorExtras(
                     sharedView to transitionName
             )
-            val action = DashboardFragmentDirections.actionNavigationDashboardToNavigationChannelDetail(transitionName, track)
+            val action = ChannelListFragmentDirections.actionNavigationDashboardToNavigationChannelDetail(transitionName, track)
             NavHostFragment.findNavController(this).navigate(action, extras)
 
+        })
+
+        channelsRecyclerview.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                channelListFabText?.visibility = if (dy <= 0) View.VISIBLE else View.GONE
+            }
         })
     }
 
@@ -51,8 +60,8 @@ class DashboardFragment : BaseFragment<DashboardViewModel, FragmentDashboardBind
         viewModel.recyclerviewState = viewBinding.channelsRecyclerview.layoutManager?.onSaveInstanceState()
     }
 
-    override fun getLayoutId(): Int = R.layout.fragment_dashboard
+    override fun getLayoutId(): Int = R.layout.fragment_channel_list
 
-    override fun createViewModel(sharedViewModel: MainActivityViewModel): DashboardViewModel =
-            getDefaultProvider(sharedViewModel).get(DashboardViewModel::class.java)
+    override fun createViewModel(sharedViewModel: MainActivityViewModel): ChannelListViewModel =
+            getDefaultProvider(sharedViewModel).get(ChannelListViewModel::class.java)
 }

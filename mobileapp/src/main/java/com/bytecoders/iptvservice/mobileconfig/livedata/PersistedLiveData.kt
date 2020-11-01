@@ -6,6 +6,9 @@ import androidx.lifecycle.MutableLiveData
 private const val TAG = "PersistedLiveData"
 abstract class PersistedLiveData<T>(private val readFunction: () -> T?,
                             private val writeFunction: (T?) -> Unit): MutableLiveData<T>() {
+
+    val cachedValue: T? get() = readFunction()
+
     init {
         Log.d(TAG, "init")
         readFunction()?.let(::postValue)
@@ -23,4 +26,5 @@ abstract class PersistedLiveData<T>(private val readFunction: () -> T?,
         Log.d(TAG, "setvalue $newValue")
         super.setValue(newValue)
     }
+
 }
