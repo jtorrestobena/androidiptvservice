@@ -1,11 +1,9 @@
 package com.bytecoders.iptvservice.mobileconfig.ui.dashboard
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.transition.TransitionInflater
 import android.util.Log
 import android.view.View
-import android.widget.ArrayAdapter
 import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.navArgs
 import com.bytecoders.iptvservice.mobileconfig.MainActivityViewModel
@@ -13,7 +11,6 @@ import com.bytecoders.iptvservice.mobileconfig.R
 import com.bytecoders.iptvservice.mobileconfig.databinding.ChannelDetailFragmentBinding
 import com.bytecoders.iptvservice.mobileconfig.ui.BaseFragment
 import com.bytecoders.iptvservice.mobileconfig.ui.videoplayer.VideoDialogFragment
-import com.bytecoders.m3u8parser.data.AlternativeURL
 
 
 class ChannelDetailFragment : BaseFragment<ChannelDetailViewModel, ChannelDetailFragmentBinding>() {
@@ -30,28 +27,13 @@ class ChannelDetailFragment : BaseFragment<ChannelDetailViewModel, ChannelDetail
         requireViewBinding().tvlogoIvDetail.transitionName = args.transitionName
         viewModel.track.value = args.track
         requireViewBinding().playFab.setOnClickListener {
-            viewModel.track.value?.let {
-                if (it.hasAlternatives) {
-                    AlertDialog.Builder(requireContext()).apply {
-                        setIcon(R.drawable.ic_play_circle_outline_black_24dp)
-                        setTitle("Select One Alternative")
-                        val arrayAdapter = ArrayAdapter<AlternativeURL>(requireContext(), android.R.layout.select_dialog_singlechoice, it.alternativeURLs)
-                        setNegativeButton("cancel", null)
-                        setAdapter(arrayAdapter) { _, which ->
-                            Log.d("ChannelDetailFragment", "Playing option $which")
-                            it.alternativeURLs[which].url?.let(this@ChannelDetailFragment::playURL)
-                        }
-                    }.show()
-                } else {
-                    it.url?.let(::playURL)
-                }
-            }
+            playChannel(args.track.identifier)
         }
     }
 
-    private fun playURL(url: String) {
-        Log.d("ChannelDetailFragment", "Playing url $url")
-        val videoFragment: DialogFragment = VideoDialogFragment.newInstance(url, "chanelname")
+    private fun playChannel(identifier: String) {
+        Log.d("ChannelDetailFragment", "Playing channel with ID $identifier")
+        val videoFragment: DialogFragment = VideoDialogFragment.newInstance(identifier)
         videoFragment.show(parentFragmentManager, "VideoDialog")
     }
 

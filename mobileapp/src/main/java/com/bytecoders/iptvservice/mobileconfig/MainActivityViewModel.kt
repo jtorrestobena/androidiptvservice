@@ -4,8 +4,6 @@ import android.app.Application
 import android.content.SharedPreferences
 import android.os.Parcelable
 import android.preference.PreferenceManager
-import android.util.Log
-import android.webkit.URLUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
@@ -14,6 +12,7 @@ import com.bytecoders.iptvservice.mobileconfig.livedata.SingleLiveEvent
 import com.bytecoders.iptvservice.mobileconfig.repository.ChannelRepository
 import com.bytecoders.iptvservicecommunicator.IPTVServiceClient
 import com.bytecoders.m3u8parser.data.Playlist
+import com.bytecoders.m3u8parser.data.Track
 import com.google.android.media.tv.companionlibrary.xmltv.XmlTvParser
 
 class MainActivityViewModel(val application: Application): ViewModel() {
@@ -38,6 +37,10 @@ class MainActivityViewModel(val application: Application): ViewModel() {
             newPlaylistEvent.value = urlToValidate
         }
     }
+
+    fun getChannelWithId(id: String): Track? = playlist.value?.playListEntries?.firstOrNull {
+            it.identifier == id
+        }
 }
 
 class MainActivityViewModelFactory (private val application: Application) : ViewModelProvider.Factory {

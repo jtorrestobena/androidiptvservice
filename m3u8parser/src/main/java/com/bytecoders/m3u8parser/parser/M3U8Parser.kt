@@ -22,7 +22,7 @@ import java.util.*
  * Created by Emanuele on 31/08/2016.
  * Updated by Jose Torres on 01/02/2020
  */
-class M3U8Parser(inputStream: InputStream?, protected val encoding: M3U8ItemScanner.Encoding) {
+class M3U8Parser(inputStream: InputStream?, encoding: M3U8ItemScanner.Encoding) {
     private val m3U8ItemScanner = M3U8ItemScanner(inputStream, encoding)
     private var charsRead: Int = 0
     private var channelsRead: Int = 0
@@ -94,7 +94,9 @@ class M3U8Parser(inputStream: InputStream?, protected val encoding: M3U8ItemScan
 
     private fun mergeTrack(tracks: List<Track>): Track {
         if (tracks.size == 1) { // Nothing to merge
-            return tracks.first()
+            return tracks.first().apply {
+                alternativeURLs.add(AlternativeURL(extInfo?.title, url))
+            }
         }
 
         val mergedTrack = Track(tracks.firstOrNull()?.extInfo)
