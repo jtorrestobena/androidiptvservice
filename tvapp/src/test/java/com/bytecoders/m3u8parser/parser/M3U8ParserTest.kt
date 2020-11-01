@@ -20,7 +20,7 @@ class M3U8ParserTest {
     }
 
     private fun parse_m3u_internal(): Playlist {
-        val list = M3U8Parser(Network.inputStreamforURL("http://www.tdtchannels.com/lists/channels.m3u8"),
+        val list = M3U8Parser(requireResource("tv_sample.m3u8"),
                 M3U8ItemScanner.Encoding.UTF_8).parse()
         assertFalse(list.playListEntries.isNullOrEmpty())
         assertFalse(list.trackSetMap.isNullOrEmpty())
@@ -29,18 +29,18 @@ class M3U8ParserTest {
 
     @Test
     fun parse_epg() {
-        parse_epg_internal("https://raw.githubusercontent.com/HelmerLuzo/TDTChannels_EPG/master/TDTChannels_EPG.xml")
+        parse_epg_internal("epg_sample.xml")
     }
 
-    fun parse_epg_internal(url: String) {
-        System.out.println("Parsing EPG $url")
+    private fun parse_epg_internal(fileName: String) {
+        println("Parsing EPG in file $fileName")
         val listings = XmlTvParser.parse(
-                Network.inputStreamforURL(url),
+                requireResource(fileName),
                 XmlPullParserFactory.newInstance().newPullParser())
         assertFalse(listings.allPrograms.isEmpty())
-        assertFalse(listings.getProgramsForEpg("Antena3.TDTChannelsEPG").isEmpty())
-        assertNotNull(ProgramUtils.getPlayingNow(listings.getProgramsForEpg("Antena3.TDTChannelsEPG")))
-        assertFalse(ProgramUtils.getUpcomingPrograms(listings.getProgramsForEpg("Antena3.TDTChannelsEPG")).isEmpty())
+        assertFalse(listings.getProgramsForEpg("Antena3.TV").isEmpty())
+        assertNotNull(ProgramUtils.getPlayingNow(listings.getProgramsForEpg("Antena3.TV")))
+        assertFalse(ProgramUtils.getUpcomingPrograms(listings.getProgramsForEpg("Antena3.TV")).isEmpty())
     }
 
     @Test
@@ -51,4 +51,6 @@ class M3U8ParserTest {
             parse_epg_internal(it)
         }
     }
+
+    private fun requireResource(fileName: String) = M3U8ParserTest::class.java.getResource("/$fileName")!!.openStream()
 }
