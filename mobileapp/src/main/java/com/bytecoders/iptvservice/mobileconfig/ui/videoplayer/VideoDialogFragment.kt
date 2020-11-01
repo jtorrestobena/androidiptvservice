@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.navArgs
 import com.bytecoders.iptvservice.mobileconfig.BuildConfig
 import com.bytecoders.iptvservice.mobileconfig.MainActivity
 import com.bytecoders.iptvservice.mobileconfig.MainActivityViewModel
@@ -42,7 +43,10 @@ import kotlinx.android.synthetic.main.fragment_video_dialog.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+private const val TAG = "VideoDialogFragment"
+
 class VideoDialogFragment : DialogFragment(), Player.EventListener {
+    private val args: VideoDialogFragmentArgs by navArgs()
     private val sharedViewModel: MainActivityViewModel get() = (activity as MainActivity).viewModel
     private val player: SimpleExoPlayer by lazy { SimpleExoPlayer.Builder(requireContext()).build() }
     private var castPlayer: CastPlayer? = null
@@ -70,7 +74,7 @@ class VideoDialogFragment : DialogFragment(), Player.EventListener {
             videoViewMediaRouterButton.visibility = it
         }
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        arguments?.getString(CHANNEL_IDENTIFIER)?.let {
+        args.channelIdentifier.let {
             sharedViewModel.getChannelWithId(it)?.let { channel ->
                 currentChannel = channel
                 Log.d(TAG, "Playing channel ${channel.extInfo?.title}")
@@ -146,7 +150,7 @@ class VideoDialogFragment : DialogFragment(), Player.EventListener {
     override fun onPlayerError(error: ExoPlaybackException) {
         Log.e(TAG, "Player error ${error.type}: Message ${error.message}")
         currentAlternative?.let {
-            lifecycleScope.launch(Dispatchers.Default) {
+            lifecycleScope.launch(Dispatchers.IO) {
                 eventLogDatabase.insertEvents(EventLog(EventType.type_error, "Error playing ${it.title}",
                         "Error ${error.type} playing URL ${it.url}: ${error.message}"))
             }
@@ -168,18 +172,6 @@ class VideoDialogFragment : DialogFragment(), Player.EventListener {
         } ?: run {
             Log.e(TAG, "Did not found alternative at $actualUrl, total ${currentChannel?.alternativeURLs?.size}")
             dismiss()
-        }
-    }
-
-    companion object {
-        private const val TAG = "VideoDialogFragment"
-        private const val CHANNEL_IDENTIFIER = "CHANNEL_IDENTIFIER"
-        fun newInstance(channelIdentifier: String?): VideoDialogFragment {
-            val videoDialogFragment = VideoDialogFragment()
-            val args = Bundle()
-            args.putString(CHANNEL_IDENTIFIER, channelIdentifier)
-            videoDialogFragment.arguments = args
-            return videoDialogFragment
         }
     }
 }

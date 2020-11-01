@@ -4,13 +4,12 @@ import android.os.Bundle
 import android.transition.TransitionInflater
 import android.util.Log
 import android.view.View
-import androidx.fragment.app.DialogFragment
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.navArgs
 import com.bytecoders.iptvservice.mobileconfig.MainActivityViewModel
 import com.bytecoders.iptvservice.mobileconfig.R
 import com.bytecoders.iptvservice.mobileconfig.databinding.ChannelDetailFragmentBinding
 import com.bytecoders.iptvservice.mobileconfig.ui.BaseFragment
-import com.bytecoders.iptvservice.mobileconfig.ui.videoplayer.VideoDialogFragment
 
 
 class ChannelDetailFragment : BaseFragment<ChannelDetailViewModel, ChannelDetailFragmentBinding>() {
@@ -33,8 +32,10 @@ class ChannelDetailFragment : BaseFragment<ChannelDetailViewModel, ChannelDetail
 
     private fun playChannel(identifier: String) {
         Log.d("ChannelDetailFragment", "Playing channel with ID $identifier")
-        val videoFragment: DialogFragment = VideoDialogFragment.newInstance(identifier)
-        videoFragment.show(parentFragmentManager, "VideoDialog")
+        //val videoFragment: DialogFragment = VideoDialogFragment.newInstance(identifier)
+        //videoFragment.show(parentFragmentManager, "VideoDialog")
+        val action = ChannelDetailFragmentDirections.actionNavigationChannelDetailToVideoPlayer(identifier)
+        NavHostFragment.findNavController(this).navigate(action)
     }
 
     override fun getLayoutId(): Int = R.layout.channel_detail_fragment

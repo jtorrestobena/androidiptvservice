@@ -15,7 +15,7 @@
         android:id="@+id/navigation_dashboard"
         android:name="com.bytecoders.iptvservice.mobileconfig.ui.dashboard.ChannelListFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_channel_list" >
+        tools:layout="@layout/fragment_channel_list">
         <action
             android:id="@+id/action_navigation_dashboard_to_navigation_channel_detail"
             app:destination="@id/navigation_channel_detail" />
@@ -31,7 +31,7 @@
         android:id="@+id/navigation_channel_detail"
         android:name="com.bytecoders.iptvservice.mobileconfig.ui.dashboard.ChannelDetailFragment"
         android:label="@string/title_notifications"
-        tools:layout="@layout/channel_detail_fragment" >
+        tools:layout="@layout/channel_detail_fragment">
         <argument
             android:name="transition_name"
             app:argType="string"
@@ -40,5 +40,18 @@
             android:name="track"
             app:argType="com.bytecoders.m3u8parser.data.Track"
             app:nullable="false" />
+        <action
+            android:id="@+id/action_navigation_channel_detail_to_video_player"
+            app:destination="@id/video_player" />
     </fragment>
+
+    <dialog
+        android:id="@+id/video_player"
+        android:name="com.bytecoders.iptvservice.mobileconfig.ui.videoplayer.VideoDialogFragment"
+        tools:layout="@layout/fragment_video_dialog">
+        <argument
+            android:name="channel_identifier"
+            app:argType="string"
+            app:nullable="false" />
+    </dialog>
 </navigation>
