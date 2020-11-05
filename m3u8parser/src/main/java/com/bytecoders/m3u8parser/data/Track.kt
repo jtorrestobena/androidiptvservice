@@ -35,9 +35,11 @@ class Track(var extInfo: ExtInfo? = null, var url: String = "") : Comparable<Tra
      * Check if there´s a TV guide identifier, if not create a UUID from
      * fields title, logo and name
      */
-    val identifier: String get() = extInfo?.let {
-        if (it.tvgId.isNullOrEmpty()) UUID.nameUUIDFromBytes("${it.title}:${it.tvgLogoUrl}:${it.tvgName}".toByteArray()).toString() else it.tvgId
-    } ?: UUID.nameUUIDFromBytes(url.toByteArray()).toString()
+    val identifier: String by lazy {
+        extInfo?.let {
+            if (it.tvgId.isNullOrEmpty()) UUID.nameUUIDFromBytes("${it.title}:${it.tvgLogoUrl}:${it.tvgName}".toByteArray()).toString() else it.tvgId
+        } ?: UUID.nameUUIDFromBytes(url.toByteArray()).toString()
+    }
 
     override fun compareTo(other: Track): Int {
         return identifier.compareTo(other.identifier)
