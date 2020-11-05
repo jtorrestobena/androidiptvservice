@@ -9,14 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.bytecoders.iptvservice.mobileconfig.BuildConfig
 import com.bytecoders.iptvservice.mobileconfig.MainActivity
 import com.bytecoders.iptvservice.mobileconfig.MainActivityViewModel
 import com.bytecoders.iptvservice.mobileconfig.R
-import com.bytecoders.iptvservice.mobileconfig.database.EventLog
-import com.bytecoders.iptvservice.mobileconfig.database.EventType
 import com.bytecoders.iptvservice.mobileconfig.database.getAppDatabase
 import com.bytecoders.m3u8parser.data.AlternativeURL
 import com.bytecoders.m3u8parser.data.Track
@@ -40,24 +38,22 @@ import com.google.android.gms.cast.MediaQueueItem
 import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.android.gms.cast.framework.CastContext
 import kotlinx.android.synthetic.main.fragment_video_dialog.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 private const val TAG = "VideoDialogFragment"
+private const val CHANNEL_START_POSITION = -1
 
 class VideoDialogFragment : DialogFragment(), Player.EventListener {
     private val args: VideoDialogFragmentArgs by navArgs()
+    private val viewModel: VideoDialogFragmentViewModel by viewModels  {
+        VideoDialogFragmentViewModelFactory(getAppDatabase(requireContext().applicationContext).eventLogDao())
+    }
     private val sharedViewModel: MainActivityViewModel get() = (activity as MainActivity).viewModel
     private val player: SimpleExoPlayer by lazy { SimpleExoPlayer.Builder(requireContext()).build() }
-    private var castPlayer: CastPlayer? = null
+    private val castPlayer: CastPlayer by lazy { CastPlayer(CastContext.getSharedInstance(requireActivity())) }
 
-    private var actualUrl = -1
+    private var actualPosition = CHANNEL_START_POSITION
     private var currentChannel: Track? = null
-    private val currentAlternative: AlternativeURL? get() = currentChannel?.alternativeURLs?.getOrNull(actualUrl)
-
-    private val eventLogDatabase by lazy {
-        getAppDatabase(requireContext().applicationContext).eventLogDao()
-    }
+    private val currentAlternative: AlternativeURL? get() = currentChannel?.alternativeURLs?.getOrNull(actualPosition)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,20 +71,22 @@ class VideoDialogFragment : DialogFragment(), Player.EventListener {
         }
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         args.channelIdentifier.let {
-            sharedViewModel.getChannelWithId(it)?.let { channel ->
-                currentChannel = channel
-                Log.d(TAG, "Playing channel ${channel.extInfo?.title}")
-                tryNextOption()
-            }
+            sharedViewModel.getChannelWithId(it)?.let(::startPlayingChannel)
         } ?: dismiss()
     }
 
+    private fun startPlayingChannel(channel: Track) {
+        actualPosition = CHANNEL_START_POSITION
+        currentChannel = channel
+        Log.d(TAG, "Playing channel ${channel.extInfo?.title}")
+        tryNextOption()
+    }
+
     private fun setupCasting(streamURL: String, channelName: String) {
-        castPlayer = CastPlayer(CastContext.getSharedInstance(requireActivity()))
-        castPlayer?.setSessionAvailabilityListener(object : SessionAvailabilityListener {
+        castPlayer.setSessionAvailabilityListener(object : SessionAvailabilityListener {
             override fun onCastSessionAvailable() {
                 player.stop(true)
-                castPlayer?.loadItem(buildMediaQueueItem(streamURL, channelName), 0)
+                castPlayer.loadItem(buildMediaQueueItem(streamURL, channelName), 0)
                 externalDeviceTextView.visibility = View.VISIBLE
             }
 
@@ -143,23 +141,18 @@ class VideoDialogFragment : DialogFragment(), Player.EventListener {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         player.removeListener(this)
         player.release()
-        castPlayer?.setSessionAvailabilityListener(null)
+        castPlayer.setSessionAvailabilityListener(null)
         activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     override fun onPlayerError(error: ExoPlaybackException) {
         Log.e(TAG, "Player error ${error.type}: Message ${error.message}")
-        currentAlternative?.let {
-            lifecycleScope.launch(Dispatchers.IO) {
-                eventLogDatabase.insertEvents(EventLog(EventType.type_error, "Error playing ${it.title}",
-                        "Error ${error.type} playing URL ${it.url}: ${error.message}"))
-            }
-        }
+        viewModel.streamOpenFailed(error, currentAlternative)
         tryNextOption()
     }
 
     private fun tryNextOption() {
-        actualUrl++
+        actualPosition++
         currentAlternative?.let { alternativeURL ->
             alternativeURL.url?.let { url ->
                 Log.d(TAG, "Playing video url $url")
@@ -170,7 +163,7 @@ class VideoDialogFragment : DialogFragment(), Player.EventListener {
                 }
             } ?: Log.d(TAG, "No valid url found in current alternative $currentAlternative")
         } ?: run {
-            Log.e(TAG, "Did not found alternative at $actualUrl, total ${currentChannel?.alternativeURLs?.size}")
+            Log.e(TAG, "Did not found alternative at $actualPosition, total ${currentChannel?.alternativeURLs?.size}")
             dismiss()
         }
     }
