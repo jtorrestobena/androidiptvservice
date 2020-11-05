@@ -25,7 +25,7 @@ data class AlternativeURL(val title: String?, val url: String?) {
 /**
  * Created by Emanuele on 31/08/2016.
  */
-class Track(var extInfo: ExtInfo? = null, var url: String? = null) : Comparable<Track>, Serializable {
+class Track(var extInfo: ExtInfo? = null, var url: String = "") : Comparable<Track>, Serializable {
     var preferredUrl = 0
     val alternativeURLs = ArrayList<AlternativeURL>()
 
@@ -37,7 +37,7 @@ class Track(var extInfo: ExtInfo? = null, var url: String? = null) : Comparable<
      */
     val identifier: String get() = extInfo?.let {
         if (it.tvgId.isNullOrEmpty()) UUID.nameUUIDFromBytes("${it.title}:${it.tvgLogoUrl}:${it.tvgName}".toByteArray()).toString() else it.tvgId
-    } ?: "Unknown"
+    } ?: UUID.nameUUIDFromBytes(url.toByteArray()).toString()
 
     override fun compareTo(other: Track): Int {
         return identifier.compareTo(other.identifier)
