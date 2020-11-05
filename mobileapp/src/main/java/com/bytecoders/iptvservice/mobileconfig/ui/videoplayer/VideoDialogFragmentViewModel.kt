@@ -11,7 +11,7 @@ import com.google.android.exoplayer2.ExoPlaybackException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class VideoDialogFragmentViewModel(private val eventLogDatabase: EventLogDao): ViewModel() {
+class VideoDialogFragmentViewModel(private val eventLogDatabase: EventLogDao) : ViewModel() {
     fun streamOpenFailed(error: ExoPlaybackException, currentAlternative: AlternativeURL?) = currentAlternative?.let {
         viewModelScope.launch(Dispatchers.IO) {
             eventLogDatabase.insertEvents(EventLog(EventType.type_error, "Error playing ${it.title}",
@@ -20,7 +20,8 @@ class VideoDialogFragmentViewModel(private val eventLogDatabase: EventLogDao): V
     }
 }
 
-class VideoDialogFragmentViewModelFactory(private  val eventLogDatabase: EventLogDao) : ViewModelProvider.Factory {
+class VideoDialogFragmentViewModelFactory(private val eventLogDatabase: EventLogDao) : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(VideoDialogFragmentViewModel::class.java)) {
             return VideoDialogFragmentViewModel(eventLogDatabase) as T

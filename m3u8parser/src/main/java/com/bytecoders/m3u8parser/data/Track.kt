@@ -38,7 +38,8 @@ class Track(var extInfo: ExtInfo? = null, var url: String? = null) : Comparable<
     val identifier: String get() = extInfo?.let {
         if (it.tvgId.isNullOrEmpty()) UUID.nameUUIDFromBytes("${it.title}:${it.tvgLogoUrl}:${it.tvgName}".toByteArray()).toString() else it.tvgId
     } ?: "Unknown"
+
     override fun compareTo(other: Track): Int {
-        return extInfo!!.title!!.compareTo(other.extInfo!!.title!!)
+        return identifier.compareTo(other.identifier)
     }
 }
