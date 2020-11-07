@@ -1,7 +1,6 @@
 package com.bytecoders.iptvservice.mobileconfig.ui.videoplayer
 
 import android.content.pm.ActivityInfo
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -9,7 +8,6 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
-import com.bytecoders.iptvservice.mobileconfig.BuildConfig
 import com.bytecoders.iptvservice.mobileconfig.MainActivity
 import com.bytecoders.iptvservice.mobileconfig.MainActivityViewModel
 import com.bytecoders.iptvservice.mobileconfig.R
@@ -21,18 +19,6 @@ import com.bytecoders.iptvservice.mobileconfig.ui.BaseDialogFragment
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ext.cast.CastPlayer
 import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.source.dash.DashMediaSource
-import com.google.android.exoplayer2.source.hls.HlsMediaSource
-import com.google.android.exoplayer2.upstream.DataSource
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
-import com.google.android.exoplayer2.util.MimeTypes
-import com.google.android.exoplayer2.util.Util
-import com.google.android.gms.cast.MediaInfo
-import com.google.android.gms.cast.MediaMetadata
-import com.google.android.gms.cast.MediaQueueItem
 import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.android.gms.cast.framework.CastContext
 import kotlinx.android.synthetic.main.fragment_video_dialog.*
@@ -62,9 +48,9 @@ class VideoDialogFragment : BaseDialogFragment<VideoDialogFragmentViewModel, Fra
             videoViewMediaRouterButton.visibility = it
         }
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
-        args.channelIdentifier.let {
-            sharedViewModel.getChannelWithId(it)?.let(viewModel::startPlayingChannel)
-        } ?: dismiss()
+        if (!viewModel.canPlayChannel(args.channelIdentifier)) {
+            dismiss()
+        }
 
         viewModel.loadVideoEvent.observe(viewLifecycleOwner, { loadVideo(it) })
         viewModel.setupCastingEvent.observe(viewLifecycleOwner, { setupCasting(it.first, it.second) })
@@ -81,7 +67,7 @@ class VideoDialogFragment : BaseDialogFragment<VideoDialogFragmentViewModel, Fra
         castPlayer.setSessionAvailabilityListener(object : SessionAvailabilityListener {
             override fun onCastSessionAvailable() {
                 player.stop(true)
-                castPlayer.loadItem(buildMediaQueueItem(streamURL, channelName), 0)
+                castPlayer.loadItem(viewModel.buildMediaQueueItem(streamURL, channelName), 0)
                 externalDeviceTextView.visibility = View.VISIBLE
             }
 
@@ -96,35 +82,9 @@ class VideoDialogFragment : BaseDialogFragment<VideoDialogFragmentViewModel, Fra
         Log.d(TAG, "Load video $streamURL")
         videoDetail.player = player.apply {
             addListener(viewModel)
-            prepare(createDataSourceFactoryForURL(streamURL))
+            prepare(viewModel.createDataSourceFactoryForURL(streamURL, requireContext()))
             playWhenReady = true
         }
-    }
-
-    private fun createDataSourceFactoryForURL(url: String): MediaSource = if (url.contains("m3u8")) {
-        val httpDataSourceFactory = DefaultHttpDataSourceFactory(
-                Util.getUserAgent(requireContext(), BuildConfig.APPLICATION_ID),
-                DefaultHttpDataSource.DEFAULT_CONNECT_TIMEOUT_MILLIS,
-                DefaultHttpDataSource.DEFAULT_READ_TIMEOUT_MILLIS,
-                true
-        )
-        val dataSourceFactory = DefaultDataSourceFactory(context, httpDataSourceFactory)
-        HlsMediaSource.Factory(dataSourceFactory)
-                .createMediaSource(Uri.parse(url))
-    } else {
-        val dataSourceFactory: DataSource.Factory = DefaultDataSourceFactory(requireContext(),
-                Util.getUserAgent(requireContext(), BuildConfig.APPLICATION_ID))
-        DashMediaSource.Factory(dataSourceFactory)
-                .createMediaSource(Uri.parse(url))
-    }
-
-    private fun buildMediaQueueItem(url: String, channelName: String): MediaQueueItem {
-        val movieMetadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE)
-        movieMetadata.putString(MediaMetadata.KEY_TITLE, channelName)
-        val mediaInfo = MediaInfo.Builder(Uri.parse(url).toString())
-                .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED).setContentType(MimeTypes.APPLICATION_M3U8)
-                .setMetadata(movieMetadata).build()
-        return MediaQueueItem.Builder(mediaInfo).build()
     }
 
     override fun onStart() {

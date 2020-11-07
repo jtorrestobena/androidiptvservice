@@ -1,9 +1,13 @@
 package com.bytecoders.iptvservice.mobileconfig.ui.videoplayer
 
+import android.content.Context
+import android.net.Uri
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.bytecoders.iptvservice.mobileconfig.BuildConfig
 import com.bytecoders.iptvservice.mobileconfig.MainActivityViewModel
 import com.bytecoders.iptvservice.mobileconfig.database.EventLog
 import com.bytecoders.iptvservice.mobileconfig.database.EventLogDao
@@ -17,6 +21,18 @@ import com.bytecoders.m3u8parser.data.AlternativeURL
 import com.bytecoders.m3u8parser.data.Track
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.source.dash.DashMediaSource
+import com.google.android.exoplayer2.source.hls.HlsMediaSource
+import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
+import com.google.android.exoplayer2.util.MimeTypes
+import com.google.android.exoplayer2.util.Util
+import com.google.android.gms.cast.MediaInfo
+import com.google.android.gms.cast.MediaMetadata
+import com.google.android.gms.cast.MediaQueueItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -27,25 +43,31 @@ private const val TITLE_UNKNOWN = "Unknown"
 class VideoDialogFragmentViewModel(private val eventLogDatabase: EventLogDao, sharedViewModel: MainActivityViewModel)
     : BaseFragmentViewModel(sharedViewModel), Player.EventListener {
     private var actualPosition = CHANNEL_START_POSITION
-    private var currentChannel: Track? = null
-    private val currentAlternative: AlternativeURL? get() = currentChannel?.alternativeURLs?.getOrNull(actualPosition)
-    private val currentTitle: String get() = currentAlternative?.title ?: TITLE_UNKNOWN
+    val currentChannel = MutableLiveData<Track>()
     val playerState = SingleLiveEvent<PlayerState>()
 
     val loadVideoEvent = SingleLiveEvent<String>()
-    val setupCastingEvent = SingleLiveEvent<Pair<String,String>>()
+    val setupCastingEvent = SingleLiveEvent<Pair<String, String>>()
     val finishPlayingEvent = SingleLiveEvent<Void>()
+    val currentAlternative = MutableLiveData<AlternativeURL>()
+    private val currentTitle: String get() = currentAlternative.value?.title ?: TITLE_UNKNOWN
 
-    fun startPlayingChannel(channel: Track) {
+    fun canPlayChannel(channelIdentifier: String): Boolean = sharedViewModel.getChannelWithId(channelIdentifier)?.let{
+            startPlayingChannel(it)
+            true
+        } ?: false
+
+    private fun startPlayingChannel(channel: Track) {
         actualPosition = CHANNEL_START_POSITION
-        currentChannel = channel
+        currentChannel.value = channel
         Log.d(TAG, "Playing channel ${channel.extInfo?.title}")
         tryNextOption()
     }
 
     private fun tryNextOption() {
         actualPosition++
-        currentAlternative?.let { alternativeURL ->
+        currentAlternative.value = currentChannel.value?.alternativeURLs?.getOrNull(actualPosition)
+        currentAlternative.value?.let { alternativeURL ->
             alternativeURL.url?.let { url ->
                 Log.d(TAG, "Playing video url $url")
                 loadVideoEvent.value = url
@@ -55,7 +77,7 @@ class VideoDialogFragmentViewModel(private val eventLogDatabase: EventLogDao, sh
                 }
             } ?: Log.d(TAG, "No valid url found in current alternative $currentAlternative")
         } ?: run {
-            Log.e(TAG, "Did not found alternative at $actualPosition, total ${currentChannel?.alternativeURLs?.size}")
+            Log.e(TAG, "Did not found alternative at $actualPosition, total ${currentChannel.value?.alternativeURLs?.size}")
             finishPlayingEvent.call()
         }
     }
@@ -76,11 +98,37 @@ class VideoDialogFragmentViewModel(private val eventLogDatabase: EventLogDao, sh
         tryNextOption()
     }
 
-    private fun streamOpenFailed(error: ExoPlaybackException) = currentAlternative?.let {
+    private fun streamOpenFailed(error: ExoPlaybackException) = currentAlternative.value?.let {
         viewModelScope.launch(Dispatchers.IO) {
             eventLogDatabase.insertEvents(EventLog(EventType.type_error, "Error playing ${it.title}",
                     "Error ${error.type} playing URL ${it.url}: ${error.message}"))
         }
+    }
+
+    fun createDataSourceFactoryForURL(url: String, context: Context): MediaSource = if (url.contains("m3u8")) {
+        val httpDataSourceFactory = DefaultHttpDataSourceFactory(
+                Util.getUserAgent(context, BuildConfig.APPLICATION_ID),
+                DefaultHttpDataSource.DEFAULT_CONNECT_TIMEOUT_MILLIS,
+                DefaultHttpDataSource.DEFAULT_READ_TIMEOUT_MILLIS,
+                true
+        )
+        val dataSourceFactory = DefaultDataSourceFactory(context, httpDataSourceFactory)
+        HlsMediaSource.Factory(dataSourceFactory)
+                .createMediaSource(Uri.parse(url))
+    } else {
+        val dataSourceFactory: DataSource.Factory = DefaultDataSourceFactory(context,
+                Util.getUserAgent(context, BuildConfig.APPLICATION_ID))
+        DashMediaSource.Factory(dataSourceFactory)
+                .createMediaSource(Uri.parse(url))
+    }
+
+    fun buildMediaQueueItem(url: String, channelName: String): MediaQueueItem {
+        val movieMetadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE)
+        movieMetadata.putString(MediaMetadata.KEY_TITLE, channelName)
+        val mediaInfo = MediaInfo.Builder(Uri.parse(url).toString())
+                .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED).setContentType(MimeTypes.APPLICATION_M3U8)
+                .setMetadata(movieMetadata).build()
+        return MediaQueueItem.Builder(mediaInfo).build()
     }
 }
 
