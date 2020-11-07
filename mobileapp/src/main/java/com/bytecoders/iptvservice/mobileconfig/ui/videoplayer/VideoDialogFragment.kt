@@ -17,9 +17,8 @@ import com.bytecoders.iptvservice.mobileconfig.MainActivity
 import com.bytecoders.iptvservice.mobileconfig.MainActivityViewModel
 import com.bytecoders.iptvservice.mobileconfig.R
 import com.bytecoders.iptvservice.mobileconfig.database.getAppDatabase
-import com.google.android.exoplayer2.ExoPlaybackException
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.Player.STATE_READY
+import com.bytecoders.iptvservice.mobileconfig.model.PlayerStatePlayError
+import com.bytecoders.iptvservice.mobileconfig.model.PlayerStatePlaying
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ext.cast.CastPlayer
 import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
@@ -41,7 +40,7 @@ import kotlinx.android.synthetic.main.fragment_video_dialog.*
 
 private const val TAG = "VideoDialogFragment"
 
-class VideoDialogFragment : DialogFragment(), Player.EventListener {
+class VideoDialogFragment : DialogFragment() {
     private val args: VideoDialogFragmentArgs by navArgs()
     private val viewModel: VideoDialogFragmentViewModel by viewModels  {
         VideoDialogFragmentViewModelFactory(getAppDatabase(requireContext().applicationContext).eventLogDao())
@@ -72,6 +71,12 @@ class VideoDialogFragment : DialogFragment(), Player.EventListener {
         viewModel.loadVideoEvent.observe(viewLifecycleOwner, { loadVideo(it) })
         viewModel.setupCastingEvent.observe(viewLifecycleOwner, { setupCasting(it.first, it.second) })
         viewModel.finishPlayingEvent.observe(viewLifecycleOwner, { dismiss() })
+        viewModel.playerState.observe(viewLifecycleOwner, {
+            when (it) {
+                is PlayerStatePlaying -> Toast.makeText(context, "Playing ${it.title} now", Toast.LENGTH_LONG).show()
+                is PlayerStatePlayError -> Toast.makeText(context, "Error playing ${it.title}}", Toast.LENGTH_LONG).show()
+            }
+        })
     }
 
     private fun setupCasting(streamURL: String, channelName: String) {
@@ -92,7 +97,7 @@ class VideoDialogFragment : DialogFragment(), Player.EventListener {
     fun loadVideo(streamURL: String) {
         Log.d(TAG, "Load video $streamURL")
         videoDetail.player = player.apply {
-            addListener(this@VideoDialogFragment)
+            addListener(viewModel)
             prepare(createDataSourceFactoryForURL(streamURL))
             playWhenReady = true
         }
@@ -109,7 +114,8 @@ class VideoDialogFragment : DialogFragment(), Player.EventListener {
         HlsMediaSource.Factory(dataSourceFactory)
                 .createMediaSource(Uri.parse(url))
     } else {
-        val dataSourceFactory: DataSource.Factory = DefaultDataSourceFactory(requireContext(), "ua")
+        val dataSourceFactory: DataSource.Factory = DefaultDataSourceFactory(requireContext(),
+                Util.getUserAgent(requireContext(), BuildConfig.APPLICATION_ID))
         DashMediaSource.Factory(dataSourceFactory)
                 .createMediaSource(Uri.parse(url))
     }
@@ -131,24 +137,9 @@ class VideoDialogFragment : DialogFragment(), Player.EventListener {
     override fun onStop() {
         super.onStop()
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        player.removeListener(this)
+        player.removeListener(viewModel)
         player.release()
         castPlayer.setSessionAvailabilityListener(null)
         activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-    }
-
-    override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-        super.onPlayerStateChanged(playWhenReady, playbackState)
-        Log.d(TAG, "Player changed playWhenReady = $playWhenReady, playbackState = $playbackState")
-        if (playbackState == STATE_READY) {
-            Toast.makeText(context, "Playing ${viewModel.currentTitle} now", Toast.LENGTH_LONG).show()
-        }
-    }
-
-    override fun onPlayerError(error: ExoPlaybackException) {
-        Log.e(TAG, "Player error ${error.type}: Message ${error.message}")
-        Toast.makeText(context, "error playing ${viewModel.currentTitle}", Toast.LENGTH_LONG).show()
-        viewModel.streamOpenFailed(error)
-        viewModel.tryNextOption()
     }
 }

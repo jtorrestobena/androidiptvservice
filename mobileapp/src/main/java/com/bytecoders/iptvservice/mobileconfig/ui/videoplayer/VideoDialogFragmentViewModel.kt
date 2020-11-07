@@ -8,20 +8,26 @@ import com.bytecoders.iptvservice.mobileconfig.database.EventLog
 import com.bytecoders.iptvservice.mobileconfig.database.EventLogDao
 import com.bytecoders.iptvservice.mobileconfig.database.EventType
 import com.bytecoders.iptvservice.mobileconfig.livedata.SingleLiveEvent
+import com.bytecoders.iptvservice.mobileconfig.model.PlayerState
+import com.bytecoders.iptvservice.mobileconfig.model.PlayerStatePlayError
+import com.bytecoders.iptvservice.mobileconfig.model.PlayerStatePlaying
 import com.bytecoders.m3u8parser.data.AlternativeURL
 import com.bytecoders.m3u8parser.data.Track
 import com.google.android.exoplayer2.ExoPlaybackException
+import com.google.android.exoplayer2.Player
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 private const val TAG = "VideoDialogViewModel"
 private const val CHANNEL_START_POSITION = -1
+private const val TITLE_UNKNOWN = "Unknown"
 
-class VideoDialogFragmentViewModel(private val eventLogDatabase: EventLogDao) : ViewModel() {
+class VideoDialogFragmentViewModel(private val eventLogDatabase: EventLogDao) : ViewModel(), Player.EventListener {
     private var actualPosition = CHANNEL_START_POSITION
     private var currentChannel: Track? = null
     private val currentAlternative: AlternativeURL? get() = currentChannel?.alternativeURLs?.getOrNull(actualPosition)
-    val currentTitle: String? get() = currentAlternative?.title
+    private val currentTitle: String get() = currentAlternative?.title ?: TITLE_UNKNOWN
+    val playerState = SingleLiveEvent<PlayerState>()
 
     val loadVideoEvent = SingleLiveEvent<String>()
     val setupCastingEvent = SingleLiveEvent<Pair<String,String>>()
@@ -34,7 +40,7 @@ class VideoDialogFragmentViewModel(private val eventLogDatabase: EventLogDao) : 
         tryNextOption()
     }
 
-    fun tryNextOption() {
+    private fun tryNextOption() {
         actualPosition++
         currentAlternative?.let { alternativeURL ->
             alternativeURL.url?.let { url ->
@@ -51,7 +57,23 @@ class VideoDialogFragmentViewModel(private val eventLogDatabase: EventLogDao) : 
         }
     }
 
-    fun streamOpenFailed(error: ExoPlaybackException) = currentAlternative?.let {
+    override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+        super.onPlayerStateChanged(playWhenReady, playbackState)
+        Log.d(TAG, "Player changed playWhenReady = $playWhenReady, playbackState = $playbackState")
+        if (playbackState == Player.STATE_READY) {
+            playerState.postValue(PlayerStatePlaying(currentTitle))
+        }
+    }
+
+    override fun onPlayerError(error: ExoPlaybackException) {
+        super.onPlayerError(error)
+        Log.e(TAG, "Player error ${error.type}: Message ${error.message}")
+        playerState.postValue(PlayerStatePlayError(currentTitle, error))
+        streamOpenFailed(error)
+        tryNextOption()
+    }
+
+    private fun streamOpenFailed(error: ExoPlaybackException) = currentAlternative?.let {
         viewModelScope.launch(Dispatchers.IO) {
             eventLogDatabase.insertEvents(EventLog(EventType.type_error, "Error playing ${it.title}",
                     "Error ${error.type} playing URL ${it.url}: ${error.message}"))
