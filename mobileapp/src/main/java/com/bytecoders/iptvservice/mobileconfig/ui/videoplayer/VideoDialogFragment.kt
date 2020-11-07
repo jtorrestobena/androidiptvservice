@@ -33,7 +33,7 @@ class VideoDialogFragment : BaseDialogFragment<VideoDialogFragmentViewModel, Fra
     override val layoutId: Int
         get() = R.layout.fragment_video_dialog
     private val sharedViewModel: MainActivityViewModel get() = (activity as MainActivity).viewModel
-    private val player: SimpleExoPlayer by lazy { SimpleExoPlayer.Builder(requireContext()).build() }
+    private val player: SimpleExoPlayer by lazy { SimpleExoPlayer.Builder(requireContext()).build().apply { addListener(viewModel) } }
     private val castPlayer: CastPlayer by lazy { CastPlayer(CastContext.getSharedInstance(requireActivity())) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,7 +81,6 @@ class VideoDialogFragment : BaseDialogFragment<VideoDialogFragmentViewModel, Fra
     fun loadVideo(streamURL: String) {
         Log.d(TAG, "Load video $streamURL")
         videoDetail.player = player.apply {
-            addListener(viewModel)
             prepare(viewModel.createDataSourceFactoryForURL(streamURL, requireContext()))
             playWhenReady = true
         }
