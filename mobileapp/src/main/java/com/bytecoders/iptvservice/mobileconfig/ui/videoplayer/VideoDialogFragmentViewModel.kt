@@ -17,6 +17,7 @@ import com.bytecoders.iptvservice.mobileconfig.model.PlayerState
 import com.bytecoders.iptvservice.mobileconfig.model.PlayerStatePlayError
 import com.bytecoders.iptvservice.mobileconfig.model.PlayerStatePlaying
 import com.bytecoders.iptvservice.mobileconfig.ui.BaseFragmentViewModel
+import com.bytecoders.iptvservice.mobileconfig.util.VideoResolution
 import com.bytecoders.m3u8parser.data.AlternativeURL
 import com.bytecoders.m3u8parser.data.Track
 import com.google.android.exoplayer2.ExoPlaybackException
@@ -30,6 +31,7 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.util.MimeTypes
 import com.google.android.exoplayer2.util.Util
+import com.google.android.exoplayer2.video.VideoListener
 import com.google.android.gms.cast.MediaInfo
 import com.google.android.gms.cast.MediaMetadata
 import com.google.android.gms.cast.MediaQueueItem
@@ -41,7 +43,7 @@ private const val START_POSITION = -1
 private const val TITLE_UNKNOWN = "Unknown"
 
 class VideoDialogFragmentViewModel(private val eventLogDatabase: EventLogDao, sharedViewModel: MainActivityViewModel)
-    : BaseFragmentViewModel(sharedViewModel), Player.EventListener {
+    : BaseFragmentViewModel(sharedViewModel), Player.EventListener, VideoListener {
     private var actualChannelPosition = START_POSITION
     private var actualOptionPosition = START_POSITION
     val currentChannel = MutableLiveData<Track>()
@@ -55,6 +57,7 @@ class VideoDialogFragmentViewModel(private val eventLogDatabase: EventLogDao, sh
     val currentAlternative = MutableLiveData<AlternativeURL>()
     val hasPreviousOption = MutableLiveData(false)
     val hasNextOption = MutableLiveData(false)
+    val videoResolution = MutableLiveData<VideoResolution>()
     private val currentTitle: String get() = currentAlternative.value?.title ?: TITLE_UNKNOWN
 
     fun startPlayList() {
@@ -108,6 +111,7 @@ class VideoDialogFragmentViewModel(private val eventLogDatabase: EventLogDao, sh
             alternativeURL.url?.let { url ->
                 Log.d(TAG, "Playing video url $url")
                 loadVideoEvent.value = url
+                videoResolution.value = null
                 alternativeURL.title?.let { title ->
                     Log.d(TAG, "Playing title $title")
                     setupCastingEvent.value = Pair(url, title)
@@ -133,6 +137,11 @@ class VideoDialogFragmentViewModel(private val eventLogDatabase: EventLogDao, sh
         playerState.postValue(PlayerStatePlayError(currentTitle, error))
         streamOpenFailed(error)
         tryNextOption()
+    }
+
+    override fun onVideoSizeChanged(width: Int, height: Int, unappliedRotationDegrees: Int, pixelWidthHeightRatio: Float) {
+        super.onVideoSizeChanged(width, height, unappliedRotationDegrees, pixelWidthHeightRatio)
+        videoResolution.value = VideoResolution(width, height)
     }
 
     private fun streamOpenFailed(error: ExoPlaybackException) = currentAlternative.value?.let {

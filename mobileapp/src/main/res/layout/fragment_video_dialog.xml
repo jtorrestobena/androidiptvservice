@@ -117,6 +117,21 @@
             app:layout_constraintTop_toBottomOf="@id/channel_title"
             tools:text="Channel alternative" />
 
+
+        <TextView
+            android:id="@+id/video_information"
+            style="@style/AppTheme.LabelText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/margin_small"
+            android:gravity="start"
+            android:visibility="@{viewmodel.videoResolution == null ? View.INVISIBLE : View.VISIBLE}"
+            android:text="@{viewmodel.videoResolution.getResolutionString}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/channel_alternative"
+            tools:text="1024 x 768" />
+
         <TextView
             android:id="@+id/externalDeviceTextView"
             android:layout_width="wrap_content"
