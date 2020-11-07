@@ -63,7 +63,7 @@ class VideoDialogFragment : DialogFragment() {
         videoDetail.setControllerVisibilityListener  {
             videoViewMediaRouterButton.visibility = it
         }
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
         args.channelIdentifier.let {
             sharedViewModel.getChannelWithId(it)?.let(viewModel::startPlayingChannel)
         } ?: dismiss()
