@@ -13,4 +13,5 @@
     <color name="white">#ffffff</color>
     <color name="lightBlue">#29B6F6</color>
     <color name="primaryDark_dashboard">#C8001970</color>
+    <color name="black">#000000</color>
 </resources>
