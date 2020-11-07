@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.bytecoders.iptvservice.mobileconfig.MainActivityViewModel
 import com.bytecoders.iptvservice.mobileconfig.database.EventLog
 import com.bytecoders.iptvservice.mobileconfig.database.EventLogDao
 import com.bytecoders.iptvservice.mobileconfig.database.EventType
@@ -11,6 +12,7 @@ import com.bytecoders.iptvservice.mobileconfig.livedata.SingleLiveEvent
 import com.bytecoders.iptvservice.mobileconfig.model.PlayerState
 import com.bytecoders.iptvservice.mobileconfig.model.PlayerStatePlayError
 import com.bytecoders.iptvservice.mobileconfig.model.PlayerStatePlaying
+import com.bytecoders.iptvservice.mobileconfig.ui.BaseFragmentViewModel
 import com.bytecoders.m3u8parser.data.AlternativeURL
 import com.bytecoders.m3u8parser.data.Track
 import com.google.android.exoplayer2.ExoPlaybackException
@@ -22,7 +24,8 @@ private const val TAG = "VideoDialogViewModel"
 private const val CHANNEL_START_POSITION = -1
 private const val TITLE_UNKNOWN = "Unknown"
 
-class VideoDialogFragmentViewModel(private val eventLogDatabase: EventLogDao) : ViewModel(), Player.EventListener {
+class VideoDialogFragmentViewModel(private val eventLogDatabase: EventLogDao, sharedViewModel: MainActivityViewModel)
+    : BaseFragmentViewModel(sharedViewModel), Player.EventListener {
     private var actualPosition = CHANNEL_START_POSITION
     private var currentChannel: Track? = null
     private val currentAlternative: AlternativeURL? get() = currentChannel?.alternativeURLs?.getOrNull(actualPosition)
@@ -81,11 +84,12 @@ class VideoDialogFragmentViewModel(private val eventLogDatabase: EventLogDao) : 
     }
 }
 
-class VideoDialogFragmentViewModelFactory(private val eventLogDatabase: EventLogDao) : ViewModelProvider.Factory {
+class VideoDialogFragmentViewModelFactory(private val eventLogDatabase: EventLogDao, private val sharedViewModel: MainActivityViewModel)
+    : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(VideoDialogFragmentViewModel::class.java)) {
-            return VideoDialogFragmentViewModel(eventLogDatabase) as T
+            return VideoDialogFragmentViewModel(eventLogDatabase, sharedViewModel) as T
         }
         throw IllegalArgumentException("VideoDialogFragmentViewModelFactory could not create class $modelClass")
     }

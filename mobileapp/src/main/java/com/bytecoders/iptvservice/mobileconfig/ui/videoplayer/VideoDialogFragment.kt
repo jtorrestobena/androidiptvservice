@@ -4,12 +4,9 @@ import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.bytecoders.iptvservice.mobileconfig.BuildConfig
@@ -17,8 +14,10 @@ import com.bytecoders.iptvservice.mobileconfig.MainActivity
 import com.bytecoders.iptvservice.mobileconfig.MainActivityViewModel
 import com.bytecoders.iptvservice.mobileconfig.R
 import com.bytecoders.iptvservice.mobileconfig.database.getAppDatabase
+import com.bytecoders.iptvservice.mobileconfig.databinding.FragmentVideoDialogBinding
 import com.bytecoders.iptvservice.mobileconfig.model.PlayerStatePlayError
 import com.bytecoders.iptvservice.mobileconfig.model.PlayerStatePlaying
+import com.bytecoders.iptvservice.mobileconfig.ui.BaseDialogFragment
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ext.cast.CastPlayer
 import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
@@ -40,11 +39,13 @@ import kotlinx.android.synthetic.main.fragment_video_dialog.*
 
 private const val TAG = "VideoDialogFragment"
 
-class VideoDialogFragment : DialogFragment() {
+class VideoDialogFragment : BaseDialogFragment<VideoDialogFragmentViewModel, FragmentVideoDialogBinding>() {
     private val args: VideoDialogFragmentArgs by navArgs()
-    private val viewModel: VideoDialogFragmentViewModel by viewModels  {
-        VideoDialogFragmentViewModelFactory(getAppDatabase(requireContext().applicationContext).eventLogDao())
+    override val viewModel: VideoDialogFragmentViewModel by viewModels  {
+        VideoDialogFragmentViewModelFactory(getAppDatabase(requireContext().applicationContext).eventLogDao(), sharedViewModel)
     }
+    override val layoutId: Int
+        get() = R.layout.fragment_video_dialog
     private val sharedViewModel: MainActivityViewModel get() = (activity as MainActivity).viewModel
     private val player: SimpleExoPlayer by lazy { SimpleExoPlayer.Builder(requireContext()).build() }
     private val castPlayer: CastPlayer by lazy { CastPlayer(CastContext.getSharedInstance(requireActivity())) }
@@ -53,9 +54,6 @@ class VideoDialogFragment : DialogFragment() {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, android.R.style.Theme_Black_NoTitleBar_Fullscreen)
     }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_video_dialog, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
