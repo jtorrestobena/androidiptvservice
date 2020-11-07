@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="viewmodel"
             type="com.bytecoders.iptvservice.mobileconfig.ui.videoplayer.VideoDialogFragmentViewModel" />
@@ -40,32 +42,53 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/videoDetail" />
 
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/skip_previous_channel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> viewmodel.tryPreviousOption()}"
+            android:visibility="@{viewmodel.hasPreviousOption ? View.VISIBLE : View.INVISIBLE}"
+            android:src="@drawable/ic_skip_previous_24px"
+            app:layout_constraintStart_toEndOf="@id/foto_guideline"
+            app:layout_constraintTop_toTopOf="@id/tvlogo_iv_detail" />
+
         <TextView
             android:id="@+id/channel_title"
             style="@style/AppTheme.LabelText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
             android:layout_marginEnd="@dimen/margin_small"
             android:gravity="start"
-            android:layout_marginTop="@dimen/margin_small"
             android:text="@{viewmodel.currentChannel.extInfo.tvgName}"
+            app:layout_constraintBottom_toBottomOf="@id/skip_previous_channel"
+            app:layout_constraintEnd_toStartOf="@id/skip_next_channel"
+            app:layout_constraintStart_toEndOf="@id/skip_previous_channel"
             app:layout_constraintTop_toBottomOf="@id/videoDetail"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/foto_guideline"
             tools:text="Channel title" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/skip_next_channel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> viewmodel.tryNextOption()}"
+            android:visibility="@{viewmodel.hasNextOption ? View.VISIBLE : View.INVISIBLE}"
+            android:src="@drawable/ic_skip_next_24px"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvlogo_iv_detail" />
 
         <TextView
             android:id="@+id/channel_alternative"
             style="@style/AppTheme.LabelText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
             android:layout_marginEnd="@dimen/margin_small"
             android:gravity="start"
-            android:layout_marginTop="@dimen/margin_small"
             android:text="@{viewmodel.currentAlternative.title}"
-            app:layout_constraintTop_toBottomOf="@id/channel_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/foto_guideline"
+            app:layout_constraintTop_toBottomOf="@id/channel_title"
             tools:text="Channel alternative" />
 
         <TextView

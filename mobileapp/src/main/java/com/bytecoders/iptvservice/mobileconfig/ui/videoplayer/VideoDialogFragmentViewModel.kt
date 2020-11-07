@@ -50,6 +50,8 @@ class VideoDialogFragmentViewModel(private val eventLogDatabase: EventLogDao, sh
     val setupCastingEvent = SingleLiveEvent<Pair<String, String>>()
     val finishPlayingEvent = SingleLiveEvent<Void>()
     val currentAlternative = MutableLiveData<AlternativeURL>()
+    val hasPreviousOption = MutableLiveData(false)
+    val hasNextOption = MutableLiveData(false)
     private val currentTitle: String get() = currentAlternative.value?.title ?: TITLE_UNKNOWN
 
     fun canPlayChannel(channelIdentifier: String): Boolean = sharedViewModel.getChannelWithId(channelIdentifier)?.let{
@@ -64,8 +66,19 @@ class VideoDialogFragmentViewModel(private val eventLogDatabase: EventLogDao, sh
         tryNextOption()
     }
 
-    private fun tryNextOption() {
+    fun tryPreviousOption(){
+        actualPosition--
+        tryNewOption()
+    }
+
+    fun tryNextOption() {
         actualPosition++
+        tryNewOption()
+    }
+
+    private fun tryNewOption() {
+        hasPreviousOption.value = actualPosition > 0
+        hasNextOption.value = actualPosition + 1 < currentChannel.value?.alternativeURLs?.size ?: 0
         currentAlternative.value = currentChannel.value?.alternativeURLs?.getOrNull(actualPosition)
         currentAlternative.value?.let { alternativeURL ->
             alternativeURL.url?.let { url ->

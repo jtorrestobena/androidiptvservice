@@ -21,7 +21,6 @@ import com.google.android.exoplayer2.ext.cast.CastPlayer
 import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
 import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.android.gms.cast.framework.CastContext
-import kotlinx.android.synthetic.main.fragment_video_dialog.*
 
 private const val TAG = "VideoDialogFragment"
 
@@ -43,9 +42,9 @@ class VideoDialogFragment : BaseDialogFragment<VideoDialogFragmentViewModel, Fra
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        CastButtonFactory.setUpMediaRouteButton(requireContext().applicationContext, videoViewMediaRouterButton)
-        videoDetail.setControllerVisibilityListener  {
-            videoViewMediaRouterButton.visibility = it
+        CastButtonFactory.setUpMediaRouteButton(requireContext().applicationContext, requireViewBinding().videoViewMediaRouterButton)
+        viewBinding?.videoDetail?.setControllerVisibilityListener  {
+            viewBinding?.videoViewMediaRouterButton?.visibility = it
         }
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
         if (!viewModel.canPlayChannel(args.channelIdentifier)) {
@@ -68,11 +67,11 @@ class VideoDialogFragment : BaseDialogFragment<VideoDialogFragmentViewModel, Fra
             override fun onCastSessionAvailable() {
                 player.stop(true)
                 castPlayer.loadItem(viewModel.buildMediaQueueItem(streamURL, channelName), 0)
-                externalDeviceTextView.visibility = View.VISIBLE
+                viewBinding?.externalDeviceTextView?.visibility = View.VISIBLE
             }
 
             override fun onCastSessionUnavailable() {
-                externalDeviceTextView.visibility = View.GONE
+                viewBinding?.externalDeviceTextView?.visibility = View.GONE
                 loadVideo(streamURL)
             }
         })
@@ -80,7 +79,7 @@ class VideoDialogFragment : BaseDialogFragment<VideoDialogFragmentViewModel, Fra
 
     fun loadVideo(streamURL: String) {
         Log.d(TAG, "Load video $streamURL")
-        videoDetail.player = player.apply {
+        viewBinding?.videoDetail?.player = player.apply {
             prepare(viewModel.createDataSourceFactoryForURL(streamURL, requireContext()))
             playWhenReady = true
         }
