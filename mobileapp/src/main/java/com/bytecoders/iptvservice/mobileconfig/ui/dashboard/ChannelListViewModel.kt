@@ -1,7 +1,6 @@
 package com.bytecoders.iptvservice.mobileconfig.ui.dashboard
 
 import android.os.Parcelable
-import android.util.Log
 import android.view.View
 import com.bytecoders.iptvservice.mobileconfig.MainActivityViewModel
 import com.bytecoders.iptvservice.mobileconfig.bindingadapter.ViewHolderClickListener
@@ -15,6 +14,7 @@ private const val CHANNEL_RECYCLERVIEW_STATE = "CHANNEL_RECYCLERVIEW_STATE"
 private const val LAYOUT_STATE = "LAYOUT_STATE"
 
 class ChannelListViewModel(sharedViewModel: MainActivityViewModel) : BaseFragmentViewModel(sharedViewModel) {
+    val openVideoPlayerEvent = SingleLiveEvent<Void>()
     var layoutState: Parcelable?
         get() = getStateMap(LAYOUT_STATE)
         set(value) {
@@ -32,9 +32,7 @@ class ChannelListViewModel(sharedViewModel: MainActivityViewModel) : BaseFragmen
         sharedViewModel.savePositionOrder()
     }
 
-    fun playAll() {
-
-    }
+    fun playAll() = openVideoPlayerEvent.call()
 
     private fun getStateMap(key: String) = sharedViewModel.stateMap[key]
 

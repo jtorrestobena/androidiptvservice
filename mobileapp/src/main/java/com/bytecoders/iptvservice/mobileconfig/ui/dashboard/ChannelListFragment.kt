@@ -3,7 +3,6 @@ package com.bytecoders.iptvservice.mobileconfig.ui.dashboard
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.RecyclerView
@@ -20,13 +19,13 @@ class ChannelListFragment : BaseFragment<ChannelListViewModel, FragmentChannelLi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.editMode.observe(viewLifecycleOwner, Observer { isEditing ->
+        viewModel.editMode.observe(viewLifecycleOwner, { isEditing ->
             if (!isEditing) {
                 viewModel.saveItemOrder()
             }
         })
 
-        viewModel.clickEvent.observe(viewLifecycleOwner, Observer {
+        viewModel.clickEvent.observe(viewLifecycleOwner, {
             val sharedView = it.first
             val transitionName : String = sharedView.transitionName
             val track: Track = it.second
@@ -36,6 +35,10 @@ class ChannelListFragment : BaseFragment<ChannelListViewModel, FragmentChannelLi
             val action = ChannelListFragmentDirections.actionNavigationDashboardToNavigationChannelDetail(transitionName, track)
             NavHostFragment.findNavController(this).navigate(action, extras)
 
+        })
+
+        viewModel.openVideoPlayerEvent.observe(viewLifecycleOwner, {
+            NavHostFragment.findNavController(this).navigate(ChannelListFragmentDirections.actionNavigationDashboardToVideoPlayer(null))
         })
 
         channelsRecyclerview.addOnScrollListener(object : RecyclerView.OnScrollListener() {

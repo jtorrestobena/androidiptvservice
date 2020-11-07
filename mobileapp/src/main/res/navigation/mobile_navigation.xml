@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_navigation_dashboard_to_navigation_channel_detail"
             app:destination="@id/navigation_channel_detail" />
+        <action
+            android:id="@+id/action_navigation_dashboard_to_video_player"
+            app:destination="@id/video_player" />
     </fragment>
 
     <fragment
@@ -52,6 +55,6 @@
         <argument
             android:name="channel_identifier"
             app:argType="string"
-            app:nullable="false" />
+            app:nullable="true" />
     </dialog>
 </navigation>

@@ -46,8 +46,8 @@
             android:id="@+id/skip_previous_channel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="@{() -> viewmodel.tryPreviousOption()}"
-            android:visibility="@{viewmodel.hasPreviousOption ? View.VISIBLE : View.INVISIBLE}"
+            android:onClick="@{() -> viewmodel.tryPreviousChannel()}"
+            android:visibility="@{viewmodel.hasPreviousChannel ? View.VISIBLE : View.INVISIBLE}"
             android:src="@drawable/ic_skip_previous_24px"
             app:layout_constraintStart_toEndOf="@id/foto_guideline"
             app:layout_constraintTop_toTopOf="@id/tvlogo_iv_detail" />
@@ -71,11 +71,31 @@
             android:id="@+id/skip_next_channel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="@{() -> viewmodel.tryNextChannel()}"
+            android:visibility="@{viewmodel.hasNextChannel ? View.VISIBLE : View.INVISIBLE}"
+            android:src="@drawable/ic_skip_next_24px"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvlogo_iv_detail" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/skip_previous_option"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> viewmodel.tryPreviousOption()}"
+            android:visibility="@{viewmodel.hasPreviousOption ? View.VISIBLE : View.INVISIBLE}"
+            android:src="@drawable/ic_skip_previous_24px"
+            app:layout_constraintStart_toEndOf="@id/foto_guideline"
+            app:layout_constraintTop_toBottomOf="@id/skip_previous_channel" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/skip_next_option"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:onClick="@{() -> viewmodel.tryNextOption()}"
             android:visibility="@{viewmodel.hasNextOption ? View.VISIBLE : View.INVISIBLE}"
             android:src="@drawable/ic_skip_next_24px"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tvlogo_iv_detail" />
+            app:layout_constraintTop_toBottomOf="@id/skip_next_channel" />
 
         <TextView
             android:id="@+id/channel_alternative"
@@ -86,9 +106,10 @@
             android:layout_marginEnd="@dimen/margin_small"
             android:gravity="start"
             android:text="@{viewmodel.currentAlternative.title}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/foto_guideline"
-            app:layout_constraintTop_toBottomOf="@id/channel_title"
+            app:layout_constraintEnd_toStartOf="@id/skip_next_option"
+            app:layout_constraintStart_toEndOf="@id/skip_previous_option"
+            app:layout_constraintTop_toTopOf="@id/skip_previous_option"
+            app:layout_constraintTop_toBottomOf="@id/skip_previous_option"
             tools:text="Channel alternative" />
 
         <TextView

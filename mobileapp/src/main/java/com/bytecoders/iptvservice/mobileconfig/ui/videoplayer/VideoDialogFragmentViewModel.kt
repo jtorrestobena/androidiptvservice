@@ -37,13 +37,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 private const val TAG = "VideoDialogViewModel"
-private const val CHANNEL_START_POSITION = -1
+private const val START_POSITION = -1
 private const val TITLE_UNKNOWN = "Unknown"
 
 class VideoDialogFragmentViewModel(private val eventLogDatabase: EventLogDao, sharedViewModel: MainActivityViewModel)
     : BaseFragmentViewModel(sharedViewModel), Player.EventListener {
-    private var actualPosition = CHANNEL_START_POSITION
+    private var actualChannelPosition = START_POSITION
+    private var actualOptionPosition = START_POSITION
     val currentChannel = MutableLiveData<Track>()
+    val hasPreviousChannel = MutableLiveData(false)
+    val hasNextChannel = MutableLiveData(false)
     val playerState = SingleLiveEvent<PlayerState>()
 
     val loadVideoEvent = SingleLiveEvent<String>()
@@ -54,32 +57,53 @@ class VideoDialogFragmentViewModel(private val eventLogDatabase: EventLogDao, sh
     val hasNextOption = MutableLiveData(false)
     private val currentTitle: String get() = currentAlternative.value?.title ?: TITLE_UNKNOWN
 
+    fun startPlayList() {
+        actualChannelPosition = START_POSITION
+        tryNextChannel()
+    }
+
+    fun tryPreviousChannel() {
+        actualChannelPosition--
+        tryCurrentChannel()
+    }
+
+    fun tryNextChannel() {
+        actualChannelPosition++
+        tryCurrentChannel()
+    }
+
+    private fun tryCurrentChannel() {
+        hasPreviousChannel.value = actualChannelPosition > 0
+        hasNextChannel.value = actualChannelPosition + 1 < sharedViewModel.playlist.value?.playListEntries?.size ?: 0
+        sharedViewModel.playlist.value?.playListEntries?.getOrNull(actualChannelPosition)?.let(::startPlayingChannel)
+    }
+
     fun canPlayChannel(channelIdentifier: String): Boolean = sharedViewModel.getChannelWithId(channelIdentifier)?.let{
             startPlayingChannel(it)
             true
         } ?: false
 
     private fun startPlayingChannel(channel: Track) {
-        actualPosition = CHANNEL_START_POSITION
+        actualOptionPosition = START_POSITION
         currentChannel.value = channel
         Log.d(TAG, "Playing channel ${channel.extInfo?.title}")
         tryNextOption()
     }
 
     fun tryPreviousOption(){
-        actualPosition--
+        actualOptionPosition--
         tryNewOption()
     }
 
     fun tryNextOption() {
-        actualPosition++
+        actualOptionPosition++
         tryNewOption()
     }
 
     private fun tryNewOption() {
-        hasPreviousOption.value = actualPosition > 0
-        hasNextOption.value = actualPosition + 1 < currentChannel.value?.alternativeURLs?.size ?: 0
-        currentAlternative.value = currentChannel.value?.alternativeURLs?.getOrNull(actualPosition)
+        hasPreviousOption.value = actualOptionPosition > 0
+        hasNextOption.value = actualOptionPosition + 1 < currentChannel.value?.alternativeURLs?.size ?: 0
+        currentAlternative.value = currentChannel.value?.alternativeURLs?.getOrNull(actualOptionPosition)
         currentAlternative.value?.let { alternativeURL ->
             alternativeURL.url?.let { url ->
                 Log.d(TAG, "Playing video url $url")
@@ -90,7 +114,7 @@ class VideoDialogFragmentViewModel(private val eventLogDatabase: EventLogDao, sh
                 }
             } ?: Log.d(TAG, "No valid url found in current alternative $currentAlternative")
         } ?: run {
-            Log.e(TAG, "Did not found alternative at $actualPosition, total ${currentChannel.value?.alternativeURLs?.size}")
+            Log.e(TAG, "Did not found alternative at $actualOptionPosition, total ${currentChannel.value?.alternativeURLs?.size}")
             finishPlayingEvent.call()
         }
     }

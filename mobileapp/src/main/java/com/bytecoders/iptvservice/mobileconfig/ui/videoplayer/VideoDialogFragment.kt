@@ -9,7 +9,6 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.bytecoders.iptvservice.mobileconfig.MainActivity
-import com.bytecoders.iptvservice.mobileconfig.MainActivityViewModel
 import com.bytecoders.iptvservice.mobileconfig.R
 import com.bytecoders.iptvservice.mobileconfig.database.getAppDatabase
 import com.bytecoders.iptvservice.mobileconfig.databinding.FragmentVideoDialogBinding
@@ -27,11 +26,10 @@ private const val TAG = "VideoDialogFragment"
 class VideoDialogFragment : BaseDialogFragment<VideoDialogFragmentViewModel, FragmentVideoDialogBinding>() {
     private val args: VideoDialogFragmentArgs by navArgs()
     override val viewModel: VideoDialogFragmentViewModel by viewModels  {
-        VideoDialogFragmentViewModelFactory(getAppDatabase(requireContext().applicationContext).eventLogDao(), sharedViewModel)
+        VideoDialogFragmentViewModelFactory(getAppDatabase(requireContext().applicationContext).eventLogDao(), (activity as MainActivity).viewModel)
     }
     override val layoutId: Int
         get() = R.layout.fragment_video_dialog
-    private val sharedViewModel: MainActivityViewModel get() = (activity as MainActivity).viewModel
     private val player: SimpleExoPlayer by lazy { SimpleExoPlayer.Builder(requireContext()).build().apply { addListener(viewModel) } }
     private val castPlayer: CastPlayer by lazy { CastPlayer(CastContext.getSharedInstance(requireActivity())) }
 
@@ -47,9 +45,11 @@ class VideoDialogFragment : BaseDialogFragment<VideoDialogFragmentViewModel, Fra
             viewBinding?.videoViewMediaRouterButton?.visibility = it
         }
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
-        if (!viewModel.canPlayChannel(args.channelIdentifier)) {
-            dismiss()
-        }
+        args.channelIdentifier?.let {
+            if (!viewModel.canPlayChannel(it)) {
+                dismiss()
+            }
+        } ?: viewModel.startPlayList()
 
         viewModel.loadVideoEvent.observe(viewLifecycleOwner, { loadVideo(it) })
         viewModel.setupCastingEvent.observe(viewLifecycleOwner, { setupCasting(it.first, it.second) })
