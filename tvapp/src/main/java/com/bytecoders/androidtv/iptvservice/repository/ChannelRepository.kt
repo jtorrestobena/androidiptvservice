@@ -3,8 +3,10 @@ package com.bytecoders.androidtv.iptvservice.repository
 import android.app.Application
 import androidx.preference.PreferenceManager
 import com.bytecoders.androidtv.iptvservice.rich.RichFeedUtil
+import com.bytecoders.iptvservicecommunicator.playlist.applyPositions
 import com.bytecoders.iptvservicecommunicator.protocol.MessageParser
 import com.bytecoders.iptvservicecommunicator.protocol.api.MessagePlayListCustomConfig
+import com.bytecoders.iptvservicecommunicator.protocol.api.PreferredChannel
 import com.bytecoders.m3u8parser.data.Playlist
 import com.bytecoders.m3u8parser.data.Track
 import com.google.android.media.tv.companionlibrary.xmltv.XmlTvParser
@@ -57,7 +59,7 @@ class ChannelRepository(application: Application) {
     }
 
     private val messageParser = MessageParser()
-    var savedPositions: List<String>
+    var savedPositions: List<PreferredChannel>
         get() = channelRepositoryPreferences.getString(POSITION_PREFS, null)?.let {
             return@let (messageParser.parseMessage(it) as? MessagePlayListCustomConfig)?.channelSelection ?: emptyList()
         } ?: emptyList()

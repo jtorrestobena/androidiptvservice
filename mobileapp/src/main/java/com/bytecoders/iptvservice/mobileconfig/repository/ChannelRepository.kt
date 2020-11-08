@@ -3,7 +3,6 @@ package com.bytecoders.iptvservice.mobileconfig.repository
 import android.app.Application
 import android.preference.PreferenceManager
 import android.util.Log
-import android.webkit.URLUtil
 import androidx.lifecycle.MutableLiveData
 import com.bytecoders.iptvservice.mobileconfig.database.EventLog
 import com.bytecoders.iptvservice.mobileconfig.database.EventType
@@ -13,8 +12,10 @@ import com.bytecoders.iptvservice.mobileconfig.livedata.SingleLiveEvent
 import com.bytecoders.iptvservice.mobileconfig.livedata.StringSettings
 import com.bytecoders.iptvservicecommunicator.net.Network
 import com.bytecoders.iptvservicecommunicator.net.Network.inputStreamAndLength
+import com.bytecoders.iptvservicecommunicator.playlist.applyPositions
 import com.bytecoders.iptvservicecommunicator.protocol.MessageParser
 import com.bytecoders.iptvservicecommunicator.protocol.api.MessagePlayListCustomConfig
+import com.bytecoders.iptvservicecommunicator.protocol.api.PreferredChannel
 import com.bytecoders.m3u8parser.data.Playlist
 import com.bytecoders.m3u8parser.parser.M3U8Parser
 import com.bytecoders.m3u8parser.scanner.M3U8ItemScanner
@@ -35,7 +36,7 @@ class ChannelRepository(private val application: Application) {
     val newURLEvent = SingleLiveEvent<String>()
     val playlist = MutableLiveData<Playlist>()
     var listing = MutableLiveData<XmlTvParser.TvListing?>()
-    var positions = ArrayList<String>()
+    var positions = ArrayList<PreferredChannel>()
     val percentage = MutableLiveData<Int>(0)
     val executor = Executors.newFixedThreadPool(2)
     val channelsAvailable = MutableLiveData<Int>(0)
@@ -45,7 +46,7 @@ class ChannelRepository(private val application: Application) {
     private var channelsLoaded: Boolean = false
     val isDataLoaded get() = channelsLoaded
 
-    var savedPositions: List<String>
+    var savedPositions: List<PreferredChannel>
         get() = sharedPreferences.getString(POSITION_PREFS, null)?.let {
                 return@let (messageParser.parseMessage(it) as? MessagePlayListCustomConfig)?.channelSelection ?: emptyList()
             } ?: emptyList()
@@ -104,7 +105,7 @@ class ChannelRepository(private val application: Application) {
     fun savePositionOrder() {
         positions.clear()
         playlist.value?.playListEntries?.forEach {
-            positions.add(it.identifier)
+            positions.add(PreferredChannel(it.identifier, it.preferredOption))
         }
         savedPositions = positions
     }

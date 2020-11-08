@@ -15,5 +15,9 @@ data class MessageEndpointInformation(val name: String? = android.os.Build.MODEL
 data class MessagePlayListConfig(val playlistURL: String, val epgURL: String?): Message()
 
 @Serializable
+@SerialName("PreferredChannel")
+data class PreferredChannel(val id: String, val preferredUrlOption: Int)
+
+@Serializable
 @SerialName("PlayListCustomConfig")
-data class MessagePlayListCustomConfig(val channelSelection: List<String>): Message()
+data class MessagePlayListCustomConfig(val channelSelection: List<PreferredChannel>): Message()
