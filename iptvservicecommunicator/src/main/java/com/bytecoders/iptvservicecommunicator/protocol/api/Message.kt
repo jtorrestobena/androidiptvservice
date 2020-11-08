@@ -8,7 +8,7 @@ sealed class Message
 
 @Serializable
 @SerialName("Endpoint")
-data class MessageEndpointInformation(val name: String? = android.os.Build.MODEL, val version: Double = 1.0): Message()
+data class MessageEndpointInformation(val name: String, val version: Double): Message()
 
 @Serializable
 @SerialName("PlayList")

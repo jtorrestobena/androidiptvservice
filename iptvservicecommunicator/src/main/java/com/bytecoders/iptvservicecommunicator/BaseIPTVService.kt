@@ -1,5 +1,6 @@
 package com.bytecoders.iptvservicecommunicator
 
+import android.os.Build
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
@@ -20,6 +21,7 @@ abstract class BaseIPTVService {
             (it as? MessageEndpointInformation)?.name
         }
     }
+    val endpointName: String by lazy { "${Build.MANUFACTURER.capitalize()} ${Build.MODEL}" }
 
     private fun processIncomingMessage(message: Message): Message = message.also{
         outputExecutor.execute { onMessageReceived(it) }

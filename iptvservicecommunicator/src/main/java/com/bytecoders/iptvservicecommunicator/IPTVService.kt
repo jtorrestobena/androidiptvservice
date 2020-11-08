@@ -16,6 +16,7 @@ import com.bytecoders.iptvservicecommunicator.protocol.api.MessageEndpointInform
 
 internal const val IPTV_SERVICE_NAME = "IPTVServiceRemoteConfig"
 internal const val IPTV_SERVICE_TYPE = "_iptvremoteconf._tcp"
+internal const val IPTV_SOFTWARE_VERSION = 1.0
 
 object IPTVService : BaseIPTVService() {
 
@@ -126,7 +127,7 @@ object IPTVService : BaseIPTVService() {
     override fun onMessageReceived(message: Message) {
         if (message is MessageEndpointInformation) {
             // Reply with server's device information
-            sendMessage(MessageEndpointInformation())
+            sendMessage(MessageEndpointInformation(endpointName, IPTV_SOFTWARE_VERSION))
         }
     }
 }

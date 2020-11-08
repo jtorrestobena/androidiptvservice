@@ -112,7 +112,7 @@ class SettingsFragment : LeanbackSettingsFragmentCompat() {
             })
             IPTVService.statusObserver.observe(viewLifecycleOwner, {
                 if (it == IPTVService.ServiceStatus.READY) {
-                    serverStatus?.summary = getString(R.string.ready_to_conect, android.os.Build.MODEL)
+                    serverStatus?.summary = getString(R.string.ready_to_conect, IPTVService.endpointName)
                 } else {
                     serverStatus?.summary = it.toString()
                 }

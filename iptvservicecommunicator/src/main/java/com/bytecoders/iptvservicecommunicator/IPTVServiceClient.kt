@@ -129,7 +129,7 @@ class IPTVServiceClient(application: Application) : BaseIPTVService() {
         }.apply {
             start()
         }
-        sendMessage(MessageEndpointInformation())
+        sendMessage(MessageEndpointInformation(endpointName, IPTV_SOFTWARE_VERSION))
         serviceStatus.postValue(ServiceStatus.READY)
     } catch (socketTimeoutException: SocketTimeoutException) {
         serviceStatus.postValue(ServiceStatus.UNREGISTERED)
