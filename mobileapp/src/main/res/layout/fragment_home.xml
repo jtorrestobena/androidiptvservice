@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <import type="android.view.View" />
         <import type="com.bytecoders.iptvservicecommunicator.IPTVServiceClient.ServiceStatus" />
 
         <variable
@@ -186,6 +186,18 @@
                                 android:importantForAutofill="no"
                                 android:text="@{viewmodel.serviceStatus.toString()}"
                                 tools:text="READY" />
+
+                            <TextView
+                                android:id="@+id/service_endpoint_name"
+                                style="@style/AppTheme.LabelText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="@dimen/margin_small"
+                                android:gravity="center"
+                                android:importantForAutofill="no"
+                                android:visibility="@{viewmodel.endpointName != null ? View.VISIBLE : View.GONE}"
+                                android:text="@{viewmodel.endpointName}"
+                                tools:text="Television Name" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>

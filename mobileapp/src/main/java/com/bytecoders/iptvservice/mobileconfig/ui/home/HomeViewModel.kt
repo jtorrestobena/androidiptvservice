@@ -5,6 +5,7 @@ import androidx.lifecycle.Transformations
 import com.bytecoders.iptvservice.mobileconfig.MainActivityViewModel
 import com.bytecoders.iptvservice.mobileconfig.livedata.WifiConnectionLiveData
 import com.bytecoders.iptvservice.mobileconfig.ui.BaseFragmentViewModel
+import com.bytecoders.iptvservicecommunicator.protocol.api.MessageEndpointInformation
 import com.bytecoders.iptvservicecommunicator.protocol.api.MessagePlayListConfig
 import com.bytecoders.iptvservicecommunicator.protocol.api.MessagePlayListCustomConfig
 
@@ -16,6 +17,11 @@ class HomeViewModel(sharedViewModel: MainActivityViewModel)
     val serviceStatus = sharedViewModel.iptvClient.clientServiceLifecycle
     val wifiConnection = WifiConnectionLiveData(sharedViewModel.application)
     val tvName: LiveData<String?> = sharedViewModel.iptvClient.tvName
+    val endpointName: LiveData<String> by lazy {
+        Transformations.map(sharedViewModel.iptvClient.incomingMessagesLiveData) {
+            (it as? MessageEndpointInformation)?.name
+        }
+    }
 
     val downloadProgress = channelRepository.percentage
     val channelsText = Transformations.map(channelsAvailable) {

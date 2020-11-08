@@ -11,6 +11,7 @@ import androidx.lifecycle.Transformations
 import com.bytecoders.iptvservicecommunicator.IPTVService.serviceName
 import com.bytecoders.iptvservicecommunicator.livedata.ClientStatusLiveData
 import com.bytecoders.iptvservicecommunicator.network.Session
+import com.bytecoders.iptvservicecommunicator.protocol.api.Message
 import com.bytecoders.iptvservicecommunicator.protocol.api.MessageEndpointInformation
 import java.net.*
 
@@ -31,6 +32,7 @@ class IPTVServiceClient(application: Application) : BaseIPTVService() {
     private val serviceStatus = MutableLiveData<ServiceStatus>().apply { postValue(ServiceStatus.UNREGISTERED) }
     val clientServiceStatus: LiveData<ServiceStatus> by lazy { Transformations.map(serviceStatus) { i -> i } }
     val clientServiceLifecycle by lazy { ClientStatusLiveData(this) }
+    val incomingMessagesLiveData: LiveData<Message> by lazy { Transformations.map(messageParser.incomingMessages) { i -> i  } }
     private val nsdManager: NsdManager by lazy {
         application.getSystemService(Context.NSD_SERVICE) as NsdManager
     }
