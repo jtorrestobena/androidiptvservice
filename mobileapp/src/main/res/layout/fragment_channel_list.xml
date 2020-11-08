@@ -12,98 +12,74 @@
             type="com.bytecoders.iptvservice.mobileconfig.ui.dashboard.ChannelListViewModel" />
     </data>
 
-    <androidx.constraintlayout.motion.widget.MotionLayout
-        android:id="@+id/dashboard_motion_layout"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layoutDescription="@xml/scene">
+        android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/channelsRecyclerview"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="@{viewmodel.playlist == null ? View.GONE : View.VISIBLE}"
-            app:click_listener="@{viewmodel.itemListener}"
-            app:edit_mode="@{viewmodel.editMode}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar_image"
-            app:playlist="@{viewmodel.playlist}"
-            app:program_listings="@{viewmodel.listings}"
-            tools:listitem="@layout/channel_item"/>
+        <androidx.constraintlayout.motion.widget.MotionLayout
+            android:id="@+id/dashboard_motion_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutDescription="@xml/scene">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/toolbar_image"
-            android:layout_width="0dp"
-            android:layout_height="200dp"
-            android:adjustViewBounds="true"
-            android:background="@color/primaryColor"
-            android:contentDescription="@null"
-            android:fitsSystemWindows="true"
-            android:foreground="@drawable/dashboard_overlay"
-            android:scaleType="centerCrop"
-            android:src="@drawable/dashboard_background"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/channelsRecyclerview"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="@{viewmodel.playlist == null ? View.GONE : View.VISIBLE}"
+                app:click_listener="@{viewmodel.itemListener}"
+                app:edit_mode="@{viewmodel.editMode}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/toolbar_image"
+                app:playlist="@{viewmodel.playlist}"
+                app:program_listings="@{viewmodel.listings}"
+                tools:listitem="@layout/channel_item" />
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/edit_mode_switch"
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/toolbar_image"
+                android:layout_width="0dp"
+                android:layout_height="200dp"
+                android:adjustViewBounds="true"
+                android:background="@color/primaryColor"
+                android:contentDescription="@null"
+                android:fitsSystemWindows="true"
+                android:foreground="@drawable/dashboard_overlay"
+                android:scaleType="centerCrop"
+                android:src="@drawable/dashboard_background"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/edit_mode_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="24dp"
+                android:checked="@={viewmodel.editMode}"
+                android:switchPadding="30dp"
+                android:text="@{viewmodel.editMode ? @string/edit_on : @string/edit_off}"
+                android:textColor="?android:attr/textColorPrimaryInverse"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/toolbar_image"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="@string/edit_off" />
+        </androidx.constraintlayout.motion.widget.MotionLayout>
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/playAllFab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="24dp"
-            android:checked="@={viewmodel.editMode}"
-            android:switchPadding="30dp"
-            android:text="@{viewmodel.editMode ? @string/edit_on : @string/edit_off}"
-            android:textColor="?android:attr/textColorPrimaryInverse"
-            android:textSize="32sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@id/toolbar_image"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:text="@string/edit_off" />
-
-        <LinearLayout
-            android:id="@+id/channelListFabContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
             android:layout_margin="@dimen/margin_small"
-            android:animateLayoutChanges="true"
-            android:background="@drawable/fab_btn_corner"
-            android:backgroundTint="@color/lightBlue"
-            android:clipToPadding="false"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:outlineProvider="none"
-            android:outlineSpotShadowColor="@android:color/transparent"
-            android:clickable="true"
-            android:focusable="true"
             android:onClick="@{() -> viewmodel.playAll()}"
+            android:text="@string/play_all"
+            app:backgroundTint="@color/lightBlue"
+            app:elevation="6dp"
+            app:icon="@drawable/ic_play_circle_outline_black_24dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/channelListFab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_play_circle_outline_black_24dp"
-                app:backgroundTint="@color/lightBlue"
-                app:borderWidth="0dp"
-                app:elevation="0dp"
-                app:fabSize="normal" />
-
-            <TextView
-                android:id="@+id/channelListFabText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingStart="0dp"
-                android:paddingEnd="20dp"
-                android:text="@string/play_all"
-                android:textAllCaps="false"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Button" />
-
-        </LinearLayout>
-    </androidx.constraintlayout.motion.widget.MotionLayout>
+            app:layout_constraintEnd_toEndOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

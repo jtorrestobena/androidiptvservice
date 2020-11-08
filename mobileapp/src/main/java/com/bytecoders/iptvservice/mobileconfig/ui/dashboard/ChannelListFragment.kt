@@ -11,7 +11,6 @@ import com.bytecoders.iptvservice.mobileconfig.databinding.FragmentChannelListBi
 import com.bytecoders.iptvservice.mobileconfig.model.LayoutState
 import com.bytecoders.iptvservice.mobileconfig.ui.BaseFragment
 import com.bytecoders.m3u8parser.data.Track
-import kotlinx.android.synthetic.main.fragment_channel_list.*
 
 class ChannelListFragment : BaseFragment<ChannelListViewModel, FragmentChannelListBinding>() {
     override val viewModel: ChannelListViewModel by viewModels { getDefaultProvider() }
@@ -41,12 +40,19 @@ class ChannelListFragment : BaseFragment<ChannelListViewModel, FragmentChannelLi
             NavHostFragment.findNavController(this).navigate(ChannelListFragmentDirections.actionNavigationDashboardToVideoPlayer(null))
         })
 
-        channelsRecyclerview.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        viewBinding?.channelsRecyclerview?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                channelListFabText?.visibility = if (dy <= 0) View.VISIBLE else View.GONE
+                viewBinding?.playAllFab?.let {
+                    if (dy <= 0) it.extend() else it.shrink()
+                }
             }
         })
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewBinding?.channelsRecyclerview?.clearOnScrollListeners()
     }
 
     override fun onResume() {
