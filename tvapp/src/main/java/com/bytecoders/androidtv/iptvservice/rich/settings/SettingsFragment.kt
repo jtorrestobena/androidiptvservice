@@ -66,6 +66,7 @@ class SettingsFragment : LeanbackSettingsFragmentCompat() {
     class MainPreferenceFragment : LeanbackPreferenceFragmentCompat() {
         private var channelSummary: Preference? = null
         private var serverStatus: Preference? = null
+        private var epgPreference: EditTextPreference? = null
         private val channelRepository by lazy {
             ChannelRepository(requireContext().applicationContext as Application)
         }
@@ -126,6 +127,7 @@ class SettingsFragment : LeanbackSettingsFragmentCompat() {
             setPreferencesFromResource(R.xml.preferences, rootKey)
             channelSummary = preferenceManager.findPreference("channel_summary")
             serverStatus = preferenceManager.findPreference("server_status")
+            epgPreference = preferenceManager.findPreference(EPG_URL_PREFS)
             loadChannels()
         }
 
@@ -136,6 +138,9 @@ class SettingsFragment : LeanbackSettingsFragmentCompat() {
                 lifecycleScope.launch {
                     val channelEntries: Int = getPlayListEntries(channelRepository)
                     channelSummary?.summary = getString(R.string.channels_available, channelEntries)
+                    channelRepository.epgURL?.let {
+                        epgPreference?.text = it
+                    }
                 }
             } else {
                 playlistURL?.let {

@@ -19,17 +19,17 @@ import java.io.Serializable
 import java.util.*
 import kotlin.collections.ArrayList
 
-data class AlternativeURL(val title: String?, val url: String?) {
+data class AlternativeURL(val title: String?, val url: String?): Serializable {
     override fun toString(): String = title ?: super.toString()
 }
 /**
  * Created by Emanuele on 31/08/2016.
  */
 class Track(var extInfo: ExtInfo? = null, var url: String = "") : Comparable<Track>, Serializable {
-    var preferredUrl = 0
+    var preferredOption = 0
     val alternativeURLs = ArrayList<AlternativeURL>()
 
-    val hasAlternatives: Boolean get() = alternativeURLs.size > 1
+    val preferredURL: String get() = alternativeURLs.getOrNull(preferredOption)?.url ?: url
 
     /**
      * Check if there´s a TV guide identifier, if not create a UUID from

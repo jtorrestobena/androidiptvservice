@@ -66,7 +66,8 @@ class SampleJobService : EpgSyncJobService() {
             channelList.add(newChannel)
             programMapping[newChannel.originalNetworkId] = EPGURLMapping(InternalProviderData().apply {
                 videoType = C.TYPE_HLS
-                videoUrl = trackData.url
+                videoUrl = trackData.preferredURL
+                Log.d(TAG, "Setting url ${trackData.preferredURL} for channel ${newChannel.displayName}")
             }, trackData.extInfo?.tvgId)
         }
 
