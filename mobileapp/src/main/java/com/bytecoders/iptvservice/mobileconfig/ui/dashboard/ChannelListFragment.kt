@@ -5,11 +5,11 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.NavHostFragment
-import androidx.recyclerview.widget.RecyclerView
 import com.bytecoders.iptvservice.mobileconfig.R
 import com.bytecoders.iptvservice.mobileconfig.databinding.FragmentChannelListBinding
 import com.bytecoders.iptvservice.mobileconfig.model.LayoutState
 import com.bytecoders.iptvservice.mobileconfig.ui.BaseFragment
+import com.bytecoders.iptvservice.mobileconfig.util.addScrolledUpDownListener
 import com.bytecoders.m3u8parser.data.Track
 
 class ChannelListFragment : BaseFragment<ChannelListViewModel, FragmentChannelListBinding>() {
@@ -40,14 +40,11 @@ class ChannelListFragment : BaseFragment<ChannelListViewModel, FragmentChannelLi
             NavHostFragment.findNavController(this).navigate(ChannelListFragmentDirections.actionNavigationDashboardToVideoPlayer(null))
         })
 
-        viewBinding?.channelsRecyclerview?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                viewBinding?.playAllFab?.let {
-                    if (dy <= 0) it.extend() else it.shrink()
-                }
+        viewBinding?.channelsRecyclerview?.addScrolledUpDownListener { isUp ->
+            viewBinding?.playAllFab?.let {
+                if (isUp) it.extend() else it.shrink()
             }
-        })
+        }
     }
 
     override fun onDestroyView() {
