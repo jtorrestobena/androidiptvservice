@@ -8,7 +8,7 @@ import java.net.SocketException
 
 private const val TAG = ""
 
-class Server(serverPort: Int = 0, private val messageListener: (String) -> Unit) {
+class Server(private val serverPort: Int = 0, private val messageListener: (String) -> Unit) {
 
     private var runServer = false
     private val serverSocket = ServerSocket(serverPort)
@@ -18,6 +18,7 @@ class Server(serverPort: Int = 0, private val messageListener: (String) -> Unit)
 
     fun start() {
         runServer = true
+        Log.d(TAG, "Start running server at port $port")
         Thread {
             while (runServer) try {
                 serverSocket.accept()?.let {
@@ -30,6 +31,7 @@ class Server(serverPort: Int = 0, private val messageListener: (String) -> Unit)
                 Log.d(TAG, "Exception reading from server socket", socketException)
                 runServer = false
             }
+            Log.d(TAG, "Server no longer running")
         }.start()
     }
 

@@ -175,6 +175,17 @@
                                 android:importantForAutofill="no"
                                 android:text="@{viewmodel.programCount}"
                                 tools:text="3 programs found" />
+
+                            <TextView
+                                android:id="@+id/service_status_text"
+                                style="@style/AppTheme.LabelText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="@dimen/margin_small"
+                                android:gravity="center"
+                                android:importantForAutofill="no"
+                                android:text="@{viewmodel.serviceStatus.toString()}"
+                                tools:text="READY" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>

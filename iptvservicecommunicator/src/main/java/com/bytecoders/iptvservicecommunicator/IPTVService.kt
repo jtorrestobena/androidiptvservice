@@ -23,11 +23,8 @@ object IPTVService : BaseIPTVService() {
 
     internal var serviceName: String? = null
     private var localPort: Int = 0
-    private val server by lazy { Server(BuildConfig.SERVER_PORT) { messageParser.processIncomingMessage(it) } }
+    private var server: Server? = null
     private var nsdManager: NsdManager? = null
-
-    @Volatile
-    private var runServer: Boolean = false
 
     enum class ServiceStatus {
         UNREGISTERED,
@@ -52,25 +49,25 @@ object IPTVService : BaseIPTVService() {
             serviceName = NsdServiceInfo.serviceName
             serviceStatus.postValue(ServiceStatus.REGISTERED)
             bindSocket()
-            Log.d(TAG, "onServiceRegistered $serviceName")
+            Log.d(TAG, "NSD Service Registered $serviceName at port ${server?.port}")
         }
 
         override fun onRegistrationFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
             // Registration failed! Put debugging code here to determine why.
             shutdown()
-            Log.d(TAG, "onRegistrationFailed")
+            Log.d(TAG, "NSD Service RegistrationFailed errorCode=$errorCode, serviceInfo=$serviceInfo")
         }
 
         override fun onServiceUnregistered(serviceInfo: NsdServiceInfo) {
             // Service has been unregistered. This only happens when you call
             // NsdManager.unregisterService() and pass in this listener.
             shutdown()
-            Log.d(TAG, "onServiceUnregistered")
+            Log.d(TAG, "NSD Service Unregistered")
         }
 
         override fun onUnregistrationFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
             // Unregistration failed. Put debugging code here to determine why.
-            Log.d(TAG, "onUnregistrationFailed")
+            Log.d(TAG, "NSD Unregistration Failed errorCode=$errorCode, serviceInfo=$serviceInfo")
         }
     }
 
@@ -93,9 +90,12 @@ object IPTVService : BaseIPTVService() {
     fun getStatusObserverLifeCycle(application: Application): ServerStatusLiveData = ServerStatusLiveData(application, this)
 
     fun registerTVService(application: Application) {
+        server = Server(BuildConfig.SERVER_PORT) { messageParser.processIncomingMessage(it) }
         if (BuildConfig.NETWORK_DISCOVERY_ENABLED) {
-            localPort = server.port
-            registerService(localPort, application)
+            server?.port?.let {
+                localPort = it
+                registerService(localPort, application)
+            } ?: Log.e(TAG, "Tried to register service but no port was available")
         } else {
             bindSocket()
         }
@@ -106,21 +106,21 @@ object IPTVService : BaseIPTVService() {
     }
 
     private fun bindSocket() {
-        Log.d(TAG, "Binding socket on ${server.port}")
+        Log.d(TAG, "Binding socket on ${server?.port}")
         serviceStatus.postValue(ServiceStatus.READY)
-        server.serviceStatus = serviceStatus
-        server.start()
+        server?.serviceStatus = serviceStatus
+        server?.start()
     }
 
     fun shutdown() {
         Log.d(TAG, "Shutting down service")
         serviceStatus.postValue(ServiceStatus.UNREGISTERED)
-        runServer = false
-        server.close()
+        server?.close()
+        server = null
     }
 
     override fun sendMessageInternal(message: String) {
-        server.write(message)
+        server?.write(message)
     }
 
     override fun onMessageReceived(message: Message) {

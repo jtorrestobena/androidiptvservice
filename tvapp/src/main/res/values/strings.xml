@@ -45,7 +45,8 @@
     <string name="playlist_url">Playlist URL</string>
     <string name="epg_url">EPG URL</string>
     <string name="channels_available">%d channels available</string>
-    <string name="invalid_url">"Invalid url %s"</string>
+    <string name="invalid_url">Invalid url %s</string>
+    <string name="ready_to_conect">Ready to connect at %s</string>
 
     <string name="empty_section_start">Getting started</string>
     <string name="empty_section_settings">Settings</string>

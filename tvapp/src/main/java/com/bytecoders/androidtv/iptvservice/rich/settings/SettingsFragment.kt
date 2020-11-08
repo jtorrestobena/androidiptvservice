@@ -12,7 +12,6 @@ import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.leanback.preference.LeanbackPreferenceFragmentCompat
 import androidx.leanback.preference.LeanbackSettingsFragmentCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.*
 import com.bytecoders.androidtv.iptvservice.R
@@ -89,7 +88,7 @@ class SettingsFragment : LeanbackSettingsFragmentCompat() {
 
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
-            IPTVService.messagesLiveData.observe(viewLifecycleOwner, Observer {
+            IPTVService.messagesLiveData.observe(viewLifecycleOwner, {
                 Toast.makeText(requireContext(), "Message: $it", Toast.LENGTH_SHORT).show()
                 when (it) {
                     is MessageEndpointInformation -> {
@@ -101,7 +100,7 @@ class SettingsFragment : LeanbackSettingsFragmentCompat() {
                     is MessagePlayListConfig -> {
                         PreferenceManager.getDefaultSharedPreferences(requireContext()).edit {
                             putString(M3U_URL_PREFS, it.playlistURL)
-                            it.epgURL?.let {  epg ->
+                            it.epgURL?.let { epg ->
                                 putString(EPG_URL_PREFS, epg)
                             }
                         }
@@ -111,8 +110,12 @@ class SettingsFragment : LeanbackSettingsFragmentCompat() {
                     }
                 }
             })
-            IPTVService.statusObserver.observe(viewLifecycleOwner, Observer {
-                serverStatus?.summary = it.toString()
+            IPTVService.statusObserver.observe(viewLifecycleOwner, {
+                if (it == IPTVService.ServiceStatus.READY) {
+                    serverStatus?.summary = getString(R.string.ready_to_conect, android.os.Build.MODEL)
+                } else {
+                    serverStatus?.summary = it.toString()
+                }
             })
         }
 
@@ -150,7 +153,7 @@ class SettingsFragment : LeanbackSettingsFragmentCompat() {
             }
         }
 
-        private suspend fun getPlayListEntries(repo: ChannelRepository) = withContext(Dispatchers.Default)  {
+        private suspend fun getPlayListEntries(repo: ChannelRepository) = withContext(Dispatchers.Default) {
             repo.playlist.playListEntries.size
         }
 
