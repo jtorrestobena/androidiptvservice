@@ -41,6 +41,8 @@ class MainActivityViewModel(val application: Application): ViewModel() {
     fun getChannelWithId(id: String): Track? = playlist.value?.playListEntries?.firstOrNull {
             it.identifier == id
         }
+
+    fun getChannelPosition(track: Track): Int = playlist.value?.playListEntries?.indexOf(track) ?: -1
 }
 
 class MainActivityViewModelFactory (private val application: Application) : ViewModelProvider.Factory {

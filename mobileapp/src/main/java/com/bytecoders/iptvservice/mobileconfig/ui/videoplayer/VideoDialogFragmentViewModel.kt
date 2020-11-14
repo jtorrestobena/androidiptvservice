@@ -76,12 +76,18 @@ class VideoDialogFragmentViewModel(private val eventLogDatabase: EventLogDao, sh
     }
 
     private fun tryCurrentChannel() {
-        hasPreviousChannel.value = actualChannelPosition > 0
-        hasNextChannel.value = actualChannelPosition + 1 < sharedViewModel.playlist.value?.playListEntries?.size ?: 0
+        setupPreviousNextChannel()
         sharedViewModel.playlist.value?.playListEntries?.getOrNull(actualChannelPosition)?.let(::startPlayingChannel)
     }
 
+    private fun setupPreviousNextChannel() {
+        hasPreviousChannel.value = actualChannelPosition > 0
+        hasNextChannel.value = actualChannelPosition + 1 < sharedViewModel.playlist.value?.playListEntries?.size ?: 0
+    }
+
     fun canPlayChannel(channelIdentifier: String): Boolean = sharedViewModel.getChannelWithId(channelIdentifier)?.let{
+            actualChannelPosition = sharedViewModel.getChannelPosition(it)
+            setupPreviousNextChannel()
             startPlayingChannel(it)
             true
         } ?: false
