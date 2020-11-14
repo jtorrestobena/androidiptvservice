@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.transition.TransitionInflater
 import android.util.Log
 import android.view.View
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.navArgs
 import com.bytecoders.iptvservice.mobileconfig.R
@@ -15,7 +15,7 @@ import com.bytecoders.iptvservice.mobileconfig.ui.BaseFragment
 class ChannelDetailFragment : BaseFragment<ChannelDetailViewModel, ChannelDetailFragmentBinding>() {
 
     private val args: ChannelDetailFragmentArgs by navArgs()
-    override val viewModel: ChannelDetailViewModel by viewModels { getDefaultProvider() }
+    override val viewModel: ChannelDetailViewModel by activityViewModels { getDefaultProvider() }
     override val layoutId = R.layout.channel_detail_fragment
 
     override fun onCreate(savedInstanceState: Bundle?) {

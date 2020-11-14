@@ -2,6 +2,7 @@ package com.bytecoders.iptvservice.mobileconfig.ui.dashboard
 
 import android.os.Parcelable
 import android.view.View
+import androidx.lifecycle.SavedStateHandle
 import com.bytecoders.iptvservice.mobileconfig.MainActivityViewModel
 import com.bytecoders.iptvservice.mobileconfig.bindingadapter.ViewHolderClickListener
 import com.bytecoders.iptvservice.mobileconfig.livedata.BooleanSettings
@@ -13,12 +14,17 @@ private const val LIST_EDIT_MODE = "LIST_EDIT_MODE"
 private const val CHANNEL_RECYCLERVIEW_STATE = "CHANNEL_RECYCLERVIEW_STATE"
 private const val LAYOUT_STATE = "LAYOUT_STATE"
 
-class ChannelListViewModel(sharedViewModel: MainActivityViewModel) : BaseFragmentViewModel(sharedViewModel) {
+class ChannelListViewModel(private val state: SavedStateHandle, sharedViewModel: MainActivityViewModel) : BaseFragmentViewModel(sharedViewModel) {
     val openVideoPlayerEvent = SingleLiveEvent<Void>()
     var layoutState: Parcelable?
-        get() = getStateMap(LAYOUT_STATE)
+        get() = state.get(LAYOUT_STATE)
         set(value) {
-            value?.let { putStateMap(LAYOUT_STATE, it) }
+            value?.let { state.set(LAYOUT_STATE, it) }
+        }
+    var recyclerViewState: Parcelable?
+        get() = state.get(CHANNEL_RECYCLERVIEW_STATE)
+        set(value) {
+            value?.let { state.set(CHANNEL_RECYCLERVIEW_STATE, it) }
         }
     val editMode = BooleanSettings(sharedViewModel.defaultPrefs, LIST_EDIT_MODE, false)
     val clickEvent = SingleLiveEvent<Pair<View, Track>>()
@@ -33,8 +39,4 @@ class ChannelListViewModel(sharedViewModel: MainActivityViewModel) : BaseFragmen
     }
 
     fun playAll() = openVideoPlayerEvent.call()
-
-    private fun getStateMap(key: String) = sharedViewModel.stateMap[key]
-
-    private fun putStateMap(key: String, parcelable: Parcelable) = sharedViewModel.stateMap.put(key, parcelable)
 }

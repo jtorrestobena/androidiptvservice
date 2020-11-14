@@ -6,7 +6,7 @@ import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import com.bytecoders.iptvservice.mobileconfig.MainActivity
 import com.bytecoders.iptvservice.mobileconfig.R
@@ -25,7 +25,7 @@ private const val TAG = "VideoDialogFragment"
 
 class VideoDialogFragment : BaseDialogFragment<VideoDialogFragmentViewModel, FragmentVideoDialogBinding>() {
     private val args: VideoDialogFragmentArgs by navArgs()
-    override val viewModel: VideoDialogFragmentViewModel by viewModels  {
+    override val viewModel: VideoDialogFragmentViewModel by activityViewModels  {
         VideoDialogFragmentViewModelFactory(DatabaseRepository(requireContext().applicationContext), (activity as MainActivity).viewModel)
     }
     override val layoutId: Int

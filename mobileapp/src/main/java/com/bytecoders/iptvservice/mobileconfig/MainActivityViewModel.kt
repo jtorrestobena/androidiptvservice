@@ -2,7 +2,6 @@ package com.bytecoders.iptvservice.mobileconfig
 
 import android.app.Application
 import android.content.SharedPreferences
-import android.os.Parcelable
 import android.preference.PreferenceManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
@@ -19,8 +18,6 @@ class MainActivityViewModel(val application: Application): ViewModel() {
     val iptvClient: IPTVServiceClient by lazy {
         IPTVServiceClient(application)
     }
-
-    val stateMap = HashMap<String, Parcelable?>()
 
     val defaultPrefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
     val channelRepository by lazy { ChannelRepository(application) }

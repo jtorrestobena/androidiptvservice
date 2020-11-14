@@ -10,6 +10,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
+import androidx.savedstate.SavedStateRegistryOwner
 import com.bytecoders.iptvservice.mobileconfig.BR
 import com.bytecoders.iptvservice.mobileconfig.MainActivity
 import com.bytecoders.iptvservice.mobileconfig.livedata.SingleLiveEvent
@@ -47,7 +48,7 @@ abstract class BaseFragment<VM : BaseFragmentViewModel, VB : ViewDataBinding>: F
     }
 
     protected fun getDefaultProvider()
-            : ViewModelProvider.Factory = BaseViewModelFactory((activity as MainActivity).viewModel)
+            : ViewModelProvider.Factory = BaseViewModelFactory(activity as SavedStateRegistryOwner, (activity as MainActivity).viewModel)
 }
 
 abstract class BaseDialogFragment<VM : BaseFragmentViewModel, VB : ViewDataBinding>: DialogFragment(), BindingFragment<VM, VB> {
