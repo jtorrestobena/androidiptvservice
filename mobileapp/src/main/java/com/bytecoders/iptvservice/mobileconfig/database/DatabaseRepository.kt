@@ -1,11 +1,15 @@
 package com.bytecoders.iptvservice.mobileconfig.database
 
+import android.app.Application
 import android.content.Context
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 
 class DatabaseRepository(context: Context): EventLogDao {
-    private val eventLogDatabase by lazy {
-        getAppDatabase(context.applicationContext).eventLogDao()
-    }
+    private val database by lazy { getAppDatabase(context.applicationContext as Application) }
+    private val eventLogDatabase get() = database.eventLogDao()
 
     override fun getAllEvents(): List<EventLog> = eventLogDatabase.getAllEvents()
 
@@ -21,3 +25,14 @@ class DatabaseRepository(context: Context): EventLogDao {
 
     override fun deleteAllEvents() = eventLogDatabase.deleteAllEvents()
 }
+
+@Database(entities = [EventLog::class], version = 1)
+@TypeConverters(EventTypeConverter::class)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun eventLogDao(): EventLogDao
+}
+
+fun getAppDatabase(application: Application) = Room.databaseBuilder(
+        application,
+        AppDatabase::class.java, "application-database"
+).build()

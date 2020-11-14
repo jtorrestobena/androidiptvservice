@@ -1,6 +1,5 @@
 package com.bytecoders.iptvservice.mobileconfig.database
 
-import android.content.Context
 import androidx.room.*
 
 enum class EventType(val value: Int) {
@@ -57,17 +56,6 @@ interface EventLogDao {
     @Query("DELETE FROM EventLog")
     fun deleteAllEvents()
 }
-
-@Database(entities = [EventLog::class], version = 1)
-@TypeConverters(EventTypeConverter::class)
-abstract class AppDatabase : RoomDatabase() {
-    abstract fun eventLogDao(): EventLogDao
-}
-
-fun getAppDatabase(applicationContext: Context) = Room.databaseBuilder(
-                        applicationContext,
-                        AppDatabase::class.java, "eventlog-database"
-                        ).build()
 
 
 

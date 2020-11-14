@@ -1,5 +1,6 @@
 package com.bytecoders.iptvservice.mobileconfig
 
+import android.app.Application
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.bytecoders.iptvservice.mobileconfig.database.EventLog
@@ -22,7 +23,7 @@ class ExampleInstrumentedTest {
     fun databaseTest() {
         val eventList = listOf(EventLog(EventType.ERROR, "error title", "error message"))
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        val eventLogDatabase = getAppDatabase(appContext).eventLogDao()
+        val eventLogDatabase = getAppDatabase(appContext as Application).eventLogDao()
         eventLogDatabase.deleteAllEvents()
 
         assertTrue(eventLogDatabase.getAllEvents().isEmpty())
