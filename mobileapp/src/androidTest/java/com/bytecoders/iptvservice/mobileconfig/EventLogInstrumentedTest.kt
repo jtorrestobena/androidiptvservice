@@ -12,18 +12,13 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 
-/**
- * Instrumented test, which will execute on an Android device.
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
 @RunWith(AndroidJUnit4::class)
-class ExampleInstrumentedTest {
+class EventLogInstrumentedTest {
     @Test
     fun databaseTest() {
         val eventList = listOf(EventLog(EventType.ERROR, "error title", "error message"))
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        val eventLogDatabase = getAppDatabase(appContext as Application).eventLogDao()
+        val eventLogDatabase = getAppDatabase(appContext.applicationContext as Application).eventLogDao()
         eventLogDatabase.deleteAllEvents()
 
         assertTrue(eventLogDatabase.getAllEvents().isEmpty())

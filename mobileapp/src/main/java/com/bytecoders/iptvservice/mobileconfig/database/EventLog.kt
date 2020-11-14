@@ -30,7 +30,7 @@ data class EventLog(
         @ColumnInfo(name = "event_message") val eventMessage: String,
         @ColumnInfo(name = "event_timestamp") val timestamp: Long = System.currentTimeMillis()
 ) {
-    @PrimaryKey(autoGenerate = true) var id: Int = 0
+    @PrimaryKey(autoGenerate = true) var id: Long = 0
 }
 
 @Dao
