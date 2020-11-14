@@ -25,8 +25,8 @@ class ChannelSettingsInstrumentedTest {
 
         val channelId = "superFunnyTV"
 
-        val firstSetting = Settings(0, "superFunnyFirstOption", false, 0, 0)
-        val secondSetting = Settings(0, "superFunnySecondOption", false, 0, 0)
+        val firstSetting = Settings("superFunnyFirstOption", false, 0, 0)
+        val secondSetting = Settings("superFunnySecondOption", false, 0, 0)
 
         val channelSettings = ChannelSettings(channel = Channel(channelId, 1), settings = mutableListOf(firstSetting))
 

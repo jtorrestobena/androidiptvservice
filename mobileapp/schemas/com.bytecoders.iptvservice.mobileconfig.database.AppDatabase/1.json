@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f300f1a3f0bb2e8090ed0a5ff7fc3d70",
+    "identityHash": "206d50d0160fb244958ffe66e4c75c56",
     "entities": [
       {
         "tableName": "EventLog",
@@ -82,7 +82,7 @@
       },
       {
         "tableName": "Settings",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `channel_id_fk` INTEGER NOT NULL, `position` INTEGER NOT NULL, `title` TEXT NOT NULL, `can_play` INTEGER NOT NULL, `video_height` INTEGER NOT NULL, `video_width` INTEGER NOT NULL, FOREIGN KEY(`channel_id_fk`) REFERENCES `Channel`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `channel_id_fk` INTEGER NOT NULL, `title` TEXT NOT NULL, `can_play` INTEGER NOT NULL, `video_width` INTEGER NOT NULL, `video_height` INTEGER NOT NULL, FOREIGN KEY(`channel_id_fk`) REFERENCES `Channel`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -93,12 +93,6 @@
           {
             "fieldPath": "channelId",
             "columnName": "channel_id_fk",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "position",
-            "columnName": "position",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -115,14 +109,14 @@
             "notNull": true
           },
           {
-            "fieldPath": "videoHeight",
-            "columnName": "video_height",
+            "fieldPath": "videoWidth",
+            "columnName": "video_width",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "videoWidth",
-            "columnName": "video_width",
+            "fieldPath": "videoHeight",
+            "columnName": "video_height",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -161,7 +155,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f300f1a3f0bb2e8090ed0a5ff7fc3d70')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '206d50d0160fb244958ffe66e4c75c56')"
     ]
   }
 }

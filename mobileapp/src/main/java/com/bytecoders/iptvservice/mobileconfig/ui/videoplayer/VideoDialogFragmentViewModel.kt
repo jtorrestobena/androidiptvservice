@@ -9,9 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.bytecoders.iptvservice.mobileconfig.BuildConfig
 import com.bytecoders.iptvservice.mobileconfig.MainActivityViewModel
-import com.bytecoders.iptvservice.mobileconfig.database.DatabaseRepository
-import com.bytecoders.iptvservice.mobileconfig.database.EventLog
-import com.bytecoders.iptvservice.mobileconfig.database.EventType
+import com.bytecoders.iptvservice.mobileconfig.database.*
 import com.bytecoders.iptvservice.mobileconfig.livedata.SingleLiveEvent
 import com.bytecoders.iptvservice.mobileconfig.model.PlayerState
 import com.bytecoders.iptvservice.mobileconfig.model.PlayerStatePlayError
@@ -96,6 +94,9 @@ class VideoDialogFragmentViewModel(private val database: DatabaseRepository, sha
         actualOptionPosition = START_POSITION
         currentChannel.value = channel
         Log.d(TAG, "Playing channel ${channel.extInfo?.title}")
+        viewModelScope.launch(Dispatchers.IO) {
+            database.storeChannel(Channel(channel.identifier, channel.preferredOption))
+        }
         tryNextOption()
     }
 
@@ -141,6 +142,7 @@ class VideoDialogFragmentViewModel(private val database: DatabaseRepository, sha
         super.onPlayerError(error)
         Log.e(TAG, "Player error ${error.type}: Message ${error.message}")
         playerState.postValue(PlayerStatePlayError(currentTitle, error))
+        updateSettings(Settings(currentTitle, false, 0, 0))
         streamOpenFailed(error)
         tryNextOption()
     }
@@ -148,6 +150,7 @@ class VideoDialogFragmentViewModel(private val database: DatabaseRepository, sha
     override fun onVideoSizeChanged(width: Int, height: Int, unappliedRotationDegrees: Int, pixelWidthHeightRatio: Float) {
         super.onVideoSizeChanged(width, height, unappliedRotationDegrees, pixelWidthHeightRatio)
         videoResolution.value = VideoResolution(width, height)
+        updateSettings(Settings(currentTitle, true, width, height))
     }
 
     private fun streamOpenFailed(error: ExoPlaybackException) = currentAlternative.value?.let {
@@ -181,6 +184,17 @@ class VideoDialogFragmentViewModel(private val database: DatabaseRepository, sha
                 .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED).setContentType(MimeTypes.APPLICATION_M3U8)
                 .setMetadata(movieMetadata).build()
         return MediaQueueItem.Builder(mediaInfo).build()
+    }
+
+    private fun updateSettings(settings: Settings) = currentChannel.value?.identifier?.let {
+        viewModelScope.launch(Dispatchers.IO) {
+            val channelSettings = database.getChannelSetting(it)
+            try {
+                channelSettings.settings.add(actualOptionPosition, settings)
+            } catch (indexOOB: IndexOutOfBoundsException) {
+                channelSettings.settings.add(settings)
+            }
+        }
     }
 }
 

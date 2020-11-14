@@ -12,7 +12,7 @@ data class ChannelSettings (
 @Entity
 data class Channel(
         @ColumnInfo(name = "channel_id") val channelId: String,
-        @ColumnInfo(name = "alternative") val recommendedAlternative: Int,
+        @ColumnInfo(name = "alternative") val recommendedAlternative: Int
 ) {
     @PrimaryKey(autoGenerate = true) var id: Long = 0
 }
@@ -22,11 +22,10 @@ data class Channel(
         childColumns = arrayOf("channel_id_fk"),
         onDelete = ForeignKey.CASCADE)])
 data class Settings(
-        @ColumnInfo(name = "position") val position: Int,
         @ColumnInfo(name = "title") val title: String,
         @ColumnInfo(name = "can_play") val canPlay: Boolean,
-        @ColumnInfo(name = "video_height") val videoHeight: Int,
         @ColumnInfo(name = "video_width") val videoWidth: Int,
+        @ColumnInfo(name = "video_height") val videoHeight: Int
 ) {
     @PrimaryKey(autoGenerate = true) var id: Long = 0
     @ColumnInfo(name = "channel_id_fk", index = true) var channelId: Long = 0
