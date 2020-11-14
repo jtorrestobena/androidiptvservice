@@ -4,9 +4,9 @@ import android.content.Context
 import androidx.room.*
 
 enum class EventType(val value: Int) {
-    type_debug (0),
-    type_information (1),
-    type_error (2)
+    DEBUG (0),
+    INFORMATION (1),
+    ERROR (2)
 }
 
 class EventTypeConverter{
@@ -17,10 +17,10 @@ class EventTypeConverter{
     @TypeConverter
     fun toEventType(value: Int): EventType =
         when(value) {
-            EventType.type_debug.value -> EventType.type_debug
-            EventType.type_information.value -> EventType.type_information
-            EventType.type_error.value -> EventType.type_error
-            else -> EventType.type_error
+            EventType.DEBUG.value -> EventType.DEBUG
+            EventType.INFORMATION.value -> EventType.INFORMATION
+            EventType.ERROR.value -> EventType.ERROR
+            else -> EventType.ERROR
         }
 }
 
@@ -52,10 +52,10 @@ interface EventLogDao {
     fun insertEvents(vararg eventLog: EventLog)
 
     @Delete
-    fun delete(eventLog: EventLog)
+    fun deleteEvent(eventLog: EventLog)
 
     @Query("DELETE FROM EventLog")
-    fun deleteAll()
+    fun deleteAllEvents()
 }
 
 @Database(entities = [EventLog::class], version = 1)

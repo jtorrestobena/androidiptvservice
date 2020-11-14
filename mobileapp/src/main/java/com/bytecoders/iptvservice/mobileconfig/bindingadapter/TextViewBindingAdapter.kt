@@ -58,9 +58,9 @@ fun TextView.bindTvName(tvName: String?) {
 fun TextView.setGravityDrawableLeft(@DrawableRes drawableResource: Int) =
         setCompoundDrawablesWithIntrinsicBounds(drawableResource, 0, 0, 0)
 
-private val iconMap = mapOf(EventType.type_error to R.drawable.ic_error_24px,
-        EventType.type_information to R.drawable.ic_info_24px,
-        EventType.type_debug to R.drawable.ic_bug_report_24px)
+private val iconMap = mapOf(EventType.ERROR to R.drawable.ic_error_24px,
+        EventType.INFORMATION to R.drawable.ic_info_24px,
+        EventType.DEBUG to R.drawable.ic_bug_report_24px)
 @BindingAdapter("event_icon")
 fun TextView.bindEventIcon(eventType: EventType) {
     iconMap[eventType]?.let {

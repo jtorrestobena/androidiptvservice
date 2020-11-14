@@ -10,7 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.bytecoders.iptvservice.mobileconfig.MainActivity
 import com.bytecoders.iptvservice.mobileconfig.R
-import com.bytecoders.iptvservice.mobileconfig.database.getAppDatabase
+import com.bytecoders.iptvservice.mobileconfig.database.DatabaseRepository
 import com.bytecoders.iptvservice.mobileconfig.databinding.FragmentVideoDialogBinding
 import com.bytecoders.iptvservice.mobileconfig.model.PlayerStatePlayError
 import com.bytecoders.iptvservice.mobileconfig.model.PlayerStatePlaying
@@ -26,7 +26,7 @@ private const val TAG = "VideoDialogFragment"
 class VideoDialogFragment : BaseDialogFragment<VideoDialogFragmentViewModel, FragmentVideoDialogBinding>() {
     private val args: VideoDialogFragmentArgs by navArgs()
     override val viewModel: VideoDialogFragmentViewModel by viewModels  {
-        VideoDialogFragmentViewModelFactory(getAppDatabase(requireContext().applicationContext).eventLogDao(), (activity as MainActivity).viewModel)
+        VideoDialogFragmentViewModelFactory(DatabaseRepository(requireContext().applicationContext), (activity as MainActivity).viewModel)
     }
     override val layoutId: Int
         get() = R.layout.fragment_video_dialog
@@ -60,7 +60,7 @@ class VideoDialogFragment : BaseDialogFragment<VideoDialogFragmentViewModel, Fra
         viewModel.playerState.observe(viewLifecycleOwner, {
             when (it) {
                 is PlayerStatePlaying -> Toast.makeText(context, "Playing ${it.title} now", Toast.LENGTH_LONG).show()
-                is PlayerStatePlayError -> Toast.makeText(context, "Error playing ${it.title}}", Toast.LENGTH_LONG).show()
+                is PlayerStatePlayError -> Toast.makeText(context, "Error playing ${it.title}", Toast.LENGTH_LONG).show()
             }
         })
     }

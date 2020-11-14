@@ -9,8 +9,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.bytecoders.iptvservice.mobileconfig.BuildConfig
 import com.bytecoders.iptvservice.mobileconfig.MainActivityViewModel
+import com.bytecoders.iptvservice.mobileconfig.database.DatabaseRepository
 import com.bytecoders.iptvservice.mobileconfig.database.EventLog
-import com.bytecoders.iptvservice.mobileconfig.database.EventLogDao
 import com.bytecoders.iptvservice.mobileconfig.database.EventType
 import com.bytecoders.iptvservice.mobileconfig.livedata.SingleLiveEvent
 import com.bytecoders.iptvservice.mobileconfig.model.PlayerState
@@ -42,7 +42,7 @@ private const val TAG = "VideoDialogViewModel"
 private const val START_POSITION = -1
 private const val TITLE_UNKNOWN = "Unknown"
 
-class VideoDialogFragmentViewModel(private val eventLogDatabase: EventLogDao, sharedViewModel: MainActivityViewModel)
+class VideoDialogFragmentViewModel(private val database: DatabaseRepository, sharedViewModel: MainActivityViewModel)
     : BaseFragmentViewModel(sharedViewModel), Player.EventListener, VideoListener {
     private var actualChannelPosition = START_POSITION
     private var actualOptionPosition = START_POSITION
@@ -152,7 +152,7 @@ class VideoDialogFragmentViewModel(private val eventLogDatabase: EventLogDao, sh
 
     private fun streamOpenFailed(error: ExoPlaybackException) = currentAlternative.value?.let {
         viewModelScope.launch(Dispatchers.IO) {
-            eventLogDatabase.insertEvents(EventLog(EventType.type_error, "Error playing ${it.title}",
+            database.insertEvents(EventLog(EventType.ERROR, "Error playing ${it.title}",
                     "Error ${error.type} playing URL ${it.url}: ${error.message}"))
         }
     }
@@ -184,12 +184,12 @@ class VideoDialogFragmentViewModel(private val eventLogDatabase: EventLogDao, sh
     }
 }
 
-class VideoDialogFragmentViewModelFactory(private val eventLogDatabase: EventLogDao, private val sharedViewModel: MainActivityViewModel)
+class VideoDialogFragmentViewModelFactory(private val database: DatabaseRepository, private val sharedViewModel: MainActivityViewModel)
     : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(VideoDialogFragmentViewModel::class.java)) {
-            return VideoDialogFragmentViewModel(eventLogDatabase, sharedViewModel) as T
+            return VideoDialogFragmentViewModel(database, sharedViewModel) as T
         }
         throw IllegalArgumentException("VideoDialogFragmentViewModelFactory could not create class $modelClass")
     }

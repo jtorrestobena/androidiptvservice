@@ -4,9 +4,9 @@ import android.app.Application
 import android.preference.PreferenceManager
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.bytecoders.iptvservice.mobileconfig.database.DatabaseRepository
 import com.bytecoders.iptvservice.mobileconfig.database.EventLog
 import com.bytecoders.iptvservice.mobileconfig.database.EventType
-import com.bytecoders.iptvservice.mobileconfig.database.getAppDatabase
 import com.bytecoders.iptvservice.mobileconfig.livedata.LiveDataCounter
 import com.bytecoders.iptvservice.mobileconfig.livedata.SingleLiveEvent
 import com.bytecoders.iptvservice.mobileconfig.livedata.StringSettings
@@ -21,6 +21,7 @@ import com.bytecoders.m3u8parser.parser.M3U8Parser
 import com.bytecoders.m3u8parser.scanner.M3U8ItemScanner
 import com.google.android.media.tv.companionlibrary.xmltv.XmlTvParser
 import java.util.concurrent.Executors
+import java.util.concurrent.Future
 import kotlin.math.roundToInt
 
 private const val TAG = "ChannelRepository"
@@ -54,11 +55,9 @@ class ChannelRepository(private val application: Application) {
         private set(value) =
             sharedPreferences.edit().putString(POSITION_PREFS, messageParser.serializeMessage(MessagePlayListCustomConfig(value))).apply()
 
-    private val eventLogDatabase by lazy {
-        getAppDatabase(application).eventLogDao()
-    }
+    private val database by lazy { DatabaseRepository(application) }
 
-    fun loadChannels(url: String) = executor.submit {
+    fun loadChannels(url: String): Future<*> = executor.submit {
         val start = System.currentTimeMillis()
         percentage.postValue(0)
         val inputStreamWithLength = inputStreamAndLength(url)
@@ -75,7 +74,7 @@ class ChannelRepository(private val application: Application) {
         })
         percentage.postValue(100)
         channelsLoaded = true
-        eventLogDatabase.insertEvents(EventLog(EventType.type_information, "Playlist download",
+        database.insertEvents(EventLog(EventType.INFORMATION, "Playlist download",
                 "Downloaded playlist from $url in ${System.currentTimeMillis() - start} ms." +
                         " Containing ${playlist.value?.playListEntries?.size ?: 0} channels." +
                         " EPG URL: ${playlist.value?.epgURL}"))
@@ -92,12 +91,12 @@ class ChannelRepository(private val application: Application) {
                     override fun onNewProgram() = programCount.increment()
                 }))
                 channelsLoaded = true
-                eventLogDatabase.insertEvents(EventLog(EventType.type_information, "EPG list download",
+                database.insertEvents(EventLog(EventType.INFORMATION, "EPG list download",
                         "Downloaded program list from $url in ${System.currentTimeMillis() - start} ms." +
                                 " Containing ${programCount.value} programs for ${channelProgramCount.value} channels."))
             } catch (e: Exception) {
                 Log.e(TAG, "Error in fetching $url", e)
-                eventLogDatabase.insertEvents(EventLog(EventType.type_error, "Error in fetching $url", e.message ?: ""))
+                database.insertEvents(EventLog(EventType.ERROR, "Error in fetching $url", e.message ?: ""))
             }
         }
     }

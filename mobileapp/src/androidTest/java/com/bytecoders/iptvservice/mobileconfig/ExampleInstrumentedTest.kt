@@ -20,10 +20,10 @@ import org.junit.runner.RunWith
 class ExampleInstrumentedTest {
     @Test
     fun databaseTest() {
-        val eventList = listOf(EventLog(EventType.type_error, "error title", "error message"))
+        val eventList = listOf(EventLog(EventType.ERROR, "error title", "error message"))
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         val eventLogDatabase = getAppDatabase(appContext).eventLogDao()
-        eventLogDatabase.deleteAll()
+        eventLogDatabase.deleteAllEvents()
 
         assertTrue(eventLogDatabase.getAllEvents().isEmpty())
         // add events
@@ -39,7 +39,7 @@ class ExampleInstrumentedTest {
 
         // delete
         storedEvents.forEach {
-            eventLogDatabase.delete(it)
+            eventLogDatabase.deleteEvent(it)
         }
 
         // empty
