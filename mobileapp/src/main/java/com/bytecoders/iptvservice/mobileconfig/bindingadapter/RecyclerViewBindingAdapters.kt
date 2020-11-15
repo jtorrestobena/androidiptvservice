@@ -7,9 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bytecoders.iptvservice.mobileconfig.bindingadapter.RecyclerViewBindingAdapters.getDragListener
 import com.bytecoders.iptvservice.mobileconfig.bindingadapter.RecyclerViewBindingAdapters.touchHelper
-import com.bytecoders.iptvservice.mobileconfig.database.EventLog
 import com.bytecoders.m3u8parser.data.Playlist
-import com.google.android.media.tv.companionlibrary.model.Program
 import com.google.android.media.tv.companionlibrary.xmltv.XmlTvParser
 
 object RecyclerViewBindingAdapters {
@@ -52,26 +50,17 @@ fun RecyclerView.bindPlaylist(playlist: Playlist?, listings: XmlTvParser.TvListi
     }
 }
 
-@BindingAdapter("epg_list", "scroll_to_program", requireAll = false)
-fun RecyclerView.bindEpgPrograms(nullableList: List<Program>?, scrollToProgram: Program?) {
+@BindingAdapter("item_list", "layout_ids", "scroll_to_item", "view_config", requireAll = false)
+fun RecyclerView.bindEvents(nullableList: List<Any>?, layoutIds: ClassLayoutMapping, scrollToItem: Any?, viewHolderConfiguration: ViewHolderConfiguration) {
     nullableList?.let { list ->
         addItemDecoration(DividerItemDecoration(context,
                 DividerItemDecoration.VERTICAL))
-        adapter = EpgAdapter(list)
-        scrollToProgram?.let { program ->
+        adapter = RecyclerViewBindingAdapter(list, layoutIds, viewHolderConfiguration)
+        scrollToItem?.let { program ->
             val position = list.indexOf(program)
             if (position in list.indices) {
                 (layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(position, 0)
             }
         }
-    }
-}
-
-@BindingAdapter("event_list")
-fun RecyclerView.bindEvents(nullableList: List<EventLog>?) {
-    nullableList?.let {
-        addItemDecoration(DividerItemDecoration(context,
-                DividerItemDecoration.VERTICAL))
-        adapter = EventLogAdapter(it)
     }
 }

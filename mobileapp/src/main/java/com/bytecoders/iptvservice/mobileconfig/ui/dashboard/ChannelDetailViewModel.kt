@@ -5,6 +5,10 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.bytecoders.iptvservice.mobileconfig.MainActivityViewModel
+import com.bytecoders.iptvservice.mobileconfig.R
+import com.bytecoders.iptvservice.mobileconfig.bindingadapter.ClassLayoutMapping
+import com.bytecoders.iptvservice.mobileconfig.bindingadapter.ViewHolderConfiguration
+import com.bytecoders.iptvservice.mobileconfig.bindingadapter.ViewHolderType
 import com.bytecoders.iptvservice.mobileconfig.livedata.ChannelProgramMediator
 import com.bytecoders.iptvservice.mobileconfig.ui.BaseFragmentViewModel
 import com.bytecoders.m3u8parser.data.Track
@@ -28,4 +32,7 @@ class ChannelDetailViewModel(sharedViewModel: MainActivityViewModel) : BaseFragm
             postValue(ProgramUtils.getPlayingNow(it))
         }
     }
+
+    val layouts: ClassLayoutMapping = mapOf(Program::class to R.layout.epg_item)
+    val viewConfig: ViewHolderConfiguration = ViewHolderConfiguration(ViewHolderType.EXPANDABLE, R.id.program_description)
 }

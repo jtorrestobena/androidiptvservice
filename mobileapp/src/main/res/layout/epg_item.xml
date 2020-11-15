@@ -8,7 +8,7 @@
         <import type="com.bytecoders.iptvservice.mobileconfig.util.DateUtils" />
 
         <variable
-            name="program"
+            name="item"
             type="com.google.android.media.tv.companionlibrary.model.Program" />
     </data>
 
@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/margin_small"
-            android:text="@{DateUtils.getDateString(program.startTimeUtcMillis)}"
+            android:text="@{DateUtils.getDateString(item.startTimeUtcMillis)}"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="01/02/2020 10:30" />
@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             style="@style/AppTheme.LabelText"
             android:gravity="start"
-            android:text="@{program.title}"
+            android:text="@{item.title}"
             app:layout_constraintTop_toBottomOf="@id/program_start"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -56,7 +56,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_small"
             android:src="@drawable/ic_dashboard_black_24dp"
-            app:image_url="@{program.posterArtUri}"
+            app:image_url="@{item.posterArtUri}"
             android:layout_marginEnd="@dimen/margin_small"
             app:layout_constraintTop_toBottomOf="@id/program_title"
             app:layout_constraintStart_toStartOf="parent"
@@ -68,7 +68,7 @@
             android:layout_height="wrap_content"
             android:gravity="start"
             android:layout_marginTop="@dimen/margin_small"
-            android:text="@{program.description}"
+            android:text="@{item.description}"
             android:maxLines="@integer/item_description_max_lines"
             android:ellipsize="end"
             app:layout_constraintTop_toBottomOf="@id/program_title"

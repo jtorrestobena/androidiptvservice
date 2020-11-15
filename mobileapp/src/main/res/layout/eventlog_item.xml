@@ -8,7 +8,7 @@
         <import type="com.bytecoders.iptvservice.mobileconfig.util.DateUtils" />
 
         <variable
-            name="eventLog"
+            name="item"
             type="com.bytecoders.iptvservice.mobileconfig.database.EventLog" />
     </data>
 
@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/margin_small"
-            android:text="@{DateUtils.getDateString(eventLog.timestamp)}"
+            android:text="@{DateUtils.getDateString(item.timestamp)}"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="01/02/2020 10:30" />
@@ -37,8 +37,8 @@
             android:layout_height="wrap_content"
             style="@style/AppTheme.LabelText"
             android:gravity="start"
-            android:text="@{eventLog.eventTitle}"
-            app:event_icon="@{eventLog.eventType}"
+            android:text="@{item.eventTitle}"
+            app:event_icon="@{item.eventType}"
             android:drawablePadding="@dimen/padding_small"
             app:layout_constraintTop_toBottomOf="@id/log_timestamp"
             app:layout_constraintStart_toStartOf="parent"
@@ -46,13 +46,12 @@
             tools:text="Log Title" />
 
         <TextView
-
             android:id="@+id/log_message"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="start"
             android:layout_marginTop="@dimen/margin_small"
-            android:text="@{eventLog.eventMessage}"
+            android:text="@{item.eventMessage}"
             android:maxLines="@integer/item_description_max_lines"
             android:ellipsize="end"
             app:layout_constraintTop_toBottomOf="@id/log_title"
