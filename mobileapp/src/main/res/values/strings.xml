@@ -23,4 +23,5 @@
     <string name="tvconnection_name">You are now connected to your %s TV. When updating the TV all changes will be applied on that device.</string>
     <string name="content_playing_external_device">Content is playing in external device</string>
     <string name="play_all">Play all</string>
+    <string name="no_programs_available">No programs available</string>
 </resources>

@@ -5,6 +5,7 @@
 
     <data>
         <import type="com.bytecoders.iptvservice.mobileconfig.util.DateUtils" />
+        <import type="android.view.View" />
 
         <variable
             name="viewmodel"
@@ -105,10 +106,18 @@
             android:progress="@{viewmodel.playingNow.percentageElapsed}"
             tools:progress="50" />
 
+        <androidx.constraintlayout.widget.Group
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/playingNow"
+            app:constraint_referenced_ids="program_title,program_start,program_end,program_percent_elapsed"
+            android:visibility="@{viewmodel.playingNow == null ? View.GONE : View.VISIBLE}" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/programsRecyclerview"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:visibility="@{viewmodel.playingNow == null ? View.GONE : View.VISIBLE}"
             app:epg_list="@{viewmodel.programChannels}"
             app:scroll_to_program="@{viewmodel.playingNow}"
             app:layoutManager="LinearLayoutManager"
@@ -117,6 +126,19 @@
             app:layout_constraintTop_toBottomOf="@id/program_percent_elapsed"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:listitem="@layout/epg_item" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            style="@style/TextAppearance.AppCompat.Headline"
+            android:gravity="center"
+            android:text="@string/no_programs_available"
+            android:visibility="@{viewmodel.playingNow == null ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/program_percent_elapsed"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/play_fab"
