@@ -13,8 +13,13 @@ enum class ViewHolderType{
 data class ViewHolderConfiguration(val viewHolderType: ViewHolderType = ViewHolderType.STANDARD, @IdRes val expandableTextView: Int = 0)
 
 open class BindingViewHolder(private val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
+    var item: Any = Any()
+        set(value) {
+            bind(value)
+            field = value
+        }
 
-    open fun bind(item: Any) {
+    protected open fun bind(item: Any) {
         if (binding.setVariable(BR.item, item)) {
             binding.executePendingBindings()
         } else {

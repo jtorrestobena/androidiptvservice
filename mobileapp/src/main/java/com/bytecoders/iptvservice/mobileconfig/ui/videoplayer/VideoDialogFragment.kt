@@ -49,7 +49,7 @@ class VideoDialogFragment : BaseDialogFragment<VideoDialogFragmentViewModel, Fra
         }
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
         args.channelIdentifier?.let {
-            if (!viewModel.canPlayChannel(it)) {
+            if (!viewModel.canPlayChannel(it, args.channelAlternative)) {
                 dismiss()
             }
         } ?: viewModel.startPlayList()

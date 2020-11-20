@@ -30,11 +30,15 @@ class ChannelDetailFragment : BaseFragment<ChannelDetailViewModel, ChannelDetail
         requireViewBinding().playFab.setOnClickListener {
             playChannel(args.track.identifier)
         }
+
+        viewModel.alternativeSelectedEvent.observe(viewLifecycleOwner, {
+            playChannel(args.track.identifier, it)
+        })
     }
 
-    private fun playChannel(identifier: String) {
+    private fun playChannel(identifier: String, alternative: Int = 0) {
         Log.d("ChannelDetailFragment", "Playing channel with ID $identifier")
-        val action = ChannelDetailFragmentDirections.actionNavigationChannelDetailToVideoPlayer(identifier)
+        val action = ChannelDetailFragmentDirections.actionNavigationChannelDetailToVideoPlayer(identifier, alternative)
         NavHostFragment.findNavController(this).navigate(action)
     }
 }

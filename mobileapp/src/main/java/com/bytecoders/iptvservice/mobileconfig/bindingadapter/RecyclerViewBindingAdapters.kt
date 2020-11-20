@@ -35,12 +35,12 @@ fun RecyclerView.bindPlaylist(playlist: Playlist?, listings: XmlTvParser.TvListi
         val channelsAdapter: PlayListChannelsAdapter = adapter as? PlayListChannelsAdapter ?: PlayListChannelsAdapter(list, viewHolderClickListener)
         channelsAdapter.listings = listings
         channelsAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-        channelsAdapter.notifyDataSetChanged()
         editMode?.let {
             channelsAdapter.setEditMode(it, getDragListener(it))
         }
 
         adapter ?: run { adapter = channelsAdapter }
+        channelsAdapter.update()
 
         if (editMode == true) {
             touchHelper = ItemTouchHelper(PlayListTouchHelperCallback(channelsAdapter)).apply {
@@ -50,12 +50,16 @@ fun RecyclerView.bindPlaylist(playlist: Playlist?, listings: XmlTvParser.TvListi
     }
 }
 
-@BindingAdapter("item_list", "layout_ids", "scroll_to_item", "view_config", requireAll = false)
-fun RecyclerView.bindEvents(nullableList: List<Any>?, layoutIds: ClassLayoutMapping, scrollToItem: Any?, viewHolderConfiguration: ViewHolderConfiguration) {
+interface ItemClickListener {
+    fun itemClicked(position: Int, item: Any)
+}
+
+@BindingAdapter("item_list", "layout_ids", "scroll_to_item", "view_config", "item_click", requireAll = false)
+fun RecyclerView.bindEvents(nullableList: List<Any>?, layoutIds: ClassLayoutMapping, scrollToItem: Any?, viewHolderConfiguration: ViewHolderConfiguration, itemClick: ItemClickListener?) {
     nullableList?.let { list ->
         addItemDecoration(DividerItemDecoration(context,
                 DividerItemDecoration.VERTICAL))
-        adapter = RecyclerViewBindingAdapter(list, layoutIds, viewHolderConfiguration)
+        adapter = RecyclerViewBindingAdapter(list, layoutIds, viewHolderConfiguration, itemClick)
         scrollToItem?.let { program ->
             val position = list.indexOf(program)
             if (position in list.indices) {

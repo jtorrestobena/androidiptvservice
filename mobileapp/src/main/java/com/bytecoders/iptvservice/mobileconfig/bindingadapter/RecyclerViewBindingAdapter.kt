@@ -9,7 +9,7 @@ import kotlin.reflect.KClass
 
 typealias ClassLayoutMapping = Map<KClass<*>, Int>
 
-class RecyclerViewBindingAdapter(private val items: List<Any>, private val layoutIds: ClassLayoutMapping, private val viewHolderConfiguration: ViewHolderConfiguration)
+class RecyclerViewBindingAdapter(private val items: List<Any>, private val layoutIds: ClassLayoutMapping, private val viewHolderConfiguration: ViewHolderConfiguration, private val itemClick: ItemClickListener?)
     : RecyclerView.Adapter<BindingViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup,
                                     viewType: Int): BindingViewHolder {
@@ -23,7 +23,10 @@ class RecyclerViewBindingAdapter(private val items: List<Any>, private val layou
     }
 
     override fun onBindViewHolder(holder: BindingViewHolder, position: Int) {
-        holder.bind(items[position])
+        holder.item = items[position]
+        itemClick?.apply {
+            holder.itemView.setOnClickListener { itemClicked(holder.bindingAdapterPosition, holder.item) }
+        }
     }
 
     override fun getItemViewType(position: Int): Int {

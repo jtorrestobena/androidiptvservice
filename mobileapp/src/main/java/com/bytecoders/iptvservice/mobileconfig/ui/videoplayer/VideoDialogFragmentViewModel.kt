@@ -83,15 +83,15 @@ class VideoDialogFragmentViewModel(private val database: DatabaseRepository, sha
         hasNextChannel.value = actualChannelPosition + 1 < sharedViewModel.playlist.value?.playListEntries?.size ?: 0
     }
 
-    fun canPlayChannel(channelIdentifier: String): Boolean = sharedViewModel.getChannelWithId(channelIdentifier)?.let{
+    fun canPlayChannel(channelIdentifier: String, position: Int): Boolean = sharedViewModel.getChannelWithId(channelIdentifier)?.let{
             actualChannelPosition = sharedViewModel.getChannelPosition(it)
             setupPreviousNextChannel()
-            startPlayingChannel(it)
+            startPlayingChannel(it, position - 1)
             true
         } ?: false
 
-    private fun startPlayingChannel(channel: Track) {
-        actualOptionPosition = START_POSITION
+    private fun startPlayingChannel(channel: Track, startPosition: Int = START_POSITION) {
+        actualOptionPosition = startPosition
         currentChannel.value = channel
         Log.d(TAG, "Playing channel ${channel.extInfo?.title}")
         viewModelScope.launch(Dispatchers.IO) {

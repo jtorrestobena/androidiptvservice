@@ -56,5 +56,10 @@
             android:name="channel_identifier"
             app:argType="string"
             app:nullable="true" />
+
+        <argument
+            android:name="channel_alternative"
+            android:defaultValue="0"
+            app:argType="integer" />
     </dialog>
 </navigation>

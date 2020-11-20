@@ -24,12 +24,6 @@ class PlayListChannelsAdapter(private val playlist: Playlist,
 
     private var editMode: Boolean? = null
     var listings: XmlTvParser.TvListing? = null
-        set(value) {
-            if (listings != value) {
-                field = value
-                update()
-            }
-        }
 
     private var startDragListener: OnStartDragListener? = null
 
@@ -84,13 +78,10 @@ class PlayListChannelsAdapter(private val playlist: Playlist,
 
     fun setEditMode(editMode: Boolean, startDragListener: OnStartDragListener?) {
         this.startDragListener = startDragListener
-        if (this.editMode != editMode) {
-            this.editMode = editMode
-            update()
-        }
+        this.editMode = editMode
     }
 
-    private fun update() = DiffUtil.calculateDiff(EditModeDiff(playlist.playListEntries)).dispatchUpdatesTo(this)
+    fun update() = DiffUtil.calculateDiff(EditModeDiff(playlist.playListEntries)).dispatchUpdatesTo(this)
 
     class EditModeDiff(private val track: List<Track>): DiffUtil.Callback() {
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean = track[oldItemPosition].identifier == track[newItemPosition].identifier

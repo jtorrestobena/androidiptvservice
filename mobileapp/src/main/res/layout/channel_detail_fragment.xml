@@ -114,6 +114,21 @@
             android:visibility="@{viewmodel.playingNow == null ? View.GONE : View.VISIBLE}" />
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/alternativesRecyclerview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:item_list="@{viewmodel.track.alternativeURLs}"
+            app:layout_ids="@{viewmodel.layoutsAlternativeURL}"
+            app:view_config="@{viewmodel.viewConfigAlternativeURL}"
+            app:item_click="@{viewmodel::alternativeSelected}"
+            app:layoutManager="LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/program_percent_elapsed"
+            tools:listitem="@layout/alternative_item"
+            tools:itemCount="3" />
+
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/programsRecyclerview"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -125,7 +140,7 @@
             app:layoutManager="LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/program_percent_elapsed"
+            app:layout_constraintTop_toBottomOf="@id/alternativesRecyclerview"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:listitem="@layout/epg_item" />
 
