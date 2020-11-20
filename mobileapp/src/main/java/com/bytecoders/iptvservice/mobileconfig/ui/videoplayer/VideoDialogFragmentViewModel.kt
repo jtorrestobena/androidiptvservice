@@ -126,7 +126,11 @@ class VideoDialogFragmentViewModel(private val database: DatabaseRepository, sha
             } ?: Log.d(TAG, "No valid url found in current alternative $currentAlternative")
         } ?: run {
             Log.e(TAG, "Did not found alternative at $actualOptionPosition, total ${currentChannel.value?.alternativeURLs?.size}")
-            finishPlayingEvent.call()
+            if (hasNextChannel.value == true) {
+                tryNextChannel()
+            } else {
+                finishPlayingEvent.call()
+            }
         }
     }
 
