@@ -32,10 +32,10 @@ class ClientServerInstrumentedTest {
 
     @Test
     fun publishServiceNetworkDiscovery() {
-        performPublish(true)
+        performPublish()
     }
 
-    private fun performPublish(networkDiscovery: Boolean){
+    private fun performPublish(){
         val latch = CountDownLatch(1)
         UiExecutor().execute {
             IPTVService.statusObserver.observeForever {
@@ -51,7 +51,7 @@ class ClientServerInstrumentedTest {
 
     @Test
     fun testClient() {
-        performPublish(false)
+        performPublish()
         val latch = CountDownLatch(1)
         val iptvServiceClient = IPTVServiceClient(application)
         UiExecutor().execute {
@@ -71,7 +71,7 @@ class ClientServerInstrumentedTest {
     @Test
     fun connectToService() {
         // Check that client connects and sends endpoint information
-        performPublish(false)
+        performPublish()
         var latch = CountDownLatch(1)
         val iptvServiceClient = IPTVServiceClient(application)
         UiExecutor().execute {

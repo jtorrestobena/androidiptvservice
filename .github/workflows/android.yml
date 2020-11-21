@@ -62,8 +62,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        api-level: [21, 29]
-        target: [default, google_apis]
+        api-level: [21, 28]
     steps:
       - name: checkout
         uses: actions/checkout@v2
@@ -72,7 +71,9 @@ jobs:
         uses: ReactiveCircus/android-emulator-runner@v2.13.0
         with:
           api-level: ${{ matrix.api-level }}
-          target: ${{ matrix.target }}
-          arch: x86_64
-          profile: Nexus 6
           script: ./gradlew connectedCheck
+      - name: Upload Reports for IPTV service instrumented tests
+        uses: actions/upload-artifact@v1
+        with:
+          name: iptvservice-instrumented-test
+          path: iptvservicecommunicator/build/reports/androidTests/connected/flavors/
