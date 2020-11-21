@@ -1,5 +1,7 @@
 package com.bytecoders.m3u8parser.parser
 
+import com.bytecoders.iptvservicecommunicator.playlist.applyPositions
+import com.bytecoders.iptvservicecommunicator.protocol.api.PreferredChannel
 import com.bytecoders.m3u8parser.data.Playlist
 import com.bytecoders.m3u8parser.scanner.M3U8ItemScanner
 import com.google.android.media.tv.companionlibrary.ProgramUtils
@@ -11,7 +13,7 @@ import org.junit.Test
 import org.xmlpull.v1.XmlPullParserFactory
 import java.util.concurrent.TimeUnit
 
-
+private const val EPG_ID = "Antena3.TV"
 class M3U8ParserTest {
 
     @Test
@@ -38,14 +40,14 @@ class M3U8ParserTest {
                 requireResource(fileName),
                 XmlPullParserFactory.newInstance().newPullParser())
         assertFalse(listings.allPrograms.isEmpty())
-        val epgId = "Antena3.TV"
-        val listingsForEpgId = listings.getProgramsForEpg(epgId)
+
+        val listingsForEpgId = listings.getProgramsForEpg(EPG_ID)
         assertFalse(listingsForEpgId.isEmpty())
         val halfHourAgo = System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(30)
         val after1Hour = System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1)
         val nowProgram = Program.Builder().setTitle("Playing now Program")
                 .setStartTimeUtcMillis(halfHourAgo)
-                .setEndTimeUtcMillis(after1Hour).setChannelId(java.lang.Long.valueOf(epgId.hashCode().toLong())).build()
+                .setEndTimeUtcMillis(after1Hour).setChannelId(java.lang.Long.valueOf(EPG_ID.hashCode().toLong())).build()
         listingsForEpgId.add(nowProgram)
         assertNotNull(ProgramUtils.getPlayingNow(listingsForEpgId))
         assertEquals(nowProgram, ProgramUtils.getPlayingNow(listingsForEpgId))
@@ -53,7 +55,7 @@ class M3U8ParserTest {
         val after2Hour = System.currentTimeMillis() + TimeUnit.HOURS.toMillis(2)
         val nextProgram = Program.Builder().setTitle("Playing next Program")
                 .setStartTimeUtcMillis(after1Hour)
-                .setEndTimeUtcMillis(after2Hour).setChannelId(java.lang.Long.valueOf(epgId.hashCode().toLong())).build()
+                .setEndTimeUtcMillis(after2Hour).setChannelId(java.lang.Long.valueOf(EPG_ID.hashCode().toLong())).build()
         listingsForEpgId.add(nextProgram)
 
         val upcomingPrograms = ProgramUtils.getUpcomingPrograms(listingsForEpgId)
@@ -69,6 +71,17 @@ class M3U8ParserTest {
         playlist.epgURL?.let {
             parse_epg_internal(it)
         }
+    }
+
+    @Test
+    fun test_filter_favorite_not_available() {
+        val preferredUrl = 241
+        val playlist = parse_m3u_internal()
+        // Will try to apply positions but there's a channel stored that is no longer available
+        playlist.applyPositions(listOf(PreferredChannel("does No t Exist", -1), PreferredChannel(EPG_ID, preferredUrl)))
+        assertEquals(1, playlist.playListEntries.size)
+        assertEquals(EPG_ID, playlist.playListEntries.first().identifier)
+        assertEquals(preferredUrl, playlist.playListEntries.first().preferredOption)
     }
 
     private fun requireResource(fileName: String) = M3U8ParserTest::class.java.getResource("/$fileName")!!.openStream()
