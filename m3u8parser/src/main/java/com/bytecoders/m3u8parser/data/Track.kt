@@ -27,6 +27,8 @@ data class AlternativeURL(val title: String?, val url: String?): Serializable {
  */
 class Track(var extInfo: ExtInfo? = null, var url: String = "") : Comparable<Track>, Serializable {
     var preferredOption = 0
+        get() = if (field < alternativeURLs.size) field else 0
+
     val alternativeURLs = ArrayList<AlternativeURL>()
 
     val preferredURL: String get() = alternativeURLs.getOrNull(preferredOption)?.url ?: url

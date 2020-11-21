@@ -76,7 +76,7 @@ class M3U8ParserTest {
 
     @Test
     fun test_filter_favorite_not_available() {
-        val preferredUrl = 241
+        val preferredUrl = 1
         val playlist = parse_m3u_internal()
         // Will try to apply positions but there's a channel stored that is no longer available
         playlist.applyPositions(listOf(PreferredChannel("does No t Exist", -1), PreferredChannel(EPG_ID, preferredUrl)))
@@ -103,6 +103,20 @@ class M3U8ParserTest {
         val newPlayList = parse_m3u_internal()
         newPlayList.applyPositions(favoritePositions)
         Assert.assertArrayEquals(favorites.toTypedArray(), newPlayList.playListEntries.toArray())
+    }
+
+    @Test
+    fun test_channel_preferred_alternative_not_available() {
+        val playlist = parse_m3u_internal()
+
+        val firstChannel = playlist.playListEntries.first()
+        val favoritePositions = mutableListOf(PreferredChannel(firstChannel.identifier, firstChannel.alternativeURLs.size + 2))
+
+        playlist.applyPositions(favoritePositions)
+
+        // The alternative is no longer available so it is set back to 0
+        assertEquals(1, playlist.playListEntries.size)
+        assertEquals(0, playlist.playListEntries.first().preferredOption)
     }
 
     private fun requireResource(fileName: String) = M3U8ParserTest::class.java.getResource("/$fileName")!!.openStream()

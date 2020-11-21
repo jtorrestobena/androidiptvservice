@@ -1,6 +1,12 @@
 name: Android CI
 
-on: [push]
+on:
+  pull_request:
+    branches:
+      - 'master'
+  push:
+    branches:
+      - 'master'
 
 jobs:
   build:
@@ -15,8 +21,27 @@ jobs:
         java-version: 1.8
     - name: Build with Gradle
       run: ./gradlew build
-      
-  apk:
+    - name: Upload Mobile App Debug STD APK
+      uses: actions/upload-artifact@v1
+      with:
+        name: mobileapp-debug
+        path: mobileapp/build/outputs/apk/std/debug/mobileapp-std-debug.apk
+    - name: Upload Mobile App Release STD APK
+      uses: actions/upload-artifact@v1
+      with:
+        name: mobileapp-release
+        path: mobileapp/build/outputs/apk/std/release/mobileapp-std-release.apk
+    - name: Upload TV App Debug STD APK
+      uses: actions/upload-artifact@v1
+      with:
+        name: tvapp-debug
+        path: tvapp/build/outputs/apk/std/debug/tvapp-std-debug.apk
+    - name: Upload TV App Release STD APK
+      uses: actions/upload-artifact@v1
+      with:
+        name: tvapp-release
+        path: tvapp/build/outputs/apk/std/release/tvapp-std-release.apk
+  test:
     name: Generate APK
     runs-on: ubuntu-latest
 
@@ -26,25 +51,5 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - name: Build debug APK
-        run: bash ./gradlew assembleDebug --stacktrace
-      - name: Upload Mobile App Debug STD APK
-        uses: actions/upload-artifact@v1
-        with:
-          name: mobileapp
-          path: mobileapp/build/outputs/apk/std/debug/mobileapp-std-debug.apk
-      - name: Upload Mobile App Release STD APK
-        uses: actions/upload-artifact@v1
-        with:
-          name: mobileapp
-          path: mobileapp/build/outputs/apk/std/release/mobileapp-std-release.apk
-      - name: Upload TV App Debug STD APK
-        uses: actions/upload-artifact@v1
-        with:
-          name: tvapp
-          path: tvapp/build/outputs/apk/std/debug/tvapp-std-debug.apk
-      - name: Upload TV App Release STD APK
-        uses: actions/upload-artifact@v1
-        with:
-          name: tvapp
-          path: tvapp/build/outputs/apk/std/release/tvapp-std-release.apk
+      - name: Run unit tests
+        run: ./gradlew check
