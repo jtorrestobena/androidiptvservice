@@ -3,6 +3,7 @@ package com.bytecoders.m3u8parser.parser
 import com.bytecoders.iptvservicecommunicator.playlist.applyPositions
 import com.bytecoders.iptvservicecommunicator.protocol.api.PreferredChannel
 import com.bytecoders.m3u8parser.data.Playlist
+import com.bytecoders.m3u8parser.data.Track
 import com.bytecoders.m3u8parser.scanner.M3U8ItemScanner
 import com.google.android.media.tv.companionlibrary.ProgramUtils
 import com.google.android.media.tv.companionlibrary.model.Program
@@ -82,6 +83,26 @@ class M3U8ParserTest {
         assertEquals(1, playlist.playListEntries.size)
         assertEquals(EPG_ID, playlist.playListEntries.first().identifier)
         assertEquals(preferredUrl, playlist.playListEntries.first().preferredOption)
+    }
+
+    @Test
+    fun test_channel_preferred_filter_positions() {
+        val playlist = parse_m3u_internal()
+        val favorites = mutableListOf<Track>()
+
+        // Add some favorites
+        favorites.addAll(playlist.playListEntries.subList(0, 4))
+        favorites.add(playlist.playListEntries[14])
+        favorites.addAll(playlist.playListEntries.subList(20, 140))
+        favorites.addAll(playlist.playListEntries.subList(7, 9))
+
+        val favoritePositions: List<PreferredChannel> = favorites.map {
+            PreferredChannel(it.identifier, it.preferredOption)
+        }
+
+        val newPlayList = parse_m3u_internal()
+        newPlayList.applyPositions(favoritePositions)
+        Assert.assertArrayEquals(favorites.toTypedArray(), newPlayList.playListEntries.toArray())
     }
 
     private fun requireResource(fileName: String) = M3U8ParserTest::class.java.getResource("/$fileName")!!.openStream()

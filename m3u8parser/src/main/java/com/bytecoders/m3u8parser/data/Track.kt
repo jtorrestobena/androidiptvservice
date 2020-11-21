@@ -44,4 +44,15 @@ class Track(var extInfo: ExtInfo? = null, var url: String = "") : Comparable<Tra
     override fun compareTo(other: Track): Int {
         return identifier.compareTo(other.identifier)
     }
+
+    override fun equals(other: Any?): Boolean {
+        return if (other is Track)
+            this.identifier == other.identifier && this.preferredOption == other.preferredOption
+        else
+            false
+    }
+
+    override fun hashCode(): Int {
+        return Objects.hash(identifier, preferredOption)
+    }
 }

@@ -28,8 +28,23 @@ jobs:
           java-version: 1.8
       - name: Build debug APK
         run: bash ./gradlew assembleDebug --stacktrace
-      - name: Upload Mobile App STD APK
+      - name: Upload Mobile App Debug STD APK
         uses: actions/upload-artifact@v1
         with:
           name: mobileapp
           path: mobileapp/build/outputs/apk/std/debug/mobileapp-std-debug.apk
+      - name: Upload Mobile App Release STD APK
+        uses: actions/upload-artifact@v1
+        with:
+          name: mobileapp
+          path: mobileapp/build/outputs/apk/std/release/mobileapp-std-release.apk
+      - name: Upload TV App Debug STD APK
+        uses: actions/upload-artifact@v1
+        with:
+          name: tvapp
+          path: tvapp/build/outputs/apk/std/debug/tvapp-std-debug.apk
+      - name: Upload TV App Release STD APK
+        uses: actions/upload-artifact@v1
+        with:
+          name: tvapp
+          path: tvapp/build/outputs/apk/std/release/tvapp-std-release.apk
