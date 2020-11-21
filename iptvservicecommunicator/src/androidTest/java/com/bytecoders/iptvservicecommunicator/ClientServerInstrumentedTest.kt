@@ -19,6 +19,7 @@ import java.util.concurrent.CountDownLatch
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 private const val TAG = "ClientServerInstrumentedTest"
+private const val PORT = 14578
 @RunWith(AndroidJUnit4::class)
 class ClientServerInstrumentedTest {
 
@@ -32,10 +33,10 @@ class ClientServerInstrumentedTest {
 
     @Test
     fun publishServiceNetworkDiscovery() {
-        performPublish()
+        performPublish(true)
     }
 
-    private fun performPublish(){
+    private fun performPublish(networkDiscovery: Boolean){
         val latch = CountDownLatch(1)
         UiExecutor().execute {
             IPTVService.statusObserver.observeForever {
@@ -45,49 +46,24 @@ class ClientServerInstrumentedTest {
                 }
             }
         }
-        IPTVService.registerTVService(application)
+        IPTVService.registerTVService(application, networkDiscovery, PORT)
         latch.await()
     }
 
     @Test
     fun testClient() {
-        performPublish()
-        val latch = CountDownLatch(1)
-        val iptvServiceClient = IPTVServiceClient(application)
-        UiExecutor().execute {
-            iptvServiceClient.clientServiceStatus.observeForever{
-                Log.d(TAG, "Client status $it")
-                if (it == IPTVServiceClient.ServiceStatus.DISCOVERY) {
-                    latch.countDown()
-                }
-            }
-        }
-        iptvServiceClient.connectToTVServer()
-        Log.d(TAG, "Connecting client with server");
-        latch.await()
-        iptvServiceClient.tearDown()
+        val clientService = connectClientLocal()
+        clientService.disconnect()
     }
 
     @Test
     fun connectToService() {
         // Check that client connects and sends endpoint information
-        performPublish()
-        var latch = CountDownLatch(1)
-        val iptvServiceClient = IPTVServiceClient(application)
-        UiExecutor().execute {
-            iptvServiceClient.clientServiceStatus.observeForever{
-                Log.d(TAG, "Client status $it")
-                if (it == IPTVServiceClient.ServiceStatus.READY) {
-                    latch.countDown()
-                }
-            }
-        }
-        iptvServiceClient.connectToTVServer()
-        Log.d(TAG, "Connecting client with server");
-        latch.await()
+        val iptvServiceClient = connectClientLocal()
+
 
         // send playlist to the server
-        latch = CountDownLatch(1)
+        val latch = CountDownLatch(1)
         val playlist = MessagePlayListConfig("http://playlist.com", "http://epg.com")
         UiExecutor().execute {
             IPTVService.messagesLiveData.observeForever {
@@ -103,6 +79,25 @@ class ClientServerInstrumentedTest {
         latch.await()
 
         //Bye
-        iptvServiceClient.tearDown()
+        iptvServiceClient.disconnect()
+    }
+
+    private fun connectClientLocal(): IPTVServiceClient {
+        performPublish(false)
+        val latch = CountDownLatch(1)
+        val iptvServiceClient = IPTVServiceClient(application)
+        UiExecutor().execute {
+            iptvServiceClient.clientServiceStatus.observeForever{
+                Log.d(TAG, "Client status $it")
+                if (it == IPTVServiceClient.ServiceStatus.READY) {
+                    latch.countDown()
+                }
+            }
+        }
+        iptvServiceClient.connectToTVServer(false, "127.0.0.1", PORT)
+        Log.d(TAG, "Connecting client with server")
+        latch.await()
+        Log.d(TAG, "Tear down client")
+        return iptvServiceClient
     }
 }

@@ -99,13 +99,13 @@ class IPTVServiceClient(application: Application) : BaseIPTVService() {
         }
     }
 
-    fun connectToTVServer() {
-        if (BuildConfig.NETWORK_DISCOVERY_ENABLED) {
+    fun connectToTVServer(networkDiscovery: Boolean = BuildConfig.NETWORK_DISCOVERY_ENABLED, serverIp: String = BuildConfig.SERVER_IP, port: Int = BuildConfig.SERVER_PORT) {
+        if (networkDiscovery) {
             nsdManager.discoverServices(IPTV_SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, discoveryListener)
         } else {
             // Connect directly to the emulator
             Thread {
-                connectClient(InetAddress.getByName(BuildConfig.SERVER_IP), BuildConfig.SERVER_PORT)
+                connectClient(InetAddress.getByName(serverIp), port)
             }.start()
         }
     }
@@ -144,5 +144,11 @@ class IPTVServiceClient(application: Application) : BaseIPTVService() {
         session?.write(message) ?: run {
             Log.e(TAG, "Session not ready, could not send message $message")
         }
+    }
+
+    fun disconnect() {
+        tearDown()
+        session?.close()
+        session = null
     }
 }

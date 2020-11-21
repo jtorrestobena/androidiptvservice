@@ -76,4 +76,4 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: iptvservice-instrumented-test
-          path: iptvservicecommunicator/build/reports/androidTests/connected/flavors/
+          path: iptvservicecommunicator/build/reports/androidTests/connected/flavors
