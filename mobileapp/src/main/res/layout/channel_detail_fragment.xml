@@ -106,6 +106,13 @@
             android:progress="@{viewmodel.playingNow.percentageElapsed}"
             tools:progress="50" />
 
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/playingNowBottomBarrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="program_percent_elapsed,tvlogo_iv_detail"/>
+
         <androidx.constraintlayout.widget.Group
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -124,7 +131,7 @@
             app:layoutManager="LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/program_percent_elapsed"
+            app:layout_constraintTop_toBottomOf="@id/playingNowBottomBarrier"
             tools:listitem="@layout/alternative_item"
             tools:itemCount="3" />
 
