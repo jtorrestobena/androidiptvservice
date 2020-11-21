@@ -8,7 +8,6 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import com.bytecoders.iptvservicecommunicator.IPTVService.serviceName
 import com.bytecoders.iptvservicecommunicator.livedata.ClientStatusLiveData
 import com.bytecoders.iptvservicecommunicator.network.Session
 import com.bytecoders.iptvservicecommunicator.protocol.api.Message
@@ -56,9 +55,9 @@ class IPTVServiceClient(application: Application) : BaseIPTVService() {
                 /*service.serviceType != IPTV_SERVICE_TYPE -> // Service type is the string containing the protocol and
                     // transport layer for this service.
                     Log.d(TAG, "Unknown Service Type: ${service.serviceType}")*/
-                service.serviceName == serviceName -> // The name of the service tells the user what they'd be
+                //service.serviceName == serviceName -> // The name of the service tells the user what they'd be
                     // connecting to. It could be "Bob's Chat App".
-                    Log.d(TAG, "Same machine: $serviceName")
+                  //  Log.d(TAG, "Same machine: $serviceName")
                 service.serviceName.contains(IPTV_SERVICE_NAME) -> {
                     nsdManager.resolveService(service, object : NsdManager.ResolveListener {
                         override fun onResolveFailed(nsdServiceInfo: NsdServiceInfo?, errorCode: Int) {

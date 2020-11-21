@@ -90,9 +90,9 @@ object IPTVService : BaseIPTVService() {
 
     fun getStatusObserverLifeCycle(application: Application): ServerStatusLiveData = ServerStatusLiveData(application, this)
 
-    fun registerTVService(application: Application) {
+    fun registerTVService(application: Application, networkDiscovery: Boolean = BuildConfig.NETWORK_DISCOVERY_ENABLED) {
         server = Server(BuildConfig.SERVER_PORT) { messageParser.processIncomingMessage(it) }
-        if (BuildConfig.NETWORK_DISCOVERY_ENABLED) {
+        if (networkDiscovery) {
             server?.port?.let {
                 localPort = it
                 registerService(localPort, application)

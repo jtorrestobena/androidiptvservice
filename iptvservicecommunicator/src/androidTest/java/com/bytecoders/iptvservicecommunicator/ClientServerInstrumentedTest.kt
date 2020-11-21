@@ -6,6 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.bytecoders.iptvservicecommunicator.executor.UiExecutor
 import com.bytecoders.iptvservicecommunicator.protocol.api.MessagePlayListConfig
+import org.junit.After
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,13 +24,18 @@ class ClientServerInstrumentedTest {
 
     private val application = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as Application
 
-    @Test
-    fun publishService() {
-        performPublish()
+    @After
+    fun tearDownService() {
+        IPTVService.unregisterTVService()
         IPTVService.shutdown()
     }
 
-    private fun performPublish(){
+    @Test
+    fun publishServiceNetworkDiscovery() {
+        performPublish(true)
+    }
+
+    private fun performPublish(networkDiscovery: Boolean){
         val latch = CountDownLatch(1)
         UiExecutor().execute {
             IPTVService.statusObserver.observeForever {
@@ -44,9 +50,28 @@ class ClientServerInstrumentedTest {
     }
 
     @Test
+    fun testClient() {
+        performPublish(false)
+        val latch = CountDownLatch(1)
+        val iptvServiceClient = IPTVServiceClient(application)
+        UiExecutor().execute {
+            iptvServiceClient.clientServiceStatus.observeForever{
+                Log.d(TAG, "Client status $it")
+                if (it == IPTVServiceClient.ServiceStatus.DISCOVERY) {
+                    latch.countDown()
+                }
+            }
+        }
+        iptvServiceClient.connectToTVServer()
+        Log.d(TAG, "Connecting client with server");
+        latch.await()
+        iptvServiceClient.tearDown()
+    }
+
+    @Test
     fun connectToService() {
         // Check that client connects and sends endpoint information
-        performPublish()
+        performPublish(false)
         var latch = CountDownLatch(1)
         val iptvServiceClient = IPTVServiceClient(application)
         UiExecutor().execute {
@@ -79,6 +104,5 @@ class ClientServerInstrumentedTest {
 
         //Bye
         iptvServiceClient.tearDown()
-        IPTVService.shutdown()
     }
 }
