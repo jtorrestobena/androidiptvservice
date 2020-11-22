@@ -99,7 +99,7 @@ class IPTVServiceClient(application: Application) : BaseIPTVService() {
         }
     }
 
-    fun connectToTVServer(networkDiscovery: Boolean = BuildConfig.NETWORK_DISCOVERY_ENABLED, serverIp: String = BuildConfig.SERVER_IP, port: Int = BuildConfig.SERVER_PORT) {
+    fun connectToTVServer(networkDiscovery: Boolean = BuildConfig.NETWORK_DISCOVERY_ENABLED, serverIp: String? = BuildConfig.SERVER_IP, port: Int = BuildConfig.SERVER_PORT) {
         if (networkDiscovery) {
             nsdManager.discoverServices(IPTV_SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, discoveryListener)
         } else {
