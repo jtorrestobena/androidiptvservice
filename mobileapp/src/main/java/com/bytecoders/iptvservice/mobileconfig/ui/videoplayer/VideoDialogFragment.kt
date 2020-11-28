@@ -53,7 +53,7 @@ class VideoDialogFragment : BaseDialogFragment<VideoDialogFragmentViewModel, Fra
         adjustVideoViewSize(resources.configuration.orientation)
         CastButtonFactory.setUpMediaRouteButton(requireContext().applicationContext, requireViewBinding().videoViewMediaRouterButton)
         viewBinding?.videoDetail?.setControllerVisibilityListener  {
-            viewBinding?.videoViewMediaRouterButton?.visibility = it
+            viewBinding?.videoOverlay?.visibility = it
         }
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
         args.channelIdentifier?.let {

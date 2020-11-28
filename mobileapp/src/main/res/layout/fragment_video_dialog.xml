@@ -20,9 +20,23 @@
             android:id="@+id/videoDetail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            app:controller_layout_id="@layout/video_player_controls"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_height="0dp"
+            tools:layout_constraintBottom_toBottomOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/videoOverlay"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/videoDetail"
+        tools:visibility="visible">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/foto_guideline"
@@ -40,7 +54,7 @@
             app:image_url="@{viewmodel.currentChannel.extInfo.tvgLogoUrl}"
             app:layout_constraintEnd_toStartOf="@id/foto_guideline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/videoDetail" />
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/skip_previous_channel"
@@ -64,7 +78,7 @@
             android:text="@{viewmodel.currentChannel.extInfo.tvgName}"
             app:layout_constraintEnd_toStartOf="@id/skip_next_channel"
             app:layout_constraintStart_toEndOf="@id/skip_previous_channel"
-            app:layout_constraintTop_toBottomOf="@id/videoDetail"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="Channel title" />
 
         <androidx.appcompat.widget.AppCompatImageButton
@@ -117,7 +131,6 @@
             app:layout_constraintTop_toBottomOf="@id/channel_title"
             tools:text="Channel alternative" />
 
-
         <TextView
             android:id="@+id/video_information"
             style="@style/AppTheme.LabelText"
@@ -154,6 +167,8 @@
             tools:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
