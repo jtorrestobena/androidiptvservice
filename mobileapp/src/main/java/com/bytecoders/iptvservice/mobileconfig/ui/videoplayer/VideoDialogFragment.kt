@@ -1,11 +1,13 @@
 package com.bytecoders.iptvservice.mobileconfig.ui.videoplayer
 
 import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import com.bytecoders.iptvservice.mobileconfig.MainActivity
@@ -41,8 +43,14 @@ class VideoDialogFragment : BaseDialogFragment<VideoDialogFragmentViewModel, Fra
         setStyle(STYLE_NORMAL, android.R.style.Theme_Black_NoTitleBar_Fullscreen)
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        adjustVideoViewSize(newConfig.orientation)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        adjustVideoViewSize(resources.configuration.orientation)
         CastButtonFactory.setUpMediaRouteButton(requireContext().applicationContext, requireViewBinding().videoViewMediaRouterButton)
         viewBinding?.videoDetail?.setControllerVisibilityListener  {
             viewBinding?.videoViewMediaRouterButton?.visibility = it
@@ -101,5 +109,16 @@ class VideoDialogFragment : BaseDialogFragment<VideoDialogFragmentViewModel, Fra
         player.release()
         castPlayer.setSessionAvailabilityListener(null)
         activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
+    private fun adjustVideoViewSize(orientation: Int) {
+        when (orientation) {
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                viewBinding?.videoDetail?.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
+            }
+            Configuration.ORIENTATION_PORTRAIT -> {
+                viewBinding?.videoDetail?.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, 0).apply { dimensionRatio = "16:9" }
+            }
+        }
     }
 }

@@ -151,6 +151,7 @@
             android:mediaRouteTypes="user"
             android:padding="10dp"
             android:visibility="gone"
+            tools:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
