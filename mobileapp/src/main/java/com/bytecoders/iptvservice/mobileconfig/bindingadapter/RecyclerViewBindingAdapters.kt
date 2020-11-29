@@ -57,8 +57,8 @@ interface ItemClickListener {
 @BindingAdapter("item_list", "layout_ids", "scroll_to_item", "view_config", "item_click", requireAll = false)
 fun RecyclerView.bindEvents(nullableList: List<Any>?, layoutIds: ClassLayoutMapping, scrollToItem: Any?, viewHolderConfiguration: ViewHolderConfiguration, itemClick: ItemClickListener?) {
     nullableList?.let { list ->
-        addItemDecoration(DividerItemDecoration(context,
-                DividerItemDecoration.VERTICAL))
+        //addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+        layoutManager = LinearLayoutManager(context)
         adapter = RecyclerViewBindingAdapter(list, layoutIds, viewHolderConfiguration, itemClick)
         scrollToItem?.let { program ->
             val position = list.indexOf(program)

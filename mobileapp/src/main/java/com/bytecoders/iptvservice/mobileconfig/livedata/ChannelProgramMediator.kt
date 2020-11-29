@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.bytecoders.m3u8parser.data.Track
+import com.google.android.media.tv.companionlibrary.ProgramUtils
 import com.google.android.media.tv.companionlibrary.model.Program
 import com.google.android.media.tv.companionlibrary.xmltv.XmlTvParser
 
@@ -33,6 +34,6 @@ class ChannelProgramMediator: MediatorLiveData<List<Program>>() {
     }
 
     private fun getPrograms(id: String, listing: XmlTvParser.TvListing) {
-        postValue(listing.getProgramsForEpg(id))
+        postValue(ProgramUtils.getUpcomingPrograms(listing.getProgramsForEpg(id)))
     }
 }

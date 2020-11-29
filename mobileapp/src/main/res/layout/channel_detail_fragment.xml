@@ -78,31 +78,35 @@
             android:id="@+id/program_start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{DateUtils.getDateString(viewmodel.playingNow.startTimeUtcMillis)}"
+            android:textSize="@dimen/program_time_text_size"
+            android:text="@{DateUtils.getTimeString(viewmodel.playingNow.startTimeUtcMillis)}"
             app:layout_constraintTop_toBottomOf="@id/program_title"
             app:layout_constraintStart_toEndOf="@id/foto_guideline"
-            tools:text="01/02/2020 09:00" />
+            tools:text="09:00" />
 
         <TextView
             android:id="@+id/program_end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/program_time_text_size"
             android:layout_marginEnd="@dimen/margin_small"
-            android:text="@{DateUtils.getDateString(viewmodel.playingNow.endTimeUtcMillis)}"
+            android:text="@{DateUtils.getTimeString(viewmodel.playingNow.endTimeUtcMillis)}"
             app:layout_constraintTop_toBottomOf="@id/program_title"
             app:layout_constraintEnd_toEndOf="parent"
-            tools:text="01/02/2020 10:30" />
+            tools:text="10:30" />
 
         <ProgressBar
             android:id="@+id/program_percent_elapsed"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_weight="1"
+            android:layout_marginStart="@dimen/margin_small"
             android:layout_marginEnd="@dimen/margin_small"
-            app:layout_constraintTop_toBottomOf="@id/program_end"
-            app:layout_constraintStart_toEndOf="@id/foto_guideline"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/program_start"
+            app:layout_constraintStart_toEndOf="@id/program_start"
+            app:layout_constraintBottom_toBottomOf="@id/program_start"
+            app:layout_constraintEnd_toStartOf="@id/program_end"
             android:progress="@{viewmodel.playingNow.percentageElapsed}"
             tools:progress="50" />
 
@@ -144,7 +148,6 @@
             app:layout_ids="@{viewmodel.layouts}"
             app:view_config="@{viewmodel.viewConfig}"
             app:scroll_to_item="@{viewmodel.playingNow}"
-            app:layoutManager="LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/alternativesRecyclerview"

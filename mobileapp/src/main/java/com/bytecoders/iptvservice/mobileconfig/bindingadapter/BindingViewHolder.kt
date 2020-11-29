@@ -1,9 +1,11 @@
 package com.bytecoders.iptvservice.mobileconfig.bindingadapter
 
+import android.view.animation.AnimationUtils
 import androidx.annotation.IdRes
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import com.bytecoders.iptvservice.mobileconfig.BR
+import com.bytecoders.iptvservice.mobileconfig.R
 
 enum class ViewHolderType{
     STANDARD,
@@ -20,6 +22,7 @@ open class BindingViewHolder(private val binding: ViewDataBinding) : RecyclerVie
         }
 
     protected open fun bind(item: Any) {
+        itemView.animation = AnimationUtils.loadAnimation(itemView.context, R.anim.enter_from_right)
         if (binding.setVariable(BR.item, item)) {
             binding.executePendingBindings()
         } else {

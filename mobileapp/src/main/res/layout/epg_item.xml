@@ -16,20 +16,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/playlist_item"
-        android:clickable="true"
+        style="@style/Widget.MaterialComponents.CardView"
         android:foreground="?selectableItemBackground"
         android:background="@color/white"
         android:padding="@dimen/padding_small"
+        android:layout_margin="@dimen/margin_small"
+        android:elevation="@dimen/cardview_default_elevation"
         android:orientation="vertical">
+
         <TextView
             android:id="@+id/program_start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/program_time_text_size"
             android:layout_marginEnd="@dimen/margin_small"
-            android:text="@{DateUtils.getDateString(item.startTimeUtcMillis)}"
+            android:text="@{DateUtils.getTimeString(item.startTimeUtcMillis)}"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            tools:text="01/02/2020 10:30" />
+            tools:text="10:30" />
 
         <TextView
             android:id="@+id/program_title"

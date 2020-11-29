@@ -12,6 +12,7 @@ import com.bytecoders.iptvservice.mobileconfig.databinding.ChannelDetailFragment
 import com.bytecoders.iptvservice.mobileconfig.ui.BaseFragment
 
 
+private const val TAG = "ChannelDetailFragment"
 class ChannelDetailFragment : BaseFragment<ChannelDetailViewModel, ChannelDetailFragmentBinding>() {
 
     private val args: ChannelDetailFragmentArgs by navArgs()
@@ -37,7 +38,7 @@ class ChannelDetailFragment : BaseFragment<ChannelDetailViewModel, ChannelDetail
     }
 
     private fun playChannel(identifier: String, alternative: Int = 0) {
-        Log.d("ChannelDetailFragment", "Playing channel with ID $identifier")
+        Log.d(TAG, "Playing channel with ID $identifier")
         val action = ChannelDetailFragmentDirections.actionNavigationChannelDetailToVideoPlayer(identifier, alternative)
         NavHostFragment.findNavController(this).navigate(action)
     }
