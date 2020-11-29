@@ -62,7 +62,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Run tests on emulator
-        uses: ReactiveCircus/android-emulator-runner@v2.13.0
+        uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
           script: ./gradlew connectedCheck
