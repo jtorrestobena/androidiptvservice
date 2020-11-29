@@ -1,9 +1,10 @@
-package com.bytecoders.m3u8parser.parser
+package com.bytecoders.iptvservice.mobileconfig
 
 import com.bytecoders.iptvservicecommunicator.playlist.applyPositions
 import com.bytecoders.iptvservicecommunicator.protocol.api.PreferredChannel
 import com.bytecoders.m3u8parser.data.Playlist
 import com.bytecoders.m3u8parser.data.Track
+import com.bytecoders.m3u8parser.parser.M3U8Parser
 import com.bytecoders.m3u8parser.scanner.M3U8ItemScanner
 import com.google.android.media.tv.companionlibrary.ProgramUtils
 import com.google.android.media.tv.companionlibrary.model.Program

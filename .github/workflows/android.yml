@@ -49,7 +49,9 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: unit-test-report
-          path: iptvservicecommunicator/build/reports/tests
+          path: |
+            iptvservicecommunicator/build/reports/tests
+            mobileapp/build/reports/tests
 
   instrumentedtest:
     name: Run instrumented tests
@@ -72,4 +74,6 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: iptvservice-instrumented-test
-          path: ~/**/build/reports/androidTests/connected/flavors
+          path: |
+            iptvservicecommunicator/build/reports/androidTests/connected/flavors
+            mobileapp/build/reports/androidTests/connected/flavors
