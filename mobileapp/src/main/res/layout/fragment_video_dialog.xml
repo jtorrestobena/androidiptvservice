@@ -24,151 +24,170 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:layout_height="0dp"
-            tools:layout_constraintBottom_toBottomOf="parent" />
+            tools:layout_constraintBottom_toBottomOf="parent"
+            tools:layout_height="0dp" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:id="@+id/videoOverlay"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/videoDetail"
-        tools:visibility="visible">
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/foto_guideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.25" />
-
-        <ImageView
-            android:id="@+id/tvlogo_iv_detail"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/videoOverlay"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_small"
-            android:src="@drawable/ic_dashboard_black_24dp"
-            app:image_url="@{viewmodel.currentChannel.extInfo.tvgLogoUrl}"
-            app:layout_constraintEnd_toStartOf="@id/foto_guideline"
+            android:layout_height="0dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@id/videoDetail"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
-
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/skip_previous_channel"
-            style="@style/blackButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="@{() -> viewmodel.tryPreviousChannel()}"
-            android:visibility="@{viewmodel.hasPreviousChannel ? View.VISIBLE : View.INVISIBLE}"
-            android:src="@drawable/ic_skip_previous_24px"
-            app:layout_constraintStart_toEndOf="@id/foto_guideline"
-            app:layout_constraintTop_toTopOf="@id/channel_title"
-            app:layout_constraintBottom_toBottomOf="@id/channel_title"/>
-
-        <TextView
-            android:id="@+id/channel_title"
-            style="@style/AppTheme.LabelText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/margin_small"
-            android:gravity="start"
-            android:text="@{viewmodel.currentChannel.extInfo.tvgName}"
-            app:layout_constraintEnd_toStartOf="@id/skip_next_channel"
-            app:layout_constraintStart_toEndOf="@id/skip_previous_channel"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Channel title" />
+            tools:visibility="visible">
 
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/skip_next_channel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/blackButton"
-            android:onClick="@{() -> viewmodel.tryNextChannel()}"
-            android:visibility="@{viewmodel.hasNextChannel ? View.VISIBLE : View.INVISIBLE}"
-            android:src="@drawable/ic_skip_next_24px"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/channel_title"
-            app:layout_constraintBottom_toBottomOf="@id/channel_title" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/bottomGuideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.60" />
 
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/skip_previous_option"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            style="@style/blackButton"
-            android:onClick="@{() -> viewmodel.tryPreviousOption()}"
-            android:visibility="@{viewmodel.hasPreviousOption ? View.VISIBLE : View.INVISIBLE}"
-            android:src="@drawable/ic_skip_previous_24px"
-            app:layout_constraintStart_toEndOf="@id/foto_guideline"
-            app:layout_constraintTop_toTopOf="@id/channel_alternative"
-            app:layout_constraintBottom_toBottomOf="@id/channel_alternative" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/rounded_background"
+                android:padding="5dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/bottomGuideline">
 
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/skip_next_option"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/blackButton"
-            android:onClick="@{() -> viewmodel.tryNextOption()}"
-            android:visibility="@{viewmodel.hasNextOption ? View.VISIBLE : View.INVISIBLE}"
-            android:src="@drawable/ic_skip_next_24px"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/channel_alternative"
-            app:layout_constraintBottom_toBottomOf="@id/channel_alternative" />
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/leftGuideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.20" />
 
-        <TextView
-            android:id="@+id/channel_alternative"
-            style="@style/AppTheme.LabelText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/margin_small"
-            android:gravity="start"
-            android:text="@{viewmodel.currentAlternative.title}"
-            app:layout_constraintEnd_toStartOf="@id/skip_next_option"
-            app:layout_constraintStart_toEndOf="@id/skip_previous_option"
-            app:layout_constraintTop_toBottomOf="@id/channel_title"
-            tools:text="Channel alternative" />
+                <ImageView
+                    android:id="@+id/tvlogo_iv_detail"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:src="@drawable/ic_dashboard_black_24dp"
+                    app:image_url="@{viewmodel.currentChannel.extInfo.tvgLogoUrl}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/video_information"
-            style="@style/AppTheme.LabelText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/margin_small"
-            android:gravity="start"
-            android:visibility="@{viewmodel.videoResolution == null ? View.INVISIBLE : View.VISIBLE}"
-            android:text="@{viewmodel.videoResolution.getResolutionString}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/channel_alternative"
-            tools:text="1024 x 768" />
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/skip_previous_channel"
+                    style="@style/blackButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{() -> viewmodel.tryPreviousChannel()}"
+                    android:src="@drawable/ic_skip_previous_24px"
+                    android:visibility="@{viewmodel.hasPreviousChannel ? View.VISIBLE : View.INVISIBLE}"
+                    app:layout_constraintBottom_toBottomOf="@id/channel_title"
+                    app:layout_constraintStart_toEndOf="@id/leftGuideline"
+                    app:layout_constraintTop_toTopOf="@id/channel_title" />
 
-        <TextView
-            android:id="@+id/externalDeviceTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/content_playing_external_device"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.mediarouter.app.MediaRouteButton
-            android:id="@+id/videoViewMediaRouterButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:mediaRouteTypes="user"
-            android:padding="10dp"
-            android:visibility="gone"
-            tools:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/skip_next_channel"
+                    style="@style/blackButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{() -> viewmodel.tryNextChannel()}"
+                    android:src="@drawable/ic_skip_next_24px"
+                    android:visibility="@{viewmodel.hasNextChannel ? View.VISIBLE : View.INVISIBLE}"
+                    app:layout_constraintBottom_toBottomOf="@id/channel_title"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/channel_title" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:id="@+id/channel_title"
+                    style="@style/AppTheme.LabelText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/margin_small"
+                    android:gravity="start"
+                    android:text="@{viewmodel.currentChannel.extInfo.tvgName}"
+                    app:layout_constraintEnd_toStartOf="@id/skip_next_channel"
+                    app:layout_constraintStart_toEndOf="@id/skip_previous_channel"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Channel title" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/skip_previous_option"
+                    style="@style/blackButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:onClick="@{() -> viewmodel.tryPreviousOption()}"
+                    android:src="@drawable/ic_skip_previous_24px"
+                    android:visibility="@{viewmodel.hasPreviousOption ? View.VISIBLE : View.INVISIBLE}"
+                    app:layout_constraintBottom_toBottomOf="@id/channel_alternative"
+                    app:layout_constraintStart_toEndOf="@id/leftGuideline"
+                    app:layout_constraintTop_toTopOf="@id/channel_alternative" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/skip_next_option"
+                    style="@style/blackButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{() -> viewmodel.tryNextOption()}"
+                    android:src="@drawable/ic_skip_next_24px"
+                    android:visibility="@{viewmodel.hasNextOption ? View.VISIBLE : View.INVISIBLE}"
+                    app:layout_constraintBottom_toBottomOf="@id/channel_alternative"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/channel_alternative" />
+
+                <TextView
+                    android:id="@+id/channel_alternative"
+                    style="@style/AppTheme.LabelText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:padding="@dimen/margin_small"
+                    android:text="@{viewmodel.currentAlternative.title}"
+                    app:layout_constraintEnd_toStartOf="@id/skip_next_option"
+                    app:layout_constraintStart_toEndOf="@id/skip_previous_option"
+                    app:layout_constraintTop_toBottomOf="@id/channel_title"
+                    tools:text="Channel alternative" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/video_information"
+                style="@style/AppTheme.LabelText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:padding="@dimen/margin_small"
+                android:text="@{viewmodel.videoResolution.getResolutionString}"
+                android:visibility="@{viewmodel.videoResolution == null ? View.INVISIBLE : View.VISIBLE}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="1024 x 768" />
+
+            <TextView
+                android:id="@+id/externalDeviceTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/content_playing_external_device"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.mediarouter.app.MediaRouteButton
+                android:id="@+id/videoViewMediaRouterButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:mediaRouteTypes="user"
+                android:padding="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
