@@ -68,8 +68,8 @@ jobs:
           script: ./gradlew connectedCheck
 
       - name: Upload Reports for IPTV service instrumented tests
-        if: ${{ always() }}
+        if: ${{ failure() }}
         uses: actions/upload-artifact@v1
         with:
           name: iptvservice-instrumented-test
-          path: iptvservicecommunicator/build/reports/androidTests/connected/flavors
+          path: ~/**/build/reports/androidTests/connected/flavors
